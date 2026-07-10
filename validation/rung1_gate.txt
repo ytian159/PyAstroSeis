@@ -1,0 +1,70 @@
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+== rung-0 regate (must stay bitwise) ==
+[homog/synthetic production] n=184 f=0.05 Hz (2.1 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/synthetic matlab-exact] n=184 f=0.05 Hz (3.1 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic production] n1=184 n2=80 f=0.05 Hz (5.0 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic matlab-exact] n1=184 n2=80 f=0.05 Hz (6.8 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[validation]
+    unknown condition rejected: OK
+    fluid-side sign convention enforced: OK
+    missing w0 rejected for fluid regions: OK
+[homog/my_mesh production] n=1584 f=0.12 Hz (40.9 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/my_mesh matlab-exact] n=1584 f=0.12 Hz (74.6 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/my_mesh_lc production] n1=1584 n2=384 f=0.3 Hz (112.6 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/my_mesh_lc matlab-exact] n1=1584 n2=384 f=0.3 Hz (138.8 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+rung-0 gate PASSED
+== rung-1 gate ==
+[transparent/synthetic] n1=184 n2=80 f=0.05 Hz (3.8 s)
+    surface field vs single-region: OK  (rel err 1.272e-02, gate 0.025)
+[transparent-refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (17.3 s)
+    transparent err: 1.272e-02  7.400e-03  5.156e-03
+    transparent error converges: OK
+[swap/synthetic] n1=184 n2=80 f=0.05 Hz (5.4 s)
+    u_surf A/B-swap: OK  (rel 2.330e-16)
+    u_core A/B-swap: OK  (rel 6.178e-16)
+    t_core A/B-swap (physical): OK  (rel 1.828e-15)
+[refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (16.2 s)
+    surface-field err vs finest core: 1.966e-02  5.801e-03
+    interface refinement converges: OK
+[validation]
+    one-sided welded rejected: OK
+    same-sign welded rejected: OK
+    missing w0 rejected for welded: OK
+[transparent/my_mesh_lc] n1=1584 n2=384 f=0.3 Hz (93.1 s)
+    surface field vs single-region: OK  (rel err 4.468e-03, gate 0.01)
+[swap/my_mesh_lc] n1=1584 n2=384 f=0.3 Hz (127.8 s)
+    u_surf A/B-swap: OK  (rel 4.555e-16)
+    u_core A/B-swap: OK  (rel 3.318e-15)
+    t_core A/B-swap (physical): OK  (rel 3.405e-15)
+rung-1 gate PASSED

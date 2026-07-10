@@ -44,22 +44,36 @@ the existing solvers' orderings as special cases.
 
 ## Rung ladder (each rung gated before the next starts)
 
-**Rung 0 — abstraction, zero new physics.** `domains.MultiDomainModel`
-assembles the general system. GATE: for the 1-region and 2-region
-configurations the assembled matrix, RHS, and solution are BITWISE
-identical to `cal_traction`/`liq_core` (`tests/test_rung0.py`), in
-both production mode (physical Qp, polar self-quadrature, adaptive
-far quadrature) and MATLAB-exact mode (legacy, grid, full). All the
+**Rung 0 — abstraction, zero new physics.** DONE 2026-07-09.
+`domains.MultiDomainModel` assembles the general system. GATE: for
+the 1-region and 2-region configurations the assembled matrix, RHS,
+and solution are BITWISE identical to `cal_traction`/`liq_core`
+(`tests/test_rung0.py`), in both production mode (physical Qp, polar
+self-quadrature, adaptive far quadrature) and MATLAB-exact mode
+(legacy, grid, full). Passed on synthetic spheres and the real
+my_mesh / my_mesh_lc meshes (validation/rung0_gate.txt). All the
 refactoring risk lives here and is fully covered by the existing
 oracle/regression harness plus this gate.
 
-**Rung 1 — welded solid–solid interfaces.** One new block type
-(interface traction unknowns, single-layer G coupling). GATES:
-(a) transparent-interface test — split a homogeneous sphere with an
-artificial internal boundary, same material on both sides; solution
-must match the single-region solution; (b) a real two-layer solid
-sphere vs an independent spherically-symmetric reference (DSM /
-normal modes), same protocol discipline as the DFDM–SEM benchmarks.
+**Rung 1 — welded solid–solid interfaces.** Implemented 2026-07-09
+(branch `multilayer`). Unknowns on a welded interface: shared u plus
+canonical traction t = sigma . n_canonical, stored column-scaled by
+rho*c*w0; each solid's equation carries -sign * G * scale on the t
+columns; first-registered solid's equation fills the ("u", iface)
+rows, the second's the ("t", iface) rows. LOCAL GATES
+(`tests/test_rung1.py` + rung-0 bitwise regate,
+validation/rung1_gate.txt): (a) transparent interface — artificial
+internal boundary, same material both sides, must reproduce the
+single-region solution AND the error must converge to zero under
+interface refinement (it is piecewise-constant-element
+discretization error, ~4.5e-3 at 384 faces / 5.7 elem per S
+wavelength, ~1.3e-2 at 80 coarse faces); (b) A/B swap — exchanging
+which region owns the u-rows vs t-rows must leave all physical
+fields unchanged (observed ~1e-15); (c) contrast-core interface
+refinement must converge. REMAINING for full rung-1 closure: a real
+two-layer solid sphere vs an independent spherically-symmetric
+reference (DSM / normal modes / layered-sphere Mie series), same
+protocol discipline as the DFDM–SEM benchmarks.
 
 **Rung 2 — N nested shells + config schema.** YAML layer lists
 (radius / mesh resolution / material per shell; `meshgen.gen_layer`

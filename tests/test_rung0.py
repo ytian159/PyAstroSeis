@@ -154,9 +154,8 @@ def gate_validation(face1, face2):
 
     print("[validation]", flush=True)
     expects(NotImplementedError, lambda: MultiDomainModel(
-        (Region(solid, ((Interface(face2, "welded", "w"), +1),)),
-         Region(solid, ((Interface(face2, "welded", "w"), -1),)))),
-        "welded condition rejected (rung 1)")
+        (Region(solid, ((Interface(face2, "sliding", "w"), +1),)),)),
+        "unknown condition rejected")
     expects(ValueError, lambda: MultiDomainModel(
         (Region(fluid, ((iface, -1),)),
          Region(solid, ((iface, +1), (Interface(face1, FREE, "s"), +1))),),
