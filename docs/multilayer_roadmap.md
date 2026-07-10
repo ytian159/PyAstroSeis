@@ -185,15 +185,46 @@ converging discretization mode:
   of the wavelength rule.
 
 Ladder of legs (all in dsm_arbitration_r2b/, 0-24 ks vector
-metrics, homog floor 14.5% / corr 0.965): corefluid (ICB n12 / CMB
-n55) 34.8% corr 0.772; corefluid_fine (internal x4) 20.5% corr
-0.848 amp 1.0005; corefluid2 (mantle == baseline material, CMB n61)
-43.6%; corefluid3 (reflectors at h/R 0.089) 31.0% corr 0.830 —
-passes the differential-ratio and amplitude gates, min-corr still
-short because ~0.8% mode bias is too large for a 24-ks lossless
-coda. Decisive scale-2 run (reflector h/R 0.045, predicted bias
-~0.2%) submitted as dsm_arbitration_r2b_hi (sbatch 55744328);
-non-convergence there reopens the bug hunt.
+metrics, homog floor 14.5% / corr 0.965 at scale 1): corefluid (ICB
+n12 / CMB n55) 34.8% corr 0.772; corefluid_fine (internal x4) 20.5%
+corr 0.848 amp 1.0005; corefluid2 (mantle == baseline material, CMB
+n61) 43.6%; corefluid3 (reflectors at h/R 0.089) 31.0% corr 0.830.
+Scale-2 run (dsm_arbitration_r2b_hi, job 55744328): homog floor
+5.90% corr 0.9954 (converging on schedule), corefluid3 19.6% —
+ratio+amp gates pass, but min corr PINNED at 0.831 and the spectral
+error concentrates in resonance clusters at FIXED physical
+frequencies whose BEM peaks sit ~+1.6% high at every tested
+resolution (e.g. DSM peak k=123 vs BEM k=125).
+
+RESOLUTION OF THE HUNT (l=0 radial arbiter diag_radial.py +
+consistency localizer diag_residual.py + normals test
+diag_geonorm.py): no O(1) bug — every operator block is CONSISTENT
+(fluid identity residual order ~2; all eigen-residual blocks
+decrease under refinement) and amplitudes are exact — but the
+fluid-coupled system converges at LOW ORDER: the exact l=0 radial
+eigenfrequency of the fluid-core+shell testbed is missed by
++7.7 / +5.5 / +4.5 % at x1/x2/x4 (order ~0.6-1.0 in h; the
+u_core row block shows the same order-1 residual), versus order
+~1.9 for all solid-only mode families. Replacing the flat-panel
+normals in the Smat coupling by exact radial normals changes
+nothing (4.516 -> 4.512%), ruling out the normal-direction error.
+Practical consequence: fluid-trapped mode families (the resonance
+clusters) carry 1.5-5% frequency bias at any affordable mesh, so
+fluid-core models cannot reach the 0.9-correlation gate over a
+24-ks lossless coda — an accuracy property inherited from the
+original AstroSeis liquid-core formulation, previously masked by
+the ~2%-grade MATLAB LC reference. The welded (all-solid) ladder is
+unaffected (hi-res x4: floor 3.37%, welded 5.60%, PASSED).
+
+**Rung 2c — restore second-order fluid-solid coupling.** Find and
+fix the order-1 term in the solid-side rows on fluid interfaces
+(candidates: curvature corrections to the T/G self-blocks on
+strongly curved flipped meshes, collocation-radius bias of the
+coupled system, curved-panel quadrature); acceptance gate = the l=0
+radial arbiter converging at order ~2 (diag_radial.py), then a
+corefluid DSM re-arbitration passing all gates. Also mitigate the
+sparse spurious real-axis pressure resonances (CHIEF points /
+Burton-Miller) if resonance-style post-processing is ever needed.
 
 Still needed for the full PREM goal: graded radial profiles
 approximated by many constant shells, which pushes past dense
