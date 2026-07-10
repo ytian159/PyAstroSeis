@@ -99,6 +99,13 @@ LAYER_SPECS = {
     # wavelength resolution
     "corefluid3": ((1221.5, 48, MAT_IC2), (3480.0, 200, MAT_OC2),
                    (R_KM, 200, MAT_SHELL)),
+    # ALL reflector boundaries at the auto_nmesh curvature floor
+    # h/R <= 0.09 (n=200 -> 1584 faces), including the ICB — the
+    # corefluid/corefluid3 specs violated the rule at the ICB
+    # (h/R 0.40/0.19), which pins ICB-confined mode families ~1.6%
+    # high regardless of CMB/surface refinement
+    "corefluid4": ((1221.5, 200, MAT_IC2), (3480.0, 200, MAT_OC2),
+                   (R_KM, 200, MAT_SHELL)),
 }
 
 

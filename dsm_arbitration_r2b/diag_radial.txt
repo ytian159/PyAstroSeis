@@ -1,0 +1,12 @@
+analytic l=0 radial modes (a=8000 fluid vp 7000 rho 3500 | shell vp 6000 vs 3000 rho 3000 | b=20000):
+  f = 0.140674 Hz
+x1 (core h/R 0.396, surf h/R 0.261):
+  mode 0.1407: peak 0.151517 (+7.708%)
+x2 (core h/R 0.267, surf h/R 0.181):
+  mode 0.1407: peak 0.148428 (+5.513%)
+x4 (core h/R 0.185, surf h/R 0.127):
+  mode 0.1407: peak 0.147026 (+4.516%)
+core-only x4 (core h/R 0.185, surf h/R 0.261):
+  mode 0.1407: peak 0.150118 (+6.713%)
+surf-only x4 (core h/R 0.396, surf h/R 0.127):
+  mode 0.1407: peak 0.146672 (+4.264%)

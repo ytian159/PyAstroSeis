@@ -1,0 +1,12 @@
+full-sphere check: 0T2 k*b = 2.5011 (expect ~2.501)
+analytic 0T2 (a=8000 b=20000 vs=3000): f = 0.059081 Hz
+control sphere n=184 (h/R=0.261), analytic 0T2 f=0.059710:
+  0T2 peak f=0.063217  offset +5.873%  (n_frac 0.040)
+control sphere n=384 (h/R=0.181), analytic 0T2 f=0.059710:
+  0T2 peak f=0.061458  offset +2.928%  (n_frac 0.017)
+control sphere n=784 (h/R=0.127), analytic 0T2 f=0.059710:
+  0T2 peak f=0.060660  offset +1.591%  (n_frac 0.005)
+wide LC scan [0.70, 1.60]*f_ref:
+  LC peak f=0.052453 (-11.219%) resp=1.78e+09 p=1.000 n=0.633  spher-ish
+  LC peak f=0.081658 (+38.214%) resp=6.42e+09 p=1.000 n=0.380  spher-ish
+  LC peak f=0.088209 (+49.301%) resp=1.60e+09 p=1.000 n=0.746  spher-ish

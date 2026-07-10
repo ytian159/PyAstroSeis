@@ -1,0 +1,6 @@
+[l=0 radial arbiter] analytic root 0.140674 Hz
+    x1: peak 0.143308 (+1.873%) (109.2 s)
+    x2: peak 0.141960 (+0.915%) (340.4 s)
+    x2 offset below gate: OK  (0.915% < 1.4%)
+    convergence order >= 1.4: OK  (order 2.07)
+rung-2c gate PASSED

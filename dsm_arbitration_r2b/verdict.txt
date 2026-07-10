@@ -8,6 +8,8 @@ corefluid2 (layered): median rel RMS 4.355e-01, max 7.613e-01, min corr 0.821532
   gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
 corefluid3 (layered): median rel RMS 3.097e-01, max 7.543e-01, min corr 0.830086, median amp ratio 1.0152
   gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+corefluid4 (layered): median rel RMS 3.096e-01, max 7.545e-01, min corr 0.830001, median amp ratio 1.0151
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
 baseline floor sane e0 < 20%: True
 DSM ARBITRATION FAILED
 conjugate=True

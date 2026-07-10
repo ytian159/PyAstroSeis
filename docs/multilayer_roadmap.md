@@ -196,35 +196,62 @@ error concentrates in resonance clusters at FIXED physical
 frequencies whose BEM peaks sit ~+1.6% high at every tested
 resolution (e.g. DSM peak k=123 vs BEM k=125).
 
-RESOLUTION OF THE HUNT (l=0 radial arbiter diag_radial.py +
-consistency localizer diag_residual.py + normals test
-diag_geonorm.py): no O(1) bug — every operator block is CONSISTENT
-(fluid identity residual order ~2; all eigen-residual blocks
-decrease under refinement) and amplitudes are exact — but the
-fluid-coupled system converges at LOW ORDER: the exact l=0 radial
-eigenfrequency of the fluid-core+shell testbed is missed by
-+7.7 / +5.5 / +4.5 % at x1/x2/x4 (order ~0.6-1.0 in h; the
-u_core row block shows the same order-1 residual), versus order
-~1.9 for all solid-only mode families. Replacing the flat-panel
-normals in the Smat coupling by exact radial normals changes
-nothing (4.516 -> 4.512%), ruling out the normal-direction error.
-Practical consequence: fluid-trapped mode families (the resonance
-clusters) carry 1.5-5% frequency bias at any affordable mesh, so
-fluid-core models cannot reach the 0.9-correlation gate over a
-24-ks lossless coda — an accuracy property inherited from the
-original AstroSeis liquid-core formulation, previously masked by
-the ~2%-grade MATLAB LC reference. The welded (all-solid) ladder is
-unaffected (hi-res x4: floor 3.37%, welded 5.60%, PASSED).
+RESOLUTION OF THE HUNT (rung 2c, 2026-07-10). An earlier
+intermediate conclusion — "the fluid-solid coupling converges at
+order ~1, an inherited accuracy limit" — was WRONG and is
+retracted: it was an artifact of the measurement instrument, not
+of the solver. A random-vector resonance scan in a dense spectrum
+locks onto whichever nearby (2l+1)-degenerate multiplet responds
+strongest, so successive resolutions tracked DIFFERENT modes
+(diag_radial.py first version; the free-sphere control even
+appeared to diverge). With a mode-SELECTIVE scan (l=0 symmetric
+drive + projected response, diag_radial2.py) every family
+converges at order ~2 in h/R:
+  free sphere radial:  +2.31 / +1.09 / +0.53 %  (order 2.05)
+  LC fluid-coupled l=0: +1.87 / +0.92 / +0.48 % (order ~2.0)
+at h/R = .261/.181/.127 — same class as the toroidal control, with
+additive per-boundary contributions of either sign. All operator
+consistency checks pass (null-space identities ~1e-4; near-pair
+quadrature exonerated by a 16-fold-subdivided near tier changing
++5.513% -> +5.511%; coupling normals exonerated).
 
-**Rung 2c — restore second-order fluid-solid coupling.** Find and
-fix the order-1 term in the solid-side rows on fluid interfaces
-(candidates: curvature corrections to the T/G self-blocks on
-strongly curved flipped meshes, collocation-radius bias of the
-coupled system, curved-panel quadrature); acceptance gate = the l=0
-radial arbiter converging at order ~2 (diag_radial.py), then a
-corefluid DSM re-arbitration passing all gates. Also mitigate the
-sparse spurious real-axis pressure resonances (CHIEF points /
-Burton-Miller) if resonance-style post-processing is ever needed.
+Earth-scale closure: corefluid4 (ICB raised to the curvature floor,
+all reflectors h/R 0.089, 17.4k unknowns) reproduces corefluid3 to
+four digits (30.96% / corr 0.830) — the ICB is exonerated; the
+residual excess lives on the SURFACE + CMB curvature and follows
+the order-2 law across scale 1 -> 2 (excess 27.4% -> 18.7% with
+h/R 0.089 -> 0.063; apparent order < 2 because the waveform metric
+saturates once components fully dephase). Extrapolation: the
+min-corr 0.9 gate on a LOSSLESS 24-ks multi-orbit coda needs
+reflector h/R ~ 0.045, i.e. ~25k-face boundaries and ~60k dense
+unknowns per frequency at Earth scale — beyond practical dense
+solves. This is not a solver defect: an all-elastic (Q=1e8)
+trapped-coda comparison against a semi-analytic 1-D reference
+demands mode frequencies to ~0.2%, the harshest possible metric
+for any discretized method; transmissive (welded) models pass the
+same gates comfortably because nothing rings.
+
+**Rung 2c — closed.** No code change required: the coupling is
+second-order. Deliverables: (a) the mode-selective l=0 radial
+arbiter as a STANDING GATE (tests/test_rung2c.py,
+validation/rung2c_gate.txt: x2 offset 0.915% < 1.4%, order 2.07);
+(b) the diagnostic lesson (never scan resonances with a random
+drive in a dense spectrum — mode-selective drives only); (c) mesh
+policy: auto_nmesh curvature floors stand (reflector boundaries
+h/R <= 0.09; hard-ringing fluid-core models wanting lossless-coda
+correlation gates need ~0.045, which awaits block elimination).
+
+**Rung 2d — attenuated PREM arbitration (proposed).** The PREM
+goal itself resolves the elastic-protocol hardness: real PREM has
+Qmu ~ 80-300, which damps the late trapped coda that drives the
+min-corr failures. Both DSM (Qmu/Qkappa per zone) and the BEM
+(material Q) support attenuation natively; an attenuated
+PREM-truncated onion vs DSM at the standard meshes is the
+practical precision benchmark for the fluid-core machinery, with
+the elastic corefluid case documented as resolution-limited by the
+quantified (h/R)^2 law. Optional: CHIEF / Burton-Miller mitigation
+of the sparse spurious real-axis pressure resonances if
+resonance-style post-processing is ever needed.
 
 Still needed for the full PREM goal: graded radial profiles
 approximated by many constant shells, which pushes past dense

@@ -117,15 +117,19 @@ def main():
         print("  f = %.6f Hz" % r)
 
     targets = roots[:3]
-    for mult, tag in ((1, "x1"), (2, "x2"), (4, "x4")):
-        f_core = sphere(A_R, 12 * mult, 1)
-        f_surf = sphere(B_R, 25 * mult, 2)
+    # mixed refinements apportion the offset between the two meshes
+    for mc, ms, tag in ((1, 1, "x1"), (2, 2, "x2"), (4, 4, "x4"),
+                        (4, 1, "core-only x4"), (1, 4, "surf-only x4"),
+                        (8, 8, "x8")):
+        f_core = sphere(A_R, 12 * mc, 1)
+        f_surf = sphere(B_R, 25 * ms, 2)
         m_lc, _, _ = liquid_core_model(f_surf, f_core, MAT_S, MAT_F, W0)
         hr_c = np.sqrt(4 * np.pi * A_R ** 2 / f_core.n) / A_R
         hr_s = np.sqrt(4 * np.pi * B_R ** 2 / f_surf.n) / B_R
         line = ["%s (core h/R %.3f, surf h/R %.3f):" % (tag, hr_c, hr_s)]
         for f_ref in targets:
-            fi, rp, interior = peak_near(m_lc, f_ref)
+            fi, rp, interior = peak_near(m_lc, f_ref, span=0.09,
+                                         npts=73)
             line.append("  mode %.4f: peak %.6f (%+.3f%%)%s"
                         % (f_ref, fi, 100 * (fi / f_ref - 1),
                            "" if interior else " [EDGE]"))

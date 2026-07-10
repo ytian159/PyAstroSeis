@@ -1,0 +1,29 @@
+conjugation=False: homog median rel RMS 1.133e+00
+conjugation=True: homog median rel RMS 1.453e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog (baseline):  median rel RMS 1.453e-01, max 2.990e-01, min corr 0.965472
+corefluid  (layered): median rel RMS 3.475e-01, max 6.662e-01, min corr 0.771556, median amp ratio 0.9585
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+corefluid_fine (layered): median rel RMS 2.046e-01, max 6.308e-01, min corr 0.848232, median amp ratio 1.0005
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+corefluid2 (layered): median rel RMS 4.355e-01, max 7.613e-01, min corr 0.821532, median amp ratio 0.9989
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+corefluid3 (layered): median rel RMS 3.097e-01, max 7.543e-01, min corr 0.830086, median amp ratio 1.0152
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+corefluid4 (layered): median rel RMS 3.096e-01, max 7.545e-01, min corr 0.830001, median amp ratio 1.0151
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION FAILED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_homog_mrr_Z.png (error magnification x4)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_homog_mrt_T.png (error magnification x2)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid_fine_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid_fine_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid2_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid2_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid3_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid3_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid4_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2b/waveforms_corefluid4_mrt_T.png (error magnification x1)

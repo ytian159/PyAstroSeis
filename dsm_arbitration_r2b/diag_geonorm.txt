@@ -1,0 +1,10 @@
+analytic l=0 root: 0.140674 Hz
+x1 (core n=80 surf n=184):
+  panel normals: peak 0.151517 (+7.708%)
+  radial normals: peak 0.151928 (+8.000%) [EDGE]
+x2 (core n=176 surf n=384):
+  panel normals: peak 0.148428 (+5.513%)
+  radial normals: peak 0.148405 (+5.496%)
+x4 (core n=368 surf n=784):
+  panel normals: peak 0.147026 (+4.516%)
+  radial normals: peak 0.147021 (+4.512%)

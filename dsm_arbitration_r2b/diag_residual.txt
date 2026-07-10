@@ -1,0 +1,4 @@
+analytic l=0 root: 0.140674 Hz
+x1 (core n=80 surf n=184): fluid-identity 5.399e-03 | eigen residual: p_core 1.031e-01  u_core 5.841e-02  u_surf 8.451e-02  (3x3 null qual 1.4e-19)
+x2 (core n=176 surf n=384): fluid-identity 2.593e-03 | eigen residual: p_core 4.688e-02  u_core 3.782e-02  u_surf 4.427e-02  (3x3 null qual 1.4e-19)
+x4 (core n=368 surf n=784): fluid-identity 1.290e-03 | eigen residual: p_core 2.237e-02  u_core 2.772e-02  u_surf 2.457e-02  (3x3 null qual 1.4e-19)

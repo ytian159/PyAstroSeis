@@ -4350,6 +4350,898 @@
         "dist_deg": 170.03613275961996,
         "comp": "VEC"
       }
+    ],
+    "corefluid4": [
+      {
+        "rel_rms": 0.13723609270488016,
+        "corr": 0.9905592845116032,
+        "amp_ratio": 0.9969967741653559,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.1474600309773917,
+        "corr": 0.9890698260826365,
+        "amp_ratio": 0.9871773137339237,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.1432056369023867,
+        "corr": 0.9896963771358249,
+        "amp_ratio": 0.9922989444059152,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.24132181126558477,
+        "corr": 0.9719576917459403,
+        "amp_ratio": 1.0261607464255293,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.3010943577464185,
+        "corr": 0.9570601592744036,
+        "amp_ratio": 1.0384355900694262,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.0937425705167787,
+        "corr": 0.9957458610446431,
+        "amp_ratio": 1.0129937395991446,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.20220810380630602,
+        "corr": 0.9802168690221523,
+        "amp_ratio": 1.0216080221896304,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.566807452768955,
+        "corr": 0.8973227119192158,
+        "amp_ratio": 1.2529330855593663,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.49234029666699125,
+        "corr": 0.91841072904509,
+        "amp_ratio": 1.2114589075879274,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.30782438778423665,
+        "corr": 0.9519611269108954,
+        "amp_ratio": 0.9833592297867291,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.457970780131484,
+        "corr": 0.921119238129659,
+        "amp_ratio": 1.1623616189560875,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6761687432427503,
+        "corr": 0.8713558579606963,
+        "amp_ratio": 1.3366140664223,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6700648364856203,
+        "corr": 0.8699018391958832,
+        "amp_ratio": 1.3234612012763953,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2766420828193292,
+        "corr": 0.9613211640360045,
+        "amp_ratio": 0.9871904974281711,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.5251403610922514,
+        "corr": 0.8969183529938528,
+        "amp_ratio": 1.180176063895614,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.8754600042768254,
+        "corr": 0.7986764832278698,
+        "amp_ratio": 1.4345336558300326,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9118417262985813,
+        "corr": 0.8165562796514628,
+        "amp_ratio": 1.522402928476414,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2267597207524297,
+        "corr": 0.9740781484164316,
+        "amp_ratio": 0.9898328359126461,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.6538691160343176,
+        "corr": 0.8616611051098941,
+        "amp_ratio": 1.2739773441336613,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.8948532457934523,
+        "corr": 0.7261254691548625,
+        "amp_ratio": 1.2988562335306262,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.012060607980577,
+        "corr": 0.7811699772097714,
+        "amp_ratio": 1.5777207963794773,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.18450746708104898,
+        "corr": 0.9828431773553218,
+        "amp_ratio": 0.9877131550317428,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.7545341893177273,
+        "corr": 0.8300011766103563,
+        "amp_ratio": 1.3381584318217103,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.8719621046872548,
+        "corr": 0.7927985521162736,
+        "amp_ratio": 1.416374895676777,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.8077646458586651,
+        "corr": 0.7973904608691765,
+        "amp_ratio": 1.3343404307772984,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.19537442966499835,
+        "corr": 0.9808476732701136,
+        "amp_ratio": 0.9961226831332662,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.6437588374319599,
+        "corr": 0.8538876836847087,
+        "amp_ratio": 1.2327671066152568,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6911962392383043,
+        "corr": 0.8400224327640847,
+        "amp_ratio": 1.2682629360844357,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.7183266964922055,
+        "corr": 0.8323073890701254,
+        "amp_ratio": 1.2891758961858317,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2711768830905437,
+        "corr": 0.9628209896533172,
+        "amp_ratio": 0.9865098064176859,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.5436031613841652,
+        "corr": 0.8810008805988538,
+        "amp_ratio": 1.1487077140619075,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6159693201037637,
+        "corr": 0.8690560353797138,
+        "amp_ratio": 1.236039135724948,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6070076981515513,
+        "corr": 0.869351803117882,
+        "amp_ratio": 1.2218158483757735,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.334443441236197,
+        "corr": 0.942849338971287,
+        "amp_ratio": 0.9714376474994575,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.5334663959523523,
+        "corr": 0.8852644098031912,
+        "amp_ratio": 1.146567817501186,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.48505756681162693,
+        "corr": 0.9031469864262189,
+        "amp_ratio": 1.1288798422801618,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.0788885650433219,
+        "corr": 0.996883581151533,
+        "amp_ratio": 0.996354370324112,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.29725778264144276,
+        "corr": 0.9587180609156457,
+        "amp_ratio": 1.0453350896499733,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.593095135506176,
+        "corr": 0.8861916121478297,
+        "amp_ratio": 1.2564582906408561,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.45230642001842947,
+        "corr": 0.9125417046390678,
+        "amp_ratio": 1.1057086280381407,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.14939212383417763,
+        "corr": 0.9887915986203246,
+        "amp_ratio": 0.9939715760163521,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.20515664990593568,
+        "corr": 0.9791739079593804,
+        "amp_ratio": 1.0086831104066212,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.416899870319356,
+        "corr": 0.9207917962320054,
+        "amp_ratio": 1.0679754701923307,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.17923423885653111,
+        "corr": 0.9838847749568777,
+        "amp_ratio": 0.996301005078233,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.18682265897090813,
+        "corr": 0.9825113566515693,
+        "amp_ratio": 0.9977189815242424,
+        "model": "corefluid4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.3544892936123636,
+        "corr": 0.9469180937382776,
+        "amp_ratio": 1.0963052937747129,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.3346076829521881,
+        "corr": 0.9791885146875002,
+        "amp_ratio": 1.2452194316624714,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.6582731332290035,
+        "corr": 0.8973272737014022,
+        "amp_ratio": 1.3857121158694627,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.4219646941379552,
+        "corr": 0.9382879442188283,
+        "amp_ratio": 1.1800284442707096,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.13464670984742527,
+        "corr": 0.9918891893738673,
+        "amp_ratio": 0.9474605896943227,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.2577089763697828,
+        "corr": 0.9670271841269671,
+        "amp_ratio": 1.0064669019516654,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2419788437186346,
+        "corr": 0.9706325227542111,
+        "amp_ratio": 0.9967333854911224,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.3078375679872369,
+        "corr": 0.951747805419315,
+        "amp_ratio": 0.9759934933819016,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.4976075473083841,
+        "corr": 0.8706556220293977,
+        "amp_ratio": 0.7954593235190119,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.32083582685915435,
+        "corr": 0.9549895041760551,
+        "amp_ratio": 1.0772211730791024,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.3364526780539542,
+        "corr": 0.9430507679711092,
+        "amp_ratio": 0.9935003025633722,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.48241024488239664,
+        "corr": 0.8874775097541592,
+        "amp_ratio": 1.030081768761166,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.20671527287386995,
+        "corr": 0.9861650522491373,
+        "amp_ratio": 0.8626631724380899,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2374600947970811,
+        "corr": 0.9714487397459176,
+        "amp_ratio": 0.9614512113028116,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.24457830245898088,
+        "corr": 0.9697765110679725,
+        "amp_ratio": 0.9528937549871116,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.2789850829075894,
+        "corr": 0.9669835737541762,
+        "amp_ratio": 0.853449841342381,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6198209481470235,
+        "corr": 0.7857852308426894,
+        "amp_ratio": 0.7453323351197113,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.34030055676203097,
+        "corr": 0.9404633973823733,
+        "amp_ratio": 0.95707275464098,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.32199098914682645,
+        "corr": 0.9489326294462072,
+        "amp_ratio": 0.8845017958380362,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.33456001561053234,
+        "corr": 0.9621223156688407,
+        "amp_ratio": 0.7681899708851722,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.38212680951129746,
+        "corr": 0.9242046963570132,
+        "amp_ratio": 0.9109676530450849,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2512269534893931,
+        "corr": 0.9685776091930729,
+        "amp_ratio": 1.0040398030018265,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2912181980581213,
+        "corr": 0.9574346897215139,
+        "amp_ratio": 0.918844225065715,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.2973872957273035,
+        "corr": 0.9553388872913043,
+        "amp_ratio": 0.9219983229441698,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.26347299812573277,
+        "corr": 0.965181242964007,
+        "amp_ratio": 0.9966908051778693,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2664986475195609,
+        "corr": 0.9642739758572771,
+        "amp_ratio": 0.9933571263977207,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.3540034336290409,
+        "corr": 0.9385618814299668,
+        "amp_ratio": 0.8597149645941764,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.2232175876935031,
+        "corr": 0.9946226643165242,
+        "amp_ratio": 0.7968846158083824,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.29733874687204426,
+        "corr": 0.9549765499246498,
+        "amp_ratio": 0.9747386676609708,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.29097529590932897,
+        "corr": 0.957077259467961,
+        "amp_ratio": 0.9313186993330457,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.2898967191018713,
+        "corr": 0.9574630137718563,
+        "amp_ratio": 0.9296146657577586,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.30571269152473773,
+        "corr": 0.9734512163995012,
+        "amp_ratio": 0.7707999877603253,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.23170021289399378,
+        "corr": 0.9775803985814819,
+        "amp_ratio": 1.0742676487536227,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.25670978387217636,
+        "corr": 0.9670924649389302,
+        "amp_ratio": 1.00126480576239,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.3474187643791917,
+        "corr": 0.9388796790385641,
+        "amp_ratio": 0.9857289005296523,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.5800612719737347,
+        "corr": 0.8164774761056108,
+        "amp_ratio": 0.8722138935683016,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.38654194899434813,
+        "corr": 0.9511868353710675,
+        "amp_ratio": 1.1839336379604395,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.3748113057078529,
+        "corr": 0.9372706056258644,
+        "amp_ratio": 1.0749648431839407,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.25218802252552563,
+        "corr": 0.9682492629073676,
+        "amp_ratio": 1.0014973279036394,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.33895530885186975,
+        "corr": 0.9437189608585677,
+        "amp_ratio": 0.8695827451280584,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.29690702180842343,
+        "corr": 0.9580082620960949,
+        "amp_ratio": 0.8809783338634423,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2923191161686536,
+        "corr": 0.9582656245867202,
+        "amp_ratio": 0.8972453579353862,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.24014735919269123,
+        "corr": 0.9712651223585513,
+        "amp_ratio": 1.0033071578337782,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.44122399190697464,
+        "corr": 0.9141750210651132,
+        "amp_ratio": 1.0885154356961604,
+        "model": "corefluid4",
+        "source": "mrt",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
     ]
   },
   "summary": {
@@ -4382,6 +5274,12 @@
       "max": 0.7543462983846039,
       "corr_min": 0.8300863028596649,
       "amp_med": 1.0151783908792866
+    },
+    "corefluid4": {
+      "median": 0.3096243858941346,
+      "max": 0.7545341893177273,
+      "corr_min": 0.8300011766103563,
+      "amp_med": 1.0151455662981257
     }
   }
 }

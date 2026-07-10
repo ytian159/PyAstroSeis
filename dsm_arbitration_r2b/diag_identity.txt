@@ -1,0 +1,6 @@
+x1 (core n=80 surf n=184):
+  static: rigid u_core 2.160e-04  u_surf 2.398e-04 | gauss median +6.81e-05 rms 6.558e-05
+x2 (core n=176 surf n=384):
+  static: rigid u_core 2.205e-04  u_surf 1.582e-04 | gauss median +3.89e-05 rms 3.845e-05
+x4 (core n=368 surf n=784):
+  static: rigid u_core 1.552e-04  u_surf 1.204e-04 | gauss median +2.99e-05 rms 2.874e-05
