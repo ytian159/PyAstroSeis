@@ -1,0 +1,14 @@
+# pyastroseis modern config — solid body with a liquid core
+# (equivalent to the legacy examples/shifted_liquid_core/inp_sft_lc)
+mesh: shifted_liquid_core/layers_shift.mat
+output: out_liquidcore_yaml.mat
+medium: {vp: 6000, vs: 3000, rho: 3000, Q: 200}   # outer solid layer
+core: {vp: 8000, vs: 0, rho: 4000}                 # liquid core
+time: {nt: 500, dt: 0.1, f0: 0.3}
+source:
+  type: moment
+  scale: 0
+  moment: [1, 0, 0, 1, 0, 1]  # Mxx Mxy Mxz Myy Myz Mzz
+  depth: 4000
+  lat: 0
+  lon: 180

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+pyout/
+pyout_*/
+*.log
+*.meta.json
+.DS_Store

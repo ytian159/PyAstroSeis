@@ -1,0 +1,13 @@
+# pyastroseis modern config — homogeneous body, single force
+# (equivalent to the legacy BEM_para_Q570 file)
+mesh: ../my_mesh.mat          # .mat (face struct or V/Tri) or .obj shape model
+output: out_Q570_yaml.mat
+medium: {vp: 6000, vs: 3000, rho: 3000, Q: 570}
+time: {nt: 500, dt: 0.1, f0: 0.3}
+source:
+  type: single                # single | moment
+  scale: 0                    # amplitude = 10^scale
+  force: [1, 1, 1]
+  depth: 2000                 # m below mean surface radius
+  lat: 0
+  lon: 180

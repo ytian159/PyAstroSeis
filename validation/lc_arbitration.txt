@@ -1,0 +1,26 @@
+Liquid-core reference arbitration (2026-07-09)
+================================================
+
+Question: pyastroseis LC output differs ~1-2% (common columns) from the
+shipped reference examples/shifted_liquid_core/uu_liqcore_bem20km_shift.mat.
+Port bug or stale reference?
+
+Evidence:
+1. The shipped reference has 75 computed frequencies (fmax=1.5 Hz ->
+   f0=0.5), but the shipped parameter file inp_sft_lc specifies f0=0.3
+   (44 frequencies). The reference predates the parameter file.
+2. Common-column deviation is smooth, ~1% at low f growing to ~2.2% at
+   0.88 Hz — the signature of a different self-integration resolution
+   (cal_*_st.m still contains the commented-out former setting
+   "%nxi=200"; current code uses nxi=300).
+3. Decisive test (tests/dump_lc_freqs.m): the CURRENT MATLAB code run
+   at iw=2,16,30 with the inp_sft_lc parameters vs the Python port
+   (legacy qp mode), full 10432-unknown solution columns:
+       iw=2  : rel err = 1.605e-14
+       iw=16 : rel err = 8.096e-15
+       iw=30 : rel err = 1.283e-14
+
+Conclusion: the Python liquid-core solver is machine-precision
+equivalent to the current MATLAB code. The shipped .mat reference is
+from an older code/configuration era and should not be used as ground
+truth beyond the ~2% level.
