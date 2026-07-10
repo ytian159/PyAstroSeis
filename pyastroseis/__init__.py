@@ -21,7 +21,9 @@ from .liquidcore import run_case_lc, load_layers_mat
 from .domains import (Material, Interface, Region, MultiDomainModel,
                       homogeneous_model, liquid_core_model,
                       welded_two_layer_model, nested_shell_model)
-from .layered import read_layered_config, build_layered_model
+from .layered import (read_layered_config, build_layered_model,
+                      auto_nmesh)
+from .meshgen import relief_ylm, relief_random
 
 __all__ = [
     "Faces", "load_faces_mat", "faces_from_vertices",
@@ -30,5 +32,6 @@ __all__ = [
     "Material", "Interface", "Region", "MultiDomainModel",
     "homogeneous_model", "liquid_core_model",
     "welded_two_layer_model", "nested_shell_model",
-    "read_layered_config", "build_layered_model",
+    "read_layered_config", "build_layered_model", "auto_nmesh",
+    "relief_ylm", "relief_random",
 ]

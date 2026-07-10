@@ -1,20 +1,26 @@
 #!/bin/bash
-# Rung-1 DSM arbitration campaign (run inside a compute allocation).
+# DSM arbitration campaign (run inside a compute allocation).
+# Models via ARB_MODELS (comma list, first must be the homog
+# baseline); scripts stay in dsm_arbitration/, outputs go to
+# ARB_ROOT.
 set -euo pipefail
-ROOT="${ARB_ROOT:-$(cd "$(dirname "$0")" && pwd)}"
+SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+ROOT="${ARB_ROOT:-$SCRIPTS}"
 DSM=/pscratch/sd/y/ytian159/dfdm_3d_perf/external/DSMsynTI-mpi
 NPROCS="${1:-20}"
+MODELS="${ARB_MODELS:-homog,twolayer}"
 
 module load pytorch/2.8.0
 export OMP_NUM_THREADS=4
 ulimit -s unlimited
 
+mkdir -p "$ROOT"
 cd "$ROOT"
 echo "== stage meshes + DSM inputs $(date +%T) =="
-python make_inputs.py
+python "$SCRIPTS/make_inputs.py"
 
 echo "== DSM runs $(date +%T) =="
-for model in homog twolayer; do
+for model in ${MODELS//,/ }; do
   cd "$ROOT/dsm/$model"
   for src in mrr mrt; do
     echo "-- $model tipsv $src $(date +%T)"
@@ -25,11 +31,11 @@ for model in homog twolayer; do
 done
 cd "$ROOT"
 
-echo "== BEM homogeneous leg $(date +%T) =="
-python run_bem.py homog "$NPROCS"
-echo "== BEM two-layer (welded) leg $(date +%T) =="
-python run_bem.py twolayer "$NPROCS"
+for model in ${MODELS//,/ }; do
+  echo "== BEM leg: $model $(date +%T) =="
+  python "$SCRIPTS/run_bem.py" "$model" "$NPROCS"
+done
 
 echo "== synthesis + comparison $(date +%T) =="
-python synthesize_compare.py
+python "$SCRIPTS/synthesize_compare.py"
 echo "== CAMPAIGN DONE $(date +%T) =="

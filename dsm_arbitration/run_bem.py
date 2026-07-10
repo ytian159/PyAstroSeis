@@ -60,7 +60,9 @@ def sph_to_cart_mt(mt6, lat_deg, lon_deg):
     return P @ M_sph @ P.T
 
 
-def phys_solid(vp, vs, rho, Q):
+def phys_mat(vp, vs, rho, Q):
+    if vs == 0.0:
+        return Material.acoustic(vp, rho, Q, qp_fac=1.0)
     return Material.solid(vp, vs, rho, Q, qp_fac=0.75 * (vp / vs) ** 2)
 
 
@@ -105,8 +107,8 @@ def main():
 
     faces_list = [load_faces(os.path.join(ROOT, la["mesh"]))
                   for la in layers]
-    mats = [phys_solid(la["mat"][1] * 1e3, la["mat"][2] * 1e3,
-                       la["mat"][0] * 1e3, Q_ELASTIC) for la in layers]
+    mats = [phys_mat(la["mat"][1] * 1e3, la["mat"][2] * 1e3,
+                     la["mat"][0] * 1e3, Q_ELASTIC) for la in layers]
 
     df = 1.0 / man["tlen"]
     omegai = man["omegai_1_per_s"]

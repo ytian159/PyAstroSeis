@@ -1,0 +1,77 @@
+[homog/synthetic production] n=184 f=0.05 Hz (1.9 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/synthetic matlab-exact] n=184 f=0.05 Hz (2.7 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic production] n1=184 n2=80 f=0.05 Hz (4.4 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic matlab-exact] n1=184 n2=80 f=0.05 Hz (6.0 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[validation]
+    unknown condition rejected: OK
+    fluid-side sign convention enforced: OK
+    missing w0 rejected for fluid regions: OK
+rung-0 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+[transparent/synthetic] n1=184 n2=80 f=0.05 Hz (3.3 s)
+    surface field vs single-region: OK  (rel err 1.272e-02, gate 0.025)
+[transparent-refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (15.2 s)
+    transparent err: 1.272e-02  7.400e-03  5.156e-03
+    transparent error converges: OK
+[swap/synthetic] n1=184 n2=80 f=0.05 Hz (4.8 s)
+    u_surf A/B-swap: OK  (rel 2.330e-16)
+    u_core A/B-swap: OK  (rel 6.178e-16)
+    t_core A/B-swap (physical): OK  (rel 1.828e-15)
+[refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (14.3 s)
+    surface-field err vs finest core: 1.966e-02  5.801e-03
+    interface refinement converges: OK
+[validation]
+    one-sided welded rejected: OK
+    same-sign welded rejected: OK
+    missing w0 rejected for welded: OK
+rung-1 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+[bitwise special cases]
+    welded_two_layer matrix: OK
+    welded_two_layer rhs: OK
+    welded_two_layer solution: OK
+    liquid_core matrix: OK
+    liquid_core rhs: OK
+    liquid_core solution: OK
+[transparent-3shell] n=[80, 128, 184] f=0.05 Hz (6.0 s)
+    surface field vs single-region: OK  (rel err 3.982e-02, gate 0.05)
+[lc-transparent] n=[80, 128, 184] f=0.05 Hz (7.0 s)
+    fluid-core + artificial weld vs 2-region LC: OK  (rel err 3.653e-02, gate 0.08)
+[validation]
+    fluid outermost rejected: OK
+    material/mesh count mismatch rejected: OK
+rung-2 gate PASSED
+[validation]
+    solid/fluid/solid builds: 2 p blocks, no t blocks: OK
+    fluid outermost rejected: OK
+    adjacent fluid layers rejected: OK
+[auto_nmesh]
+    Earth campaign surface ~200: OK  (n=199)
+    CMB reflector: max(wavelength, curvature h/R<=0.09): OK  (n_cmb=196)
+    welded boundary uses h/R<=0.2 tier: OK  (n_welded=42)
+    explicit nmesh override kept: OK
+[perturbation]
+    amp=0 relief BITWISE == unperturbed sphere: OK
+    perturbed mesh outward-closed (amp=100): OK
+    perturbed mesh outward-closed (amp=200): OK
+    solution change ~linear in amp: OK  (err 9.592e-03 -> 1.919e-02, ratio 2.00)
+[tiny-core limit] inner n=32 (4.9 s)
+    solid(tiny)/fluid/solid vs liquid core: OK  (rel err 4.663e-05, gate 0.08)
+[annulus refinement] internal meshes x1/x2/x4, surface fixed
+    x1: internal n=(80,128) size=1384 (4.5 s)
+    x2: internal n=(176,272) size=2344 (8.8 s)
+    x4: internal n=(368,560) size=4264 (19.9 s)
+    surface field converges under internal refinement: OK  (err x1 1.259e-01 -> x2 4.337e-02, need ratio < 0.75)
+rung-2b gate PASSED

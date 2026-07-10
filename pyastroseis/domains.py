@@ -141,11 +141,11 @@ class MultiDomainModel:
                 if len(sol) != 1 or len(flu) != 1:
                     raise ValueError(f"fluid_solid interface {iface.name!r} "
                                      "needs one solid and one fluid side")
-                if flu[0][1] <= 0:
+                if sol[0][1] * flu[0][1] >= 0:
                     raise ValueError(
-                        f"fluid_solid interface {iface.name!r}: stored "
-                        "normals must point out of the fluid region "
-                        "(fluid side sign=+1, liq_core Smat convention)")
+                        f"fluid_solid interface {iface.name!r}: the solid "
+                        "and fluid sides must register opposite "
+                        "orientation signs")
             elif iface.condition == WELDED:
                 if len(sol) != 2 or flu:
                     raise ValueError(f"welded interface {iface.name!r} "
@@ -241,10 +241,13 @@ class MultiDomainModel:
                           qp_fac=m.qp_fac, geom=geo)
             A[rows, self._slices[("u", ifc)]] = Tb
             if ifc.condition == FLUID_SOLID:
+                # traction on the solid from the fluid, w.r.t. the
+                # region's outward normal: t = -p n_out = -sc * p n_can,
+                # so the -G t term contributes +sc * G (Smat^T p)
                 Gb = cal_G_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
                               qp_fac=m.qp_fac, geom=geo)
                 A[rows, self._slices[("p", ifc)]] = \
-                    -Gb @ self._smat[ifc].T
+                    sc * Gb @ self._smat[ifc].T
             elif ifc.condition == WELDED:
                 # T u - G t_region = u0 with t_region = sc * t_canonical
                 # and t_canonical = tscale * t'
@@ -271,8 +274,10 @@ class MultiDomainModel:
                     Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
                                   qp_fac=m.qp_fac, geom=geo)
                     A[rows, self._slices[("p", ifc)]] = Ab / scale
+                    # u . n_fluid_out = sc * (Smat u): the B coupling
+                    # carries the fluid's orientation sign
                     A[rows, self._slices[("u", ifc)]] = \
-                        -m.rho * w ** 2 * (Bb @ self._smat[ifc]) / scale
+                        -sc * m.rho * w ** 2 * (Bb @ self._smat[ifc]) / scale
             elif kind_r == "u":
                 reg, sr = self._solid_of[ifr]
                 self._solid_rows(A, rows, reg, ifr, sr, w)
@@ -337,14 +342,16 @@ def welded_two_layer_model(face_surf, face_core, mat_shell, mat_core, w0,
 
 
 def nested_shell_model(faces_list, materials, w0, **opts):
-    """N nested shells (rung 2), innermost layer first.
+    """N nested shells (rungs 2 + 2b), innermost layer first.
 
     faces_list[i] is the OUTER boundary mesh of layer i (stored
     normals pointing away from the center), so faces_list[-1] is the
     free surface; materials[i] is layer i's material. Consecutive
-    solid layers are welded; a fluid layer is only allowed innermost
-    (its boundary becomes fluid_solid — a fluid annulus is a later
-    rung). Regions are registered outermost-first, so for each
+    solid layers are welded; a fluid layer may sit anywhere below the
+    surface (innermost = liquid core, internal = fluid annulus /
+    subsurface ocean; both its boundaries become fluid_solid). Not
+    supported: fluid outermost (free fluid surface) and two adjacent
+    fluid layers. Regions are registered outermost-first, so for each
     internal interface the OUTER layer's equation fills the
     ("u", iface) rows and the inner layer's the ("t", iface) rows;
     the 2-layer solid case reproduces welded_two_layer_model and the
@@ -356,15 +363,19 @@ def nested_shell_model(faces_list, materials, w0, **opts):
     if len(materials) != n:
         raise ValueError("need one material per layer")
     for i, m in enumerate(materials):
-        if m.fluid and i > 0:
+        if m.fluid and i == n - 1:
             raise NotImplementedError(
-                "fluid layer must be innermost (fluid annuli are a "
-                "later rung)")
+                "outermost layer cannot be fluid (a free fluid "
+                "surface / ocean top is a later rung)")
+        if m.fluid and i + 1 < n and materials[i + 1].fluid:
+            raise NotImplementedError(
+                "adjacent fluid layers (fluid-fluid interface) are a "
+                "later rung")
     ifaces = []
     for i in range(n):
         if i == n - 1:
             ifaces.append(Interface(faces_list[i], FREE, "surface"))
-        elif materials[i].fluid:
+        elif materials[i].fluid or materials[i + 1].fluid:
             ifaces.append(Interface(faces_list[i], FLUID_SOLID,
                                     "interface%d" % i))
         else:

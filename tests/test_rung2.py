@@ -167,9 +167,11 @@ def gate_validation(faces3):
             check(label, False)
 
     print("[validation]", flush=True)
+    # rung 2b legalized internal fluid layers (annuli); still
+    # unsupported: a fluid OUTERMOST layer (free fluid surface)
     expects(NotImplementedError, lambda: nested_shell_model(
-        faces3, [mat_s, mat_f, mat_s], W0),
-        "fluid layer not innermost rejected")
+        faces3, [mat_s, mat_s, mat_f], W0),
+        "fluid outermost rejected")
     expects(ValueError, lambda: nested_shell_model(
         faces3, [mat_s, mat_s], W0),
         "material/mesh count mismatch rejected")

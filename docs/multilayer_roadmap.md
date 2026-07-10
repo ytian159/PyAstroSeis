@@ -112,13 +112,93 @@ observed equally in the baseline leg.) Unknown count grows by ~6N
 per welded interface; dense solves stay practical to roughly 20–30k
 unknowns on one node.
 
-**Rung 2b — fluid annuli (PREM outer core).** A fluid layer between
-two solids needs the fluid-side sign generalization of the Smat
-coupling terms (the fluid's inner boundary has sign=-1); gate =
-transparent-solid split of the LC core + PREM-truncated onion vs DSM.
-Also needed for the PREM goal: graded radial profiles approximated by
-many constant shells, which pushes past dense solves -> shell-by-shell
-block elimination (block-tridiagonal structure).
+**Rung 2b — fluid annuli + auto-mesh + boundary perturbation.**
+Implemented 2026-07-10 (branch `multilayer`).
+
+*Fluid annuli (PREM outer core):* the fluid_solid machinery is
+orientation-generalized — a fluid may register an interface with
+sign=-1 (its inner boundary): the solid-side pressure coupling
+becomes sc * G Smat^T (traction from the fluid w.r.t. the region's
+outward normal, t = -sc * p n_canonical) and the fluid-side B
+coupling carries the fluid's sign (u . n_fluid_out = sc * Smat u);
+both reduce bitwise to the original liq_core expressions for the
+canonical orientation. nested_shell_model now accepts a fluid layer
+anywhere below the surface (still rejected: fluid outermost, two
+adjacent fluids). LOCAL GATES (tests/test_rung2b.py +
+rung-0/1/2 regates, validation/rung2b_gate.txt): rungs 0-2 stay
+bitwise; tiny-core limit — solid(r->0)/fluid/solid collapses onto
+the 2-region liquid-core solution at rel err 4.7e-5; annulus
+refinement — refining the two internal meshes (surface fixed) moves
+the surface field toward the finest level, err 1.26e-1 -> 4.3e-2
+(ratio 0.34; campaign rule: a non-converging result means hunt for
+bugs, not thresholds).
+
+*Auto-mesh from the 1-D model:* per-layer `nmesh` is now optional —
+`layered.auto_nmesh` sizes every boundary mesh from the input 1-D
+model via the wavelength rule (face count F = 8*nmesh - 16, mean
+face size h = sqrt(4 pi r^2/F), h <= v_min/(fmax*epw) with v_min the
+slowest adjacent wavelength speed, vs — or vp for a fluid). With
+epw=10 it reproduces the hand-picked Earth-campaign surface mesh
+(n=199 vs 200). YAML: top-level `fmax` (+ optional `epw`).
+
+*Boundary perturbation:* per-layer `perturb` spec adds radial relief
+to that layer's outer boundary — {type: ylm, l, m, amp} (peak-
+normalized real Y_lm) or {type: random, lmax, amp, seed} (band-
+limited random relief); meshgen.gen_mesh_relief mirrors the standard
+sphere construction path so amp=0 is BITWISE the unperturbed mesh
+(strict no-op gate), and the surface-solution change scales linearly
+in amp (measured ratio 2.00 for amp doubling). This is the geometry
+front end for rung 3.
+
+DSM ARBITRATION (dsm_arbitration_r2b/): PREM-topology Earth — solid
+inner core (1221.5 km) / fluid outer core (3480 km) / mantle vs
+tipsv+tish (tish model = solid zones above the fluid, standard DSM
+CMB convention; source at 637 km depth in the mantle). The scale-1
+legs FAILED the min-corr gate, and the ensuing bug hunt (2026-07-10)
+established the cause is NOT a coding defect but a measured,
+converging discretization mode:
+
+* Signature: direct arrivals, first core reflections and amplitudes
+  match (amp ratio 1.00); the error grows with time — progressive
+  dephasing of the trapped-mode coda, BEM ~0.8-1% fast at
+  reflector-mesh h/R 0.089.
+* Mechanism (0T2 control, diag_toroidal.py): even the homogeneous
+  rung-0 solver puts the discrete 0T2 toroidal eigenfrequency HIGH
+  by +5.87 / +2.93 / +1.59 % at surface h/R = 0.261 / 0.181 / 0.127
+  — order 1.9 in h/R, extrapolating to +0.84% at h/R 0.089, exactly
+  the observed drift. Every mode-CONFINING boundary contributes:
+  free surfaces and fluid-solid interfaces (near-perfect
+  reflectors); welded interfaces are transmissive and benign (their
+  campaigns passed at interface h/R up to 0.21).
+* Consistent evidence: internal-mesh x4 refinement halves the PSV
+  excess but leaves SH untouched (SH modes are confined by the
+  surface + CMB, and the CMB-refined legs improve only PSV);
+  per-harmonic spectral errors cluster around elastic resonance
+  peaks (frequency-bias signature), not isolated bins.
+* Side finding: the fluid-coupled system has sparse spurious
+  pressure-block resonances on the REAL frequency axis (classic
+  acoustic-BIE non-uniqueness; residues ~1e9 in the response scan).
+  Physical solves at Im w = omegai sit off the axis and are
+  unaffected, but resonance-style post-processing must avoid them.
+* Consequence baked into the code: auto_nmesh now applies curvature
+  floors h/R <= 0.09 (reflector boundaries) / 0.2 (welded) on top
+  of the wavelength rule.
+
+Ladder of legs (all in dsm_arbitration_r2b/, 0-24 ks vector
+metrics, homog floor 14.5% / corr 0.965): corefluid (ICB n12 / CMB
+n55) 34.8% corr 0.772; corefluid_fine (internal x4) 20.5% corr
+0.848 amp 1.0005; corefluid2 (mantle == baseline material, CMB n61)
+43.6%; corefluid3 (reflectors at h/R 0.089) 31.0% corr 0.830 —
+passes the differential-ratio and amplitude gates, min-corr still
+short because ~0.8% mode bias is too large for a 24-ks lossless
+coda. Decisive scale-2 run (reflector h/R 0.045, predicted bias
+~0.2%) submitted as dsm_arbitration_r2b_hi (sbatch 55744328);
+non-convergence there reopens the bug hunt.
+
+Still needed for the full PREM goal: graded radial profiles
+approximated by many constant shells, which pushes past dense
+solves -> shell-by-shell block elimination (block-tridiagonal
+structure).
 
 **Rung 3 — boundary-perturbation workflows.** The science payoff:
 (a) when only one interface's shape changes between ensemble members,

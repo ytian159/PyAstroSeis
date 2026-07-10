@@ -156,8 +156,10 @@ def gate_validation(face1, face2):
     expects(NotImplementedError, lambda: MultiDomainModel(
         (Region(solid, ((Interface(face2, "sliding", "w"), +1),)),)),
         "unknown condition rejected")
+    # rung 2b legalized fluid sign=-1 (annulus inner boundary); the
+    # invariant is now: solid and fluid sides must be OPPOSITE signs
     expects(ValueError, lambda: MultiDomainModel(
-        (Region(fluid, ((iface, -1),)),
+        (Region(fluid, ((iface, +1),)),
          Region(solid, ((iface, +1), (Interface(face1, FREE, "s"), +1))),),
         w0=1.0),
         "fluid-side sign convention enforced")

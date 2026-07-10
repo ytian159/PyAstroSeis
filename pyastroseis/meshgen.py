@@ -420,6 +420,77 @@ def gen_mesh_topo_layers(Rm, n, nfold, rng=None, lmax=8, verbose=False):
     return faces, _mesh_extras(faces, V, Tri, Rm)
 
 
+def gen_mesh_relief(Rm, n, relief=None, rng=None, verbose=False):
+    """Sphere of radius Rm with a prescribed radial relief:
+    vertex radius r(theta, phi) = Rm + relief(theta, phi) [m], with
+    theta = colatitude and phi = longitude in radians.
+
+    The construction path (sampling, subdivision, angle round-trip)
+    is identical to gen_mesh_topo_layers, so relief=None — or any
+    relief that returns exact zeros, e.g. relief_ylm(l, m, 0.0) —
+    reproduces gen_layer's nfold=0 sphere BITWISE for the same rng.
+
+    Returns (faces, extras dict)."""
+    V, Tri, _, _ = particle_sample_sphere(N=n, rng=rng, verbose=verbose)
+    Tri, V = subdivide_spherical_mesh(Tri, V, 1)
+    V = V * Rm
+
+    r_xy = np.linalg.norm(V[:, :2], axis=1)
+    phi = np.arctan2(V[:, 1], V[:, 0]) * 180.0 / np.pi
+    phi = np.where(phi < 0, phi + 360.0, phi)
+    theta = np.arctan2(r_xy, V[:, 2]) * 180.0 / np.pi
+    tr = np.deg2rad(theta)
+    pr = np.deg2rad(phi)
+    hh = relief(tr, pr) if relief is not None else 0.0
+    rr = Rm + hh
+    V = np.column_stack([rr * np.sin(tr) * np.cos(pr),
+                         rr * np.sin(tr) * np.sin(pr),
+                         rr * np.cos(tr)])
+    faces = faces_from_vertices(V, Tri)
+    return faces, _mesh_extras(faces, V, Tri, Rm)
+
+
+def relief_ylm(l, m, amp):
+    """Radial relief amp * Y_lm pattern, peak-normalized: the real
+    part of the fully normalized Y_l^m for m >= 0, the imaginary part
+    of Y_l^|m| for m < 0, scaled so its maximum absolute value over
+    the evaluated points equals amp [m]. amp = 0.0 returns exact
+    zeros (bitwise no-op under gen_mesh_relief)."""
+    def relief(theta, phi):
+        y = ylm1(l, abs(m), theta, phi)
+        pat = np.real(y) if m >= 0 else np.imag(y)
+        peak = np.max(np.abs(pat))
+        if peak == 0.0:
+            return np.zeros_like(pat)
+        return amp * (pat / peak)
+    return relief
+
+
+def relief_random(lmax, amp, seed, lmin=1):
+    """Band-limited pseudo-random radial relief: uniform(-1, 1)
+    coefficients on the real/imag parts of Y_lm for lmin <= l <= lmax,
+    0 <= m <= l (numpy Generator seeded with `seed`), peak-normalized
+    to amp [m] over the evaluated points. amp = 0.0 returns exact
+    zeros."""
+    rng = np.random.default_rng(seed)
+    coefs = []
+    for ell in range(lmin, lmax + 1):
+        for m in range(ell + 1):
+            a, b = rng.uniform(-1.0, 1.0, size=2)
+            coefs.append((ell, m, a, 0.0 if m == 0 else b))
+
+    def relief(theta, phi):
+        pat = np.zeros(np.asarray(theta).size)
+        for ell, m, a, b in coefs:
+            y = ylm1(ell, m, theta, phi)
+            pat = pat + a * np.real(y) + b * np.imag(y)
+        peak = np.max(np.abs(pat))
+        if peak == 0.0:
+            return np.zeros_like(pat)
+        return amp * (pat / peak)
+    return relief
+
+
 def gen_layer(rpl, nmesh, nfold, rng=None, verbose=False):
     """Multi-layer spherical meshes (gen_layer.m). Returns a list of
     (faces, extras) tuples, innermost first."""

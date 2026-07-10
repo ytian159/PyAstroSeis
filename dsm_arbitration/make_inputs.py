@@ -59,10 +59,15 @@ SOURCES = {"mrr": (100.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
 TARGET_DIST_DEG = (20, 30, 45, 60, 75, 90, 105, 120, 135, 150, 160, 170)
 
-# rho [g/cc], vp, vs [km/s]
+# rho [g/cc], vp, vs [km/s]; vs = 0 marks a fluid layer
 MAT_SHELL = (3.0, 6.0, 3.0)
 MAT_CORE = (4.0, 8.0, 4.5)
 MAT_MID = (3.5, 7.0, 3.9)
+MAT_IC = (12.9, 11.2, 3.6)      # PREM-cartoon inner core
+MAT_OC = (11.0, 9.0, 0.0)       # PREM-cartoon fluid outer core
+MAT_MANTLE = (4.5, 10.0, 5.5)   # PREM-cartoon whole mantle
+MAT_IC2 = (6.0, 7.0, 3.5)       # corefluid2 inner core
+MAT_OC2 = (5.0, 5.5, 0.0)       # corefluid2 fluid outer core
 
 # model registry: (r_km, nmesh, material) innermost first; selected
 # via ARB_MODELS (comma list, default "homog,twolayer")
@@ -70,6 +75,29 @@ LAYER_SPECS = {
     "homog": ((R_KM, 200, MAT_SHELL),),
     "twolayer": ((RC_KM, 50, MAT_CORE), (R_KM, 200, MAT_SHELL)),
     "threelayer": ((2200.0, 24, MAT_CORE), (4300.0, 90, MAT_MID),
+                   (R_KM, 200, MAT_SHELL)),
+    # rung 2b: solid inner core / fluid outer core / mantle (PREM
+    # topology; tish model = solid zones above the fluid, standard
+    # DSM CMB convention)
+    "corefluid": ((1221.5, 12, MAT_IC), (3480.0, 55, MAT_OC),
+                  (R_KM, 200, MAT_MANTLE)),
+    # same 1-D model, internal meshes x4 (surface unchanged):
+    # convergence discriminator for the corefluid drift (h/R at the
+    # CMB, not h/lambda, controls the shell eigenfrequency error)
+    "corefluid_fine": ((1221.5, 48, MAT_IC), (3480.0, 220, MAT_OC),
+                       (R_KM, 200, MAT_MANTLE)),
+    # fair-differential corefluid: mantle == homog baseline material,
+    # so the surface-mesh toroidal mode-frequency bias (measured
+    # +5.9% at h/R 0.26, ~(h/R)^2) is common mode between legs and
+    # the verdict isolates the fluid-annulus machinery
+    "corefluid2": ((1221.5, 12, MAT_IC2), (3480.0, 61, MAT_OC2),
+                   (R_KM, 200, MAT_SHELL)),
+    # corefluid2 with reflector boundaries at h/R ~ 0.09: fluid-solid
+    # interfaces confine trapped modes whose frequencies carry an
+    # O((h/R)^2) bias (measured order 2.0 on the 0T2 control), so the
+    # CMB needs surface-class curvature resolution, not just
+    # wavelength resolution
+    "corefluid3": ((1221.5, 48, MAT_IC2), (3480.0, 200, MAT_OC2),
                    (R_KM, 200, MAT_SHELL)),
 }
 
@@ -222,13 +250,23 @@ def main():
             {"r_km": r_km, "nmesh": nmesh * scale, "mat": list(mat),
              "mesh": meshes[(r_km, nmesh * scale)]}
             for r_km, nmesh, mat in spec]
+        # SH sees only the contiguous solid stack under the surface:
+        # zones above the outermost fluid zone (standard DSM PREM
+        # convention — tish inputs start at the CMB). The source must
+        # sit in that stack.
+        fluid_tops = [z["rmax"] for z in zones if z["vs"][0] == 0.0]
+        zones_sh = [z for z in zones
+                    if not fluid_tops or z["rmin"] >= max(fluid_tops)]
+        if fluid_tops:
+            assert SOURCE_R0_KM >= max(fluid_tops), \
+                "source below the fluid layer: tish model would miss it"
         mdir = os.path.join(ROOT, "dsm", name)
         os.makedirs(os.path.join(mdir, "spc"), exist_ok=True)
         for srcname, mt in SOURCES.items():
             write_inf(os.path.join(mdir, "tipsv_%s.inf" % srcname),
                       zones, True, mt, stations, "%s.PSV" % srcname)
             write_inf(os.path.join(mdir, "tish_%s.inf" % srcname),
-                      zones, False, mt, stations, "%s.SH" % srcname)
+                      zones_sh, False, mt, stations, "%s.SH" % srcname)
 
     manifest = {
         "tlen": TLEN, "np": NP, "re": RE, "ratc": RATC, "ratl": RATL,

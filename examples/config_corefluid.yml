@@ -1,0 +1,21 @@
+# PREM-cartoon Earth: solid inner core / fluid outer core / mantle
+# (rung 2b). No nmesh given -> auto-mesh rule sizes every boundary
+# from fmax and epw (elements per minimum adjacent wavelength) PLUS
+# a curvature floor: reflector boundaries (free surface, fluid-solid)
+# need h/R <= 0.09 or the trapped-mode eigenfrequencies bias by
+# O((h/R)^2) (~0.8% at 0.09; measured on the 0T2 control).
+# SI units; layers innermost first; vs: 0 marks a fluid layer.
+layers:
+  - {r: 1221.5e3, vp: 11200, vs: 3600, rho: 12900, Q: 500}
+  - {r: 3480.0e3, vp:  9000, vs:    0, rho: 11000, Q: 500}
+  - {r: 6371.0e3, vp: 10000, vs: 5500, rho:  4500, Q: 300}
+    # boundary perturbation example (peak radial relief in meters):
+    # add to any layer to perturb its OUTER boundary, e.g. CMB
+    # topography on the second layer:
+    #   perturb: {type: ylm, l: 2, m: 0, amp: 10e3}
+    # or band-limited random relief:
+    #   perturb: {type: random, lmax: 8, amp: 5e3, seed: 7}
+f0: 3.0e-4      # reference frequency [Hz] (scaling)
+fmax: 5.26e-4   # band top [Hz] -> auto nmesh
+epw: 10         # elements per wavelength (default 10)
+seed: 1
