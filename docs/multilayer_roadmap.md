@@ -70,10 +70,26 @@ discretization error, ~4.5e-3 at 384 faces / 5.7 elem per S
 wavelength, ~1.3e-2 at 80 coarse faces); (b) A/B swap — exchanging
 which region owns the u-rows vs t-rows must leave all physical
 fields unchanged (observed ~1e-15); (c) contrast-core interface
-refinement must converge. REMAINING for full rung-1 closure: a real
-two-layer solid sphere vs an independent spherically-symmetric
-reference (DSM / normal modes / layered-sphere Mie series), same
-protocol discipline as the DFDM–SEM benchmarks.
+refinement must converge. DSM ARBITRATION (rung-1 closure) PASSED
+2026-07-09 (dsm_arbitration/): Earth-scale two-layer solid sphere
+(R=6371 km, welded interface at 3185.5 km, shell vp6/vs3/rho3, core
+vp8/vs4.5/rho4, elastic) vs DSMsynTI-mpi tipsv+tish using the vetted
+DFDM-campaign protocol (identical complex frequencies, identical
+spcsac synthesis, Ricker f0=1.75e-4 Hz, 12 face-incenter stations,
+mrr + mrt moment sources exercising both spheroidal and toroidal
+coupling). Verdict over the 0-24 ks P/S/R1 window: welded two-layer
+median rel RMS 7.3% / min corr 0.955 / amp ratio 0.989 — BELOW the
+homogeneous-BEM baseline floor of 12.7% (which measures pure mesh
+dispersion + station sag, no interface), so the welded machinery adds
+no error above the single-region floor. Record sections + magnified
+error panels in dsm_arbitration/waveforms_*.png. Conventions found:
+AstroSeis spectra are the complex conjugate of DSM's e^{+iwt}
+convention; BEM moment amplitude matches DSM exactly (constant-1
+ratio) once MT units are handled (1 DSM input unit = 1e18 N*m).
+Known BEM traits quantified on the baseline leg: lowest harmonics
+(w*R/vs < ~0.3) carry rigid-mode-amplified noise (negligible under a
+band-limited source); late elastic coda dephases at the mesh's
+eigenfrequency error.
 
 **Rung 2 — N nested shells + config schema.** YAML layer lists
 (radius / mesh resolution / material per shell; `meshgen.gen_layer`
