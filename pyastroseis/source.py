@@ -33,12 +33,18 @@ def u0e(faces, w, rho, mu, lamda, xs, ys, zs, Q, fsrc,
     return u0
 
 
-def u0eM(faces, w, rho, mu, lamda, xs, ys, zs, Q, M, qp_fac=QP_FAC_LEGACY):
+def u0eM(faces, w, rho, mu, lamda, xs, ys, zs, Q, M, qp_fac=QP_FAC_LEGACY,
+         disp_ref_hz=0.0):
     """Boundary values of the incident field for a moment tensor M (3,3)
-    at (xs,ys,zs). Port of u0eM_func.m. Returns (3N,)."""
+    at (xs,ys,zs). Port of u0eM_func.m. Returns (3N,).
+    disp_ref_hz: see assembly.wave_speeds (must match the kernels)."""
     vp0 = np.sqrt((lamda + 2 * mu) / rho)
     vs0 = np.sqrt(mu / rho)
     Qp = qp_fac * Q
+    if disp_ref_hz:
+        lf = np.log(abs(np.real(w)) / (2 * np.pi * disp_ref_hz))
+        vp0 = vp0 * (1 + lf / (np.pi * Qp))
+        vs0 = vs0 * (1 + lf / (np.pi * Q))
     vp = vp0 / (1 + 1j * 0.5 / Qp)
     vs = vs0 / (1 + 1j * 0.5 / Q)
     gi1, gi2, gi3 = greens_deri_src(vp, vs, rho, w,

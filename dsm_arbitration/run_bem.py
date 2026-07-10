@@ -66,6 +66,19 @@ def phys_mat(vp, vs, rho, Q):
     return Material.solid(vp, vs, rho, Q, qp_fac=0.75 * (vp / vs) ** 2)
 
 
+def manifest_mat(la):
+    """Material from a manifest layer entry: (rho, vp, vs[, Qmu]) in
+    g/cc + km/s; Qmu absent -> elastic. Attenuated materials use the
+    DSM/PREM causal-dispersion convention (reference 1 Hz)."""
+    m = la["mat"]
+    if len(m) > 3 and m[2] != 0.0:
+        vp, vs, rho, Q = m[1] * 1e3, m[2] * 1e3, m[0] * 1e3, float(m[3])
+        return Material.solid(vp, vs, rho, Q,
+                              qp_fac=0.75 * (vp / vs) ** 2,
+                              disp_ref_hz=1.0)
+    return phys_mat(m[1] * 1e3, m[2] * 1e3, m[0] * 1e3, Q_ELASTIC)
+
+
 _W = {}
 
 
@@ -81,7 +94,8 @@ def _worker(k):
     for col, M in enumerate(_W["mts"]):
         def field(faces):
             return u0eM(faces, w, m.rho, m.mu, m.lamda, xs, ys, zs,
-                        m.Q, M, qp_fac=m.qp_fac)
+                        m.Q, M, qp_fac=m.qp_fac,
+                        disp_ref_hz=m.disp_ref_hz)
         B[:, col] = model.assemble_rhs(
             incident_outer_source(model, ifaces, field))
     X = np.linalg.solve(A, B)
@@ -107,8 +121,7 @@ def main():
 
     faces_list = [load_faces(os.path.join(ROOT, la["mesh"]))
                   for la in layers]
-    mats = [phys_mat(la["mat"][1] * 1e3, la["mat"][2] * 1e3,
-                     la["mat"][0] * 1e3, Q_ELASTIC) for la in layers]
+    mats = [manifest_mat(la) for la in layers]
 
     df = 1.0 / man["tlen"]
     omegai = man["omegai_1_per_s"]

@@ -59,7 +59,10 @@ SOURCES = {"mrr": (100.0, 0.0, 0.0, 0.0, 0.0, 0.0),
 
 TARGET_DIST_DEG = (20, 30, 45, 60, 75, 90, 105, 120, 135, 150, 160, 170)
 
-# rho [g/cc], vp, vs [km/s]; vs = 0 marks a fluid layer
+# rho [g/cc], vp, vs [km/s]; vs = 0 marks a fluid layer. An optional
+# 4th element is Qmu (pure-shear attenuation: DSM gets Qkappa = 1e8,
+# the BEM the physical qp_fac = 0.75 (vp/vs)^2, i.e. Qkappa = inf);
+# without it the material is elastic (Qmu = Qkappa = -1 / Q = 1e8).
 MAT_SHELL = (3.0, 6.0, 3.0)
 MAT_CORE = (4.0, 8.0, 4.5)
 MAT_MID = (3.5, 7.0, 3.9)
@@ -68,6 +71,9 @@ MAT_OC = (11.0, 9.0, 0.0)       # PREM-cartoon fluid outer core
 MAT_MANTLE = (4.5, 10.0, 5.5)   # PREM-cartoon whole mantle
 MAT_IC2 = (6.0, 7.0, 3.5)       # corefluid2 inner core
 MAT_OC2 = (5.0, 5.5, 0.0)       # corefluid2 fluid outer core
+MAT_SHELL_Q = (3.0, 6.0, 3.0, 50.0)   # rung 2d: attenuated solids
+MAT_CORE_Q = (4.0, 8.0, 4.5, 50.0)
+MAT_IC2Q = (6.0, 7.0, 3.5, 50.0)
 
 # model registry: (r_km, nmesh, material) innermost first; selected
 # via ARB_MODELS (comma list, default "homog,twolayer")
@@ -106,6 +112,14 @@ LAYER_SPECS = {
     # high regardless of CMB/surface refinement
     "corefluid4": ((1221.5, 200, MAT_IC2), (3480.0, 200, MAT_OC2),
                    (R_KM, 200, MAT_SHELL)),
+    # rung 2d: attenuated ladder (Qmu = 50 solids, elastic fluid) —
+    # validates the Q machinery through free-surface, welded and
+    # fluid-solid couplings; ~45% amplitude decay over the 24-ks
+    # window at this band
+    "homog_q50": ((R_KM, 200, MAT_SHELL_Q),),
+    "twolayer_q50": ((RC_KM, 50, MAT_CORE_Q), (R_KM, 200, MAT_SHELL_Q)),
+    "corefluid_q50": ((1221.5, 48, MAT_IC2Q), (3480.0, 200, MAT_OC2),
+                      (R_KM, 200, MAT_SHELL_Q)),
 }
 
 
@@ -158,11 +172,17 @@ def fmt(v):
 
 
 def const_zone(rmin, rmax, mat):
-    rho, vp, vs = mat
+    rho, vp, vs = mat[:3]
+    qmu = mat[3] if len(mat) > 3 else None
     return {"rmin": rmin, "rmax": rmax,
             "rho": (rho, 0.0, 0.0, 0.0),
             "vp": (vp, 0.0, 0.0, 0.0),
-            "vs": (vs, 0.0, 0.0, 0.0)}
+            "vs": (vs, 0.0, 0.0, 0.0),
+            # pure-shear attenuation: Qkappa effectively infinite
+            # (matches the BEM's physical qp_fac); elastic zones keep
+            # the -1 -1 convention
+            "qmu": fmt(qmu) if qmu else "-1",
+            "qkappa": "1e8" if qmu else "-1"}
 
 
 def zone_lines_psv(z):
@@ -173,7 +193,7 @@ def zone_lines_psv(z):
         c = z[key]
         ln.append("    %s %s %s %s" % (fmt(c[0]), fmt(c[1]), fmt(c[2]),
                                        fmt(c[3])))
-    ln.append("    1 0 0 0 -1 -1")
+    ln.append("    1 0 0 0 %s %s" % (z["qmu"], z["qkappa"]))
     return ln
 
 
@@ -183,8 +203,8 @@ def zone_lines_sh(z):
             fmt(z["rho"][0]), fmt(z["rho"][1]), fmt(z["rho"][2]),
             fmt(z["rho"][3])),
             "    %s %s %s %s" % (fmt(c[0]), fmt(c[1]), fmt(c[2]), fmt(c[3])),
-            "    %s %s %s %s -1" % (fmt(c[0]), fmt(c[1]), fmt(c[2]),
-                                    fmt(c[3]))]
+            "    %s %s %s %s %s" % (fmt(c[0]), fmt(c[1]), fmt(c[2]),
+                                    fmt(c[3]), z["qmu"])]
 
 
 def write_inf(path, zones, is_psv, mt, stations, suffix):

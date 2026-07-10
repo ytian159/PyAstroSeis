@@ -1,0 +1,17 @@
+conjugation=False: homog_q50 median rel RMS 1.153e+00
+conjugation=True: homog_q50 median rel RMS 1.288e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 1.288e-01, max 3.012e-01, min corr 0.959881
+twolayer_q50 (layered): median rel RMS 9.588e-02, max 1.843e-01, min corr 0.983673, median amp ratio 0.9774
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [True]
+corefluid_q50 (layered): median rel RMS 2.783e-01, max 5.564e-01, min corr 0.904897, median amp ratio 1.0133
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION PASSED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_homog_q50_mrr_Z.png (error magnification x10)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_homog_q50_mrt_T.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_twolayer_q50_mrr_Z.png (error magnification x5)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_twolayer_q50_mrt_T.png (error magnification x2)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_corefluid_q50_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_r2d/waveforms_corefluid_q50_mrt_T.png (error magnification x1)

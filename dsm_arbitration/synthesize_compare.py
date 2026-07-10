@@ -204,16 +204,16 @@ def compare_model(model, man, syn, conj, nout):
     return rows, traces
 
 
-def calibrate_conj(man, syn, nout):
+def calibrate_conj(man, syn, nout, baseline="homog"):
     """Pick the BEM Fourier-sign convention on the homogeneous leg."""
     best = {}
     for conj in (False, True):
-        rows, _ = compare_model("homog", man, syn, conj, nout)
+        rows, _ = compare_model(baseline, man, syn, conj, nout)
         med = float(np.median([r["rel_rms"] for r in rows
                                if r["comp"] == "VEC"]))
         best[conj] = med
-        print("conjugation=%s: homog median rel RMS %.3e"
-              % (conj, med), flush=True)
+        print("conjugation=%s: %s median rel RMS %.3e"
+              % (conj, baseline, med), flush=True)
     conj = min(best, key=best.get)
     if not (best[conj] < 0.3 and best[not conj] > 3 * best[conj]):
         print("WARNING: conjugation calibration not decisive "
@@ -269,12 +269,13 @@ def main():
     nout = syn.nout
 
     nmet = int(METRICS_T / syn.dt) + 1
-    conj = calibrate_conj(man, syn, nmet)
-    print("frozen BEM spectral convention: conjugate=%s" % conj)
-
     models = list(man.get("models",
                            {"homog": None, "twolayer": None}).keys())
-    assert models[0] == "homog", "baseline homog must be first"
+    baseline = models[0]
+    assert baseline.startswith("homog"), \
+        "baseline homogeneous leg must be first in ARB_MODELS"
+    conj = calibrate_conj(man, syn, nmet, baseline)
+    print("frozen BEM spectral convention: conjugate=%s" % conj)
     all_rows = {}
     all_traces = {}
     for model in models:
@@ -303,16 +304,16 @@ def main():
                 float(np.min([r["corr"] for r in vec])),
                 float(np.median([r["amp_ratio"] for r in vec])))
 
-    e0, e0max, cmin0, amp0 = stats("homog")
+    e0, e0max, cmin0, amp0 = stats(baseline)
     verdict = []
     verdict.append("metric window 0-%.0f s (P, S, R1 at all "
                    "distances); gates on per-station 3-component "
                    "VECTOR metrics" % METRICS_T)
-    verdict.append("homog (baseline):  median rel RMS %.3e, max %.3e, "
-                   "min corr %.6f" % (e0, e0max, cmin0))
+    verdict.append("%s (baseline):  median rel RMS %.3e, max %.3e, "
+                   "min corr %.6f" % (baseline, e0, e0max, cmin0))
     ok = e0 < 0.2
-    summary = {"homog": {"median": e0, "max": e0max, "corr_min": cmin0,
-                         "amp_med": amp0}}
+    summary = {baseline: {"median": e0, "max": e0max, "corr_min": cmin0,
+                          "amp_med": amp0}}
     for model in models[1:]:
         e1, e1max, cmin1, amp1 = stats(model)
         m_ok = (e1 <= 2.5 * e0) and (cmin1 > 0.9) and (0.9 < amp1 < 1.1)

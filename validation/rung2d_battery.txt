@@ -1,0 +1,25 @@
+    adjacent fluid layers rejected: OK
+[auto_nmesh]
+    Earth campaign surface ~200: OK  (n=199)
+    CMB reflector: max(wavelength, curvature h/R<=0.09): OK  (n_cmb=196)
+    welded boundary uses h/R<=0.2 tier: OK  (n_welded=42)
+    explicit nmesh override kept: OK
+[perturbation]
+    amp=0 relief BITWISE == unperturbed sphere: OK
+    perturbed mesh outward-closed (amp=100): OK
+    perturbed mesh outward-closed (amp=200): OK
+    solution change ~linear in amp: OK  (err 9.592e-03 -> 1.919e-02, ratio 2.00)
+[tiny-core limit] inner n=32 (4.9 s)
+    solid(tiny)/fluid/solid vs liquid core: OK  (rel err 4.663e-05, gate 0.08)
+[annulus refinement] internal meshes x1/x2/x4, surface fixed
+    x1: internal n=(80,128) size=1384 (4.7 s)
+    x2: internal n=(176,272) size=2344 (8.9 s)
+    x4: internal n=(368,560) size=4264 (20.1 s)
+    surface field converges under internal refinement: OK  (err x1 1.259e-01 -> x2 4.337e-02, need ratio < 0.75)
+rung-2b gate PASSED
+[l=0 radial arbiter] analytic root 0.140674 Hz
+    x1: peak 0.143308 (+1.873%) (94.1 s)
+    x2: peak 0.141960 (+0.915%) (298.2 s)
+    x2 offset below gate: OK  (0.915% < 1.4%)
+    convergence order >= 1.4: OK  (order 2.07)
+rung-2c gate PASSED

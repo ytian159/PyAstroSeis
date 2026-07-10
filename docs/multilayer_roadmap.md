@@ -241,17 +241,37 @@ policy: auto_nmesh curvature floors stand (reflector boundaries
 h/R <= 0.09; hard-ringing fluid-core models wanting lossless-coda
 correlation gates need ~0.045, which awaits block elimination).
 
-**Rung 2d — attenuated PREM arbitration (proposed).** The PREM
-goal itself resolves the elastic-protocol hardness: real PREM has
-Qmu ~ 80-300, which damps the late trapped coda that drives the
-min-corr failures. Both DSM (Qmu/Qkappa per zone) and the BEM
-(material Q) support attenuation natively; an attenuated
-PREM-truncated onion vs DSM at the standard meshes is the
-practical precision benchmark for the fluid-core machinery, with
-the elastic corefluid case documented as resolution-limited by the
-quantified (h/R)^2 law. Optional: CHIEF / Burton-Miller mitigation
-of the sparse spurious real-axis pressure resonances if
-resonance-style post-processing is ever needed.
+**Rung 2d — attenuated arbitration. DONE + PASSED 2026-07-10**
+(dsm_arbitration_r2d/, r2d_disp_verdict.log). Ladder: Qmu = 50
+solids (strong-signal validation: ~45% amplitude decay over the
+24-ks window; at this ultra-long-period band PREM-class Qmu ~ 300
+would damp only ~10%, so the elastic corefluid hardness persists
+for PREM-Q — Q effects scale with cycle count), fluid outer core
+elastic, pure-shear attenuation (BEM physical qp_fac == DSM
+Qkappa = 1e8).
+
+FINDING (first run failed at baseline 69.7%): DSM implements CAUSAL
+constant-Q — computeCoef applies the Kanamori-Anderson physical
+dispersion v(f) = v_ref (1 + ln(f/f_ref)/(pi Q)) with f_ref = 1 Hz
+(PREM convention) plus i/(2Q); the BEM's historical constant-Q was
+non-dispersive, leaving the BEM ~5.2% fast at Q=50 in this band
+(measured as lag growing with window energy age). Implemented as
+Material.disp_ref_hz (assembly.wave_speeds + source.u0eM), default
+0 = bitwise historical behavior (full rung-0..2c battery re-passed,
+validation/rung2d_battery.txt); attenuated arbitration materials
+use disp_ref_hz = 1.0.
+
+VERDICT (vector metrics, 0-24 ks, all gates PASS): homog_q50
+baseline 12.88% / corr 0.960 (dispersion fix took it from 69.7%);
+twolayer_q50 (welded + Q) 9.59% / corr 0.984 / amp 0.977;
+corefluid_q50 (solid IC / elastic fluid OC / attenuated mantle)
+27.8% / min corr 0.905 / amp 1.013 — the fluid-core topology passes
+the min-corr gate once physical attenuation damps the trapped coda.
+Amplitude ratios 0.98-1.01 validate the Q-magnitude convention
+(factor-2 Q error would read ~0.74/1.35 at 45% window decay).
+Optional future: CHIEF / Burton-Miller mitigation of the sparse
+spurious real-axis pressure resonances if resonance-style
+post-processing is ever needed.
 
 Still needed for the full PREM goal: graded radial profiles
 approximated by many constant shells, which pushes past dense

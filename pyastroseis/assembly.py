@@ -51,11 +51,23 @@ TIERS_DEFAULT = ((4.0, 10), (10.0, 5), (None, 2))
 OSC_LIMITS_DEFAULT = (0.9, 1.8)
 
 
-def wave_speeds(lamda, mu, rho, Q, qp_fac=QP_FAC_LEGACY):
-    """Complex attenuated vp, vs (header of every cal_*_st routine)."""
+def wave_speeds(lamda, mu, rho, Q, qp_fac=QP_FAC_LEGACY, w=None,
+                disp_ref_hz=0.0):
+    """Complex attenuated vp, vs (header of every cal_*_st routine).
+
+    disp_ref_hz > 0 adds causal constant-Q physical dispersion
+    (Kanamori-Anderson), matching DSMsynTI's computeCoef convention:
+    the real velocity is scaled by 1 + ln(f/f_ref)/(pi Q) at the
+    evaluation frequency f = Re(w)/2pi (f_ref = 1 Hz for PREM-type
+    models). Default 0 keeps the historical non-dispersive behavior
+    (bitwise)."""
     vp0 = np.sqrt((lamda + 2 * mu) / rho)
     vs0 = np.sqrt(mu / rho)
     Qp = qp_fac * Q
+    if disp_ref_hz and w is not None:
+        lf = np.log(abs(np.real(w)) / (2 * np.pi * disp_ref_hz))
+        vp0 = vp0 * (1 + lf / (np.pi * Qp))
+        vs0 = vs0 * (1 + lf / (np.pi * Q))
     vp = vp0 / (1 + 1j * 0.5 / Qp)
     vs = vs0 / (1 + 1j * 0.5 / Q)
     return vp, vs
@@ -402,11 +414,12 @@ def _geom_for(faces, geom, nint, nxi, self_scheme):
 
 def cal_T_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
              ridfac=RIDFAC, qp_fac=QP_FAC_LEGACY, geom=None,
-             self_scheme="grid"):
+             self_scheme="grid", disp_ref_hz=0.0):
     """Traction interaction matrix (cal_T_st.m).
     faces1: collocation surface (rows); faces2: source surface (columns).
     geom: prebuilt Geometry for faces2 (hoisted across frequencies)."""
-    vp, vs = wave_speeds(lamda, mu, rho, Q, qp_fac)
+    vp, vs = wave_speeds(lamda, mu, rho, Q, qp_fac, w=w,
+                         disp_ref_hz=disp_ref_hz)
     geom = _geom_for(faces2, geom, nint, nxi, self_scheme)
 
     def kernel(xi, yi, zi, xs, ys, zs, n1, n2, n3):
@@ -428,9 +441,10 @@ def cal_T_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
 
 def cal_G_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
              ridfac=RIDFAC, qp_fac=QP_FAC_LEGACY, geom=None,
-             self_scheme="grid"):
+             self_scheme="grid", disp_ref_hz=0.0):
     """Displacement interaction matrix (cal_G_st.m)."""
-    vp, vs = wave_speeds(lamda, mu, rho, Q, qp_fac)
+    vp, vs = wave_speeds(lamda, mu, rho, Q, qp_fac, w=w,
+                         disp_ref_hz=disp_ref_hz)
     geom = _geom_for(faces2, geom, nint, nxi, self_scheme)
 
     def kernel(xi, yi, zi, xs, ys, zs, n1, n2, n3):
@@ -492,9 +506,10 @@ def _assemble_scalar(faces1, faces2, w, kernel, self_value, geom, k_abs=None):
 
 def cal_A_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
              ridfac=RIDFAC, qp_fac=QP_FAC_LEGACY, geom=None,
-             self_scheme="grid"):
+             self_scheme="grid", disp_ref_hz=0.0):
     """Acoustic normal-derivative matrix for the fluid layer (cal_A_st.m)."""
-    vp, _ = wave_speeds(lamda, mu, rho, Q, qp_fac)
+    vp, _ = wave_speeds(lamda, mu, rho, Q, qp_fac, w=w,
+                        disp_ref_hz=disp_ref_hz)
     geom = _geom_for(faces2, geom, nint, nxi, self_scheme)
 
     def kernel(xi, yi, zi, xs, ys, zs, n1, n2, n3):
@@ -514,9 +529,10 @@ def cal_A_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
 
 def cal_B_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
              ridfac=RIDFAC, qp_fac=QP_FAC_LEGACY, geom=None,
-             self_scheme="grid"):
+             self_scheme="grid", disp_ref_hz=0.0):
     """Acoustic single-layer matrix for the fluid layer (cal_B_st.m)."""
-    vp, _ = wave_speeds(lamda, mu, rho, Q, qp_fac)
+    vp, _ = wave_speeds(lamda, mu, rho, Q, qp_fac, w=w,
+                        disp_ref_hz=disp_ref_hz)
     geom = _geom_for(faces2, geom, nint, nxi, self_scheme)
 
     def kernel(xi, yi, zi, xs, ys, zs, n1, n2, n3):
@@ -536,14 +552,15 @@ def cal_B_st(faces1, faces2, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
 
 def cal_traction(faces, w, lamda, mu, rho, Q, nint=NINT, nxi=NXI_SELF,
                  ridfac=RIDFAC, qp_fac=QP_FAC_LEGACY, geom=None,
-                 self_scheme="grid"):
+                 self_scheme="grid", disp_ref_hz=0.0):
     """Full traction matrix TRAC (3N x 3N), port of cal_traction_tri_vec.m
     — identical to the same-surface branch of cal_T_st.
 
     Unknown ordering: [u_x(1..N); u_y(1..N); u_z(1..N)].
     """
     return cal_T_st(faces, faces, w, lamda, mu, rho, Q, nint, nxi,
-                    ridfac, qp_fac, geom=geom, self_scheme=self_scheme)
+                    ridfac, qp_fac, geom=geom, self_scheme=self_scheme,
+                    disp_ref_hz=disp_ref_hz)
 
 
 def smat_func(faces):

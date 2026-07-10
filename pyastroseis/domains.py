@@ -62,15 +62,22 @@ class Material:
     Q: float
     qp_fac: float = QP_FAC_LEGACY
     fluid: bool = False
+    # causal constant-Q physical dispersion reference frequency [Hz]
+    # (0 = off, historical non-dispersive constant-Q; 1.0 = DSM/PREM
+    # convention). See assembly.wave_speeds.
+    disp_ref_hz: float = 0.0
 
     @classmethod
-    def solid(cls, vp, vs, rho, Q, qp_fac=QP_FAC_LEGACY):
+    def solid(cls, vp, vs, rho, Q, qp_fac=QP_FAC_LEGACY,
+              disp_ref_hz=0.0):
         mu = rho * vs * vs
-        return cls(rho * vp * vp - 2 * mu, mu, rho, Q, qp_fac)
+        return cls(rho * vp * vp - 2 * mu, mu, rho, Q, qp_fac,
+                   disp_ref_hz=disp_ref_hz)
 
     @classmethod
-    def acoustic(cls, vp, rho, Q, qp_fac=1.0):
-        return cls(rho * vp * vp, 0.0, rho, Q, qp_fac, fluid=True)
+    def acoustic(cls, vp, rho, Q, qp_fac=1.0, disp_ref_hz=0.0):
+        return cls(rho * vp * vp, 0.0, rho, Q, qp_fac, fluid=True,
+                   disp_ref_hz=disp_ref_hz)
 
 
 @dataclasses.dataclass(frozen=True, eq=False)
@@ -238,21 +245,24 @@ class MultiDomainModel:
             fc = self._oriented[(ifc, sc)]
             geo = self._geom[(ifc, sc)]
             Tb = cal_T_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                          qp_fac=m.qp_fac, geom=geo)
+                          qp_fac=m.qp_fac, geom=geo,
+                          disp_ref_hz=m.disp_ref_hz)
             A[rows, self._slices[("u", ifc)]] = Tb
             if ifc.condition == FLUID_SOLID:
                 # traction on the solid from the fluid, w.r.t. the
                 # region's outward normal: t = -p n_out = -sc * p n_can,
                 # so the -G t term contributes +sc * G (Smat^T p)
                 Gb = cal_G_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                              qp_fac=m.qp_fac, geom=geo)
+                              qp_fac=m.qp_fac, geom=geo,
+                              disp_ref_hz=m.disp_ref_hz)
                 A[rows, self._slices[("p", ifc)]] = \
                     sc * Gb @ self._smat[ifc].T
             elif ifc.condition == WELDED:
                 # T u - G t_region = u0 with t_region = sc * t_canonical
                 # and t_canonical = tscale * t'
                 Gb = cal_G_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                              qp_fac=m.qp_fac, geom=geo)
+                              qp_fac=m.qp_fac, geom=geo,
+                              disp_ref_hz=m.disp_ref_hz)
                 A[rows, self._slices[("t", ifc)]] = \
                     (-sc * self._tscale[ifc]) * Gb
 
@@ -270,9 +280,11 @@ class MultiDomainModel:
                     fc = self._oriented[(ifc, sc)]
                     geo = self._geom[(ifc, sc)]
                     Ab = cal_A_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                                  qp_fac=m.qp_fac, geom=geo)
+                                  qp_fac=m.qp_fac, geom=geo,
+                                  disp_ref_hz=m.disp_ref_hz)
                     Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                                  qp_fac=m.qp_fac, geom=geo)
+                                  qp_fac=m.qp_fac, geom=geo,
+                                  disp_ref_hz=m.disp_ref_hz)
                     A[rows, self._slices[("p", ifc)]] = Ab / scale
                     # u . n_fluid_out = sc * (Smat u): the B coupling
                     # carries the fluid's orientation sign
