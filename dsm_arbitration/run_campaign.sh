@@ -1,7 +1,7 @@
 #!/bin/bash
 # Rung-1 DSM arbitration campaign (run inside a compute allocation).
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+ROOT="${ARB_ROOT:-$(cd "$(dirname "$0")" && pwd)}"
 DSM=/pscratch/sd/y/ytian159/dfdm_3d_perf/external/DSMsynTI-mpi
 NPROCS="${1:-20}"
 

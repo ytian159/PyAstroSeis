@@ -28,8 +28,9 @@ import sys
 
 import numpy as np
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-PKG = os.path.dirname(ROOT)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("ARB_ROOT", SCRIPT_DIR)
+PKG = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, PKG)
 
 from pyastroseis.liquidcore import flip_normals   # noqa: E402
@@ -61,6 +62,16 @@ TARGET_DIST_DEG = (20, 30, 45, 60, 75, 90, 105, 120, 135, 150, 160, 170)
 # rho [g/cc], vp, vs [km/s]
 MAT_SHELL = (3.0, 6.0, 3.0)
 MAT_CORE = (4.0, 8.0, 4.5)
+MAT_MID = (3.5, 7.0, 3.9)
+
+# model registry: (r_km, nmesh, material) innermost first; selected
+# via ARB_MODELS (comma list, default "homog,twolayer")
+LAYER_SPECS = {
+    "homog": ((R_KM, 200, MAT_SHELL),),
+    "twolayer": ((RC_KM, 50, MAT_CORE), (R_KM, 200, MAT_SHELL)),
+    "threelayer": ((2200.0, 24, MAT_CORE), (4300.0, 90, MAT_MID),
+                   (R_KM, 200, MAT_SHELL)),
+}
 
 
 def undo_geocentric(lat_deg):
@@ -170,31 +181,48 @@ def write_inf(path, zones, is_psv, mt, stations, suffix):
 
 
 def main():
-    rng = np.random.default_rng(1)
-    layers = gen_layer((RC_KM * 1e3, R_KM * 1e3), (50, 200), (0, 0),
-                       rng=rng)
-    face2 = outward(layers[0][0])
-    face1 = outward(layers[1][0])
-    print("meshes: surface n=%d (mean r %.1f km), core n=%d "
-          "(mean r %.1f km)" % (
-              face1.n, np.mean(np.linalg.norm(face1.ic, axis=1)) / 1e3,
-              face2.n, np.mean(np.linalg.norm(face2.ic, axis=1)) / 1e3))
-    save_faces(os.path.join(ROOT, "mesh_surface.npz"), face1)
-    save_faces(os.path.join(ROOT, "mesh_core.npz"), face2)
+    os.makedirs(ROOT, exist_ok=True)
+    scale = int(os.environ.get("ARB_MESH_SCALE", "1"))
+    model_names = os.environ.get("ARB_MODELS",
+                                 "homog,twolayer").split(",")
 
-    stations = pick_stations(face1)
+    # one deterministic mesh per unique boundary (rng seeded by radius)
+    meshes = {}
+    for name in model_names:
+        for r_km, nmesh, _ in LAYER_SPECS[name]:
+            key = (r_km, nmesh * scale)
+            if key in meshes:
+                continue
+            rng = np.random.default_rng(int(round(r_km)))
+            faces = outward(gen_layer((r_km * 1e3,), (nmesh * scale,),
+                                      (0,), rng=rng)[0][0])
+            fn = "mesh_r%05d_n%d.npz" % (int(round(r_km)), nmesh * scale)
+            save_faces(os.path.join(ROOT, fn), faces)
+            meshes[key] = fn
+            print("mesh r=%7.1f km: n=%d faces, mean r %.1f km -> %s"
+                  % (r_km, faces.n,
+                     np.mean(np.linalg.norm(faces.ic, axis=1)) / 1e3, fn))
+            if key == (R_KM, 200 * scale):
+                surface = faces
+
+    stations = pick_stations(surface)
     for st in stations:
         print("  %s face %5d  dist %7.2f deg  lat %8.3f lon %9.3f "
               "r %.1f km" % (st["name"], st["face"], st["dist_deg"],
                              st["lat"], st["lon"], st["r_km"]))
 
-    models = {
-        "homog": [const_zone(0.0, R_KM, MAT_SHELL)],
-        "twolayer": [const_zone(0.0, RC_KM, MAT_CORE),
-                     const_zone(RC_KM, R_KM, MAT_SHELL)],
-    }
-    for model, zones in models.items():
-        mdir = os.path.join(ROOT, "dsm", model)
+    models_manifest = {}
+    for name in model_names:
+        spec = LAYER_SPECS[name]
+        zones, r_prev = [], 0.0
+        for r_km, nmesh, mat in spec:
+            zones.append(const_zone(r_prev, r_km, mat))
+            r_prev = r_km
+        models_manifest[name] = [
+            {"r_km": r_km, "nmesh": nmesh * scale, "mat": list(mat),
+             "mesh": meshes[(r_km, nmesh * scale)]}
+            for r_km, nmesh, mat in spec]
+        mdir = os.path.join(ROOT, "dsm", name)
         os.makedirs(os.path.join(mdir, "spc"), exist_ok=True)
         for srcname, mt in SOURCES.items():
             write_inf(os.path.join(mdir, "tipsv_%s.inf" % srcname),
@@ -215,6 +243,8 @@ def main():
         "materials_gcc_kms": {"shell": MAT_SHELL, "core": MAT_CORE},
         "interface_km": RC_KM,
         "elastic": "Qmu=Qkappa=-1 (DSM) / Q=1e8 (BEM)",
+        "mesh_scale": int(os.environ.get("ARB_MESH_SCALE", "1")),
+        "models": models_manifest,
     }
     with open(os.path.join(ROOT, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)

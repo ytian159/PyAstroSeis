@@ -19,7 +19,9 @@ from .params import read_params, read_params_lc
 from .solver import run_case, qp_factors
 from .liquidcore import run_case_lc, load_layers_mat
 from .domains import (Material, Interface, Region, MultiDomainModel,
-                      homogeneous_model, liquid_core_model)
+                      homogeneous_model, liquid_core_model,
+                      welded_two_layer_model, nested_shell_model)
+from .layered import read_layered_config, build_layered_model
 
 __all__ = [
     "Faces", "load_faces_mat", "faces_from_vertices",
@@ -27,4 +29,6 @@ __all__ = [
     "run_case", "run_case_lc", "qp_factors", "load_layers_mat",
     "Material", "Interface", "Region", "MultiDomainModel",
     "homogeneous_model", "liquid_core_model",
+    "welded_two_layer_model", "nested_shell_model",
+    "read_layered_config", "build_layered_model",
 ]

@@ -1,0 +1,9 @@
+# Three-layer Earth-scale demo (rung 2): inner core / mantle / crustal
+# shell analog. Layers innermost first, SI units; vs: 0 would mark a
+# fluid layer (innermost only).
+layers:
+  - {r: 2200e3, nmesh: 24, vp: 8000, vs: 4500, rho: 4000, Q: 500}
+  - {r: 4300e3, nmesh: 90, vp: 7000, vs: 3900, rho: 3500, Q: 300}
+  - {r: 6371e3, nmesh: 200, vp: 6000, vs: 3000, rho: 3000, Q: 200}
+f0: 3.0e-4
+seed: 1

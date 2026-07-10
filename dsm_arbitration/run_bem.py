@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Rung-1 DSM arbitration — BEM spectra at the DSM harmonics.
+"""DSM arbitration — BEM spectra at the DSM harmonics.
 
-usage: run_bem.py homog|twolayer [nprocs]
+usage: run_bem.py <model> [nprocs]      (models from manifest.json)
 
-homog    : single solid region (rung-0-proven homogeneous_model path)
-           -> baseline BEM-discretization error vs DSM
-twolayer : welded shell+core (the rung-1 machinery under test)
+Every model is built through domains.nested_shell_model (bitwise-gated
+against the rung-0/1 special cases), innermost layer first; a single
+layer is the plain homogeneous solver.
 
 For each harmonic k = 1..imax, w = 2*pi*k/tlen + i*omegai (identical
-complex frequency to DSM). One assembly + one LU per frequency, both
+complex frequency to DSM). One assembly + one LU per frequency, all
 moment sources solved together. Output: bem_<model>.npz with
 u[src][station, comp(xyz), k] in meters (moment 1e20 N*m).
 """
@@ -22,14 +22,15 @@ import time
 
 import numpy as np
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-PKG = os.path.dirname(ROOT)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("ARB_ROOT", SCRIPT_DIR)
+PKG = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, PKG)
 
-from pyastroseis.domains import (Material, homogeneous_model,
-                                 welded_two_layer_model)     # noqa: E402
-from pyastroseis.mesh import Faces                           # noqa: E402
-from pyastroseis.source import u0eM                          # noqa: E402
+from pyastroseis.domains import Material, nested_shell_model  # noqa: E402
+from pyastroseis.layered import incident_outer_source         # noqa: E402
+from pyastroseis.mesh import Faces                            # noqa: E402
+from pyastroseis.source import u0eM                           # noqa: E402
 
 Q_ELASTIC = 1.0e8
 
@@ -69,30 +70,24 @@ _W = {}
 def _worker(k):
     t0 = time.time()
     w = 2.0 * np.pi * k * _W["df"] + 1j * _W["omegai"]
-    model = _W["model"]
+    model, ifaces = _W["model"], _W["ifaces"]
     A = model.assemble(w)
 
-    m = _W["mat_shell"]
-    face1, face2 = _W["face1"], _W["face2"]
+    m = _W["mat_outer"]
     xs, ys, zs = _W["src_xyz"]
     B = np.empty((model.size, len(_W["mts"])), dtype=complex)
     for col, M in enumerate(_W["mts"]):
-        u01 = u0eM(face1, w, m.rho, m.mu, m.lamda, xs, ys, zs, m.Q, M,
-                   qp_fac=m.qp_fac)
-        if face2 is None:
-            inc = {("u", _W["surf"]): u01}
-        else:
-            u02 = u0eM(face2, w, m.rho, m.mu, m.lamda, xs, ys, zs, m.Q,
-                       M, qp_fac=m.qp_fac)
-            z = np.zeros(3 * face2.n, dtype=complex)
-            inc = {("u", _W["surf"]): u01, ("u", _W["core"]): u02,
-                   ("t", _W["core"]): z}
-        B[:, col] = model.assemble_rhs(inc)
+        def field(faces):
+            return u0eM(faces, w, m.rho, m.mu, m.lamda, xs, ys, zs,
+                        m.Q, M, qp_fac=m.qp_fac)
+        B[:, col] = model.assemble_rhs(
+            incident_outer_source(model, ifaces, field))
     X = np.linalg.solve(A, B)
     del A
 
-    sl = model.block_slice("u", _W["surf"])
-    n1 = face1.n
+    surf = ifaces[-1]
+    sl = model.block_slice("u", surf)
+    n1 = surf.faces.n
     st = _W["st_faces"]
     out = np.empty((len(_W["mts"]), len(st), 3), dtype=complex)
     for col in range(len(_W["mts"])):
@@ -106,35 +101,23 @@ def main():
     model_name = sys.argv[1]
     nprocs = int(sys.argv[2]) if len(sys.argv) > 2 else 1
     man = json.load(open(os.path.join(ROOT, "manifest.json")))
+    layers = man["models"][model_name]
 
-    face1 = load_faces(os.path.join(ROOT, "mesh_surface.npz"))
-    face2 = load_faces(os.path.join(ROOT, "mesh_core.npz"))
+    faces_list = [load_faces(os.path.join(ROOT, la["mesh"]))
+                  for la in layers]
+    mats = [phys_solid(la["mat"][1] * 1e3, la["mat"][2] * 1e3,
+                       la["mat"][0] * 1e3, Q_ELASTIC) for la in layers]
 
     df = 1.0 / man["tlen"]
     omegai = man["omegai_1_per_s"]
     imax = man["imax"]
     w0 = 2.0 * np.pi * imax * df / 3.0   # reference frequency for scaling
 
-    sh_rho, sh_vp, sh_vs = man["materials_gcc_kms"]["shell"]
-    co_rho, co_vp, co_vs = man["materials_gcc_kms"]["core"]
-    mat_shell = phys_solid(sh_vp * 1e3, sh_vs * 1e3, sh_rho * 1e3,
-                           Q_ELASTIC)
-    mat_core = phys_solid(co_vp * 1e3, co_vs * 1e3, co_rho * 1e3,
-                          Q_ELASTIC)
-
     t_build = time.time()
-    if model_name == "homog":
-        model, surf = homogeneous_model(face1, mat_shell)
-        core = None
-        face2_used = None
-    elif model_name == "twolayer":
-        model, surf, core = welded_two_layer_model(
-            face1, face2, mat_shell, mat_core, w0)
-        face2_used = face2
-    else:
-        raise SystemExit("model must be homog|twolayer")
-    print("%s: system size %d, geometry built in %.1f s" %
-          (model_name, model.size, time.time() - t_build), flush=True)
+    model, ifaces = nested_shell_model(faces_list, mats, w0)
+    print("%s: %d layers, system size %d, geometry built in %.1f s" %
+          (model_name, len(layers), model.size, time.time() - t_build),
+          flush=True)
 
     src = man["source"]
     th = math.radians(90.0 - src["lat"])
@@ -152,8 +135,7 @@ def main():
            for s in src_names]
 
     st_faces = [st["face"] for st in man["stations"]]
-    _W.update(dict(model=model, face1=face1, face2=face2_used,
-                   surf=surf, core=core, mat_shell=mat_shell,
+    _W.update(dict(model=model, ifaces=ifaces, mat_outer=mats[-1],
                    df=df, omegai=omegai, mts=mts, src_xyz=src_xyz,
                    st_faces=st_faces))
 

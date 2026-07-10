@@ -91,11 +91,34 @@ Known BEM traits quantified on the baseline leg: lowest harmonics
 band-limited source); late elastic coda dephases at the mesh's
 eigenfrequency error.
 
-**Rung 2 — N nested shells + config schema.** YAML layer lists
-(radius / mesh resolution / material per shell; `meshgen.gen_layer`
-already builds the meshes). Validate a truncated PREM/AK135 onion at
-long period. Unknown count grows by ~6N per welded interface; dense
-solves stay practical to roughly 20–30k unknowns on one node.
+**Rung 2 — N nested shells + config schema.** DONE 2026-07-09
+(branch `multilayer`). `domains.nested_shell_model` (innermost-first
+layers; consecutive solids welded; fluid allowed innermost only) +
+`layered.py` YAML schema (examples/config_threelayer.yml) +
+`layered.incident_outer_source`. GATES (tests/test_rung2.py): the
+2-solid-layer and fluid-core special cases reproduce
+welded_two_layer_model / liquid_core_model BITWISE; 3-shell
+transparent (two artificial interfaces) 3.98e-2 on coarse synthetic
+meshes (~ the sum of the rung-1 single-interface errors); fluid-core
++ artificial-weld vs 2-region liquid core 3.65e-2; fluid-not-
+innermost rejected. DSM ARBITRATION (dsm_arbitration_r2/, PASSED):
+Earth-scale three-layer sphere (interfaces 2200 / 4300 km) vs
+tipsv+tish — per-station 3-component vector metrics over the 0-24 ks
+window: median rel RMS 12.2%, min corr 0.971, amp ratio 0.981, below
+the homogeneous baseline floor (14.5%, 0.965) computed on the same
+meshes/stations. (Protocol note: gates use VECTOR metrics because
+isolated near-nodal components produce meaningless relative errors —
+observed equally in the baseline leg.) Unknown count grows by ~6N
+per welded interface; dense solves stay practical to roughly 20–30k
+unknowns on one node.
+
+**Rung 2b — fluid annuli (PREM outer core).** A fluid layer between
+two solids needs the fluid-side sign generalization of the Smat
+coupling terms (the fluid's inner boundary has sign=-1); gate =
+transparent-solid split of the LC core + PREM-truncated onion vs DSM.
+Also needed for the PREM goal: graded radial profiles approximated by
+many constant shells, which pushes past dense solves -> shell-by-shell
+block elimination (block-tridiagonal structure).
 
 **Rung 3 — boundary-perturbation workflows.** The science payoff:
 (a) when only one interface's shape changes between ensemble members,

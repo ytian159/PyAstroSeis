@@ -31,7 +31,8 @@ import sys
 
 import numpy as np
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("ARB_ROOT", SCRIPT_DIR)
 
 NFFT = 32768                      # dt = tlen/NFFT = 8 s
 T_OUT = 60000.0                   # figure window
@@ -192,6 +193,14 @@ def compare_model(model, man, syn, conj, nout):
                 m.update(model=model, source=source, station=st["name"],
                          dist_deg=st["dist_deg"], comp=c)
                 rows.append(m)
+            # vector metric: full 3-component wavefield, energy-
+            # weighted (near-nodal components cannot dominate)
+            dv = np.concatenate([d[c][:nout] for c in "NEZ"])
+            bv = np.concatenate([b[c][:nout] for c in "NEZ"])
+            mv = trace_metrics(bv, dv)
+            mv.update(model=model, source=source, station=st["name"],
+                      dist_deg=st["dist_deg"], comp="VEC")
+            rows.append(mv)
     return rows, traces
 
 
@@ -200,7 +209,8 @@ def calibrate_conj(man, syn, nout):
     best = {}
     for conj in (False, True):
         rows, _ = compare_model("homog", man, syn, conj, nout)
-        med = float(np.median([r["rel_rms"] for r in rows]))
+        med = float(np.median([r["rel_rms"] for r in rows
+                               if r["comp"] == "VEC"]))
         best[conj] = med
         print("conjugation=%s: homog median rel RMS %.3e"
               % (conj, med), flush=True)
@@ -262,9 +272,12 @@ def main():
     conj = calibrate_conj(man, syn, nmet)
     print("frozen BEM spectral convention: conjugate=%s" % conj)
 
+    models = list(man.get("models",
+                           {"homog": None, "twolayer": None}).keys())
+    assert models[0] == "homog", "baseline homog must be first"
     all_rows = {}
     all_traces = {}
-    for model in ("homog", "twolayer"):
+    for model in models:
         rows, traces = compare_model(model, man, syn, conj, nmet)
         all_rows[model] = rows
         all_traces[model] = traces
@@ -273,7 +286,7 @@ def main():
     lines = ["| model | source | station | dist | comp | rel RMS | corr |"
              " amp ratio |",
              "|---|---|---|---|---|---|---|---|"]
-    for model in ("homog", "twolayer"):
+    for model in models:
         for r in all_rows[model]:
             lines.append("| %s | %s | %s | %.1f | %s | %.3e | %.6f | "
                          "%.4f |" % (r["model"], r["source"], r["station"],
@@ -283,29 +296,36 @@ def main():
     with open(os.path.join(ROOT, "results_table.md"), "w") as f:
         f.write("\n".join(lines) + "\n")
 
-    amp1 = float(np.median([r["amp_ratio"] for r in all_rows["twolayer"]]))
-    e0 = float(np.median([r["rel_rms"] for r in all_rows["homog"]]))
-    e0max = float(np.max([r["rel_rms"] for r in all_rows["homog"]]))
-    e1 = float(np.median([r["rel_rms"] for r in all_rows["twolayer"]]))
-    e1max = float(np.max([r["rel_rms"] for r in all_rows["twolayer"]]))
-    cmin0 = float(np.min([r["corr"] for r in all_rows["homog"]]))
-    cmin1 = float(np.min([r["corr"] for r in all_rows["twolayer"]]))
+    def stats(model):
+        vec = [r for r in all_rows[model] if r["comp"] == "VEC"]
+        rr = [r["rel_rms"] for r in vec]
+        return (float(np.median(rr)), float(np.max(rr)),
+                float(np.min([r["corr"] for r in vec])),
+                float(np.median([r["amp_ratio"] for r in vec])))
 
+    e0, e0max, cmin0, amp0 = stats("homog")
     verdict = []
-    verdict.append("metric window 0-%.0f s (P, S, R1 at all distances)"
-                   % METRICS_T)
-    verdict.append("homogeneous (baseline): median rel RMS %.3e, "
-                   "max %.3e, min corr %.6f" % (e0, e0max, cmin0))
-    verdict.append("two-layer (welded):     median rel RMS %.3e, "
-                   "max %.3e, min corr %.6f, median amp ratio %.4f"
-                   % (e1, e1max, cmin1, amp1))
-    ok = (e1 <= 2.5 * e0) and (cmin1 > 0.9) and (e0 < 0.2) \
-        and (0.9 < amp1 < 1.1)
-    verdict.append("gate: e1 <= 2.5*e0 [%s], two-layer min corr > 0.9 "
-                   "[%s], baseline floor sane e0 < 20%% [%s], amp ratio "
-                   "in [0.9,1.1] [%s]"
-                   % (e1 <= 2.5 * e0, cmin1 > 0.9, e0 < 0.2,
-                      0.9 < amp1 < 1.1))
+    verdict.append("metric window 0-%.0f s (P, S, R1 at all "
+                   "distances); gates on per-station 3-component "
+                   "VECTOR metrics" % METRICS_T)
+    verdict.append("homog (baseline):  median rel RMS %.3e, max %.3e, "
+                   "min corr %.6f" % (e0, e0max, cmin0))
+    ok = e0 < 0.2
+    summary = {"homog": {"median": e0, "max": e0max, "corr_min": cmin0,
+                         "amp_med": amp0}}
+    for model in models[1:]:
+        e1, e1max, cmin1, amp1 = stats(model)
+        m_ok = (e1 <= 2.5 * e0) and (cmin1 > 0.9) and (0.9 < amp1 < 1.1)
+        verdict.append("%-10s (layered): median rel RMS %.3e, max %.3e, "
+                       "min corr %.6f, median amp ratio %.4f"
+                       % (model, e1, e1max, cmin1, amp1))
+        verdict.append("  gate: e <= 2.5*e0 [%s], min corr > 0.9 [%s], "
+                       "amp ratio in [0.9,1.1] [%s]"
+                       % (e1 <= 2.5 * e0, cmin1 > 0.9, 0.9 < amp1 < 1.1))
+        summary[model] = {"median": e1, "max": e1max, "corr_min": cmin1,
+                          "amp_med": amp1}
+        ok = ok and m_ok
+    verdict.append("baseline floor sane e0 < 20%%: %s" % (e0 < 0.2))
     verdict.append("DSM ARBITRATION %s" % ("PASSED" if ok else "FAILED"))
     txt = "\n".join(verdict)
     print(txt)
@@ -314,14 +334,10 @@ def main():
 
     with open(os.path.join(ROOT, "metrics.json"), "w") as f:
         json.dump({"conjugate": conj, "rows": all_rows,
-                   "summary": {"homog": {"median": e0, "max": e0max,
-                                         "corr_min": cmin0},
-                               "twolayer": {"median": e1, "max": e1max,
-                                            "corr_min": cmin1}}},
-                  f, indent=2)
+                   "summary": summary}, f, indent=2)
 
     # figures: mrr -> Z (P-SV), mrt -> T (SH through the weld)
-    for model in ("homog", "twolayer"):
+    for model in models:
         record_section(model, "mrr", "Z", all_traces[model], man, syn,
                        nout, os.path.join(ROOT,
                        "waveforms_%s_mrr_Z.png" % model))

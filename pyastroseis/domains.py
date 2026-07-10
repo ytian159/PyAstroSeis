@@ -334,3 +334,49 @@ def welded_two_layer_model(face_surf, face_core, mat_shell, mat_core, w0,
          Region(mat_core, ((core, +1),), "core")),
         w0=w0, **opts)
     return model, surf, core
+
+
+def nested_shell_model(faces_list, materials, w0, **opts):
+    """N nested shells (rung 2), innermost layer first.
+
+    faces_list[i] is the OUTER boundary mesh of layer i (stored
+    normals pointing away from the center), so faces_list[-1] is the
+    free surface; materials[i] is layer i's material. Consecutive
+    solid layers are welded; a fluid layer is only allowed innermost
+    (its boundary becomes fluid_solid — a fluid annulus is a later
+    rung). Regions are registered outermost-first, so for each
+    internal interface the OUTER layer's equation fills the
+    ("u", iface) rows and the inner layer's the ("t", iface) rows;
+    the 2-layer solid case reproduces welded_two_layer_model and the
+    fluid-core case reproduces liquid_core_model exactly.
+
+    Returns (model, interfaces) with interfaces innermost-first
+    (interfaces[-1] = the free surface)."""
+    n = len(faces_list)
+    if len(materials) != n:
+        raise ValueError("need one material per layer")
+    for i, m in enumerate(materials):
+        if m.fluid and i > 0:
+            raise NotImplementedError(
+                "fluid layer must be innermost (fluid annuli are a "
+                "later rung)")
+    ifaces = []
+    for i in range(n):
+        if i == n - 1:
+            ifaces.append(Interface(faces_list[i], FREE, "surface"))
+        elif materials[i].fluid:
+            ifaces.append(Interface(faces_list[i], FLUID_SOLID,
+                                    "interface%d" % i))
+        else:
+            ifaces.append(Interface(faces_list[i], WELDED,
+                                    "interface%d" % i))
+    regions = []
+    for i in range(n - 1, -1, -1):
+        bounds = (((ifaces[i - 1], -1),) if i > 0 else ()) \
+            + ((ifaces[i], +1),)
+        regions.append(Region(materials[i], bounds, "layer%d" % i))
+    if materials[0].fluid:
+        # fluid region first, matching liquid_core_model registration
+        regions = regions[-1:] + regions[:-1]
+    model = MultiDomainModel(tuple(regions), w0=w0, **opts)
+    return model, ifaces
