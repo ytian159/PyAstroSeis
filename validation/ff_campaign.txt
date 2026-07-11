@@ -1,0 +1,630 @@
+== stage meshes + DSM inputs 00:08:01 ==
+mesh r= 6371.0 km: n=1584 faces, mean r 6351.4 km -> mesh_r06371_n200.npz
+mesh r= 1221.5 km: n=368 faces, mean r 1205.4 km -> mesh_r01222_n48.npz
+mesh r= 3480.0 km: n=1584 faces, mean r 3469.3 km -> mesh_r03480_n200.npz
+mesh r= 2350.0 km: n=320 faces, mean r 2314.7 km -> mesh_r02350_n42.npz
+  ST00 face  1428  dist   20.07 deg  lat    7.364 lon    32.166 r 6352.1 km
+  ST01 face   298  dist   29.95 deg  lat   35.720 lon    16.020 r 6352.2 km
+  ST02 face  1514  dist   45.05 deg  lat   -3.830 lon    56.028 r 6351.4 km
+  ST03 face   282  dist   59.82 deg  lat   50.977 lon    59.693 r 6350.9 km
+  ST04 face  1528  dist   74.99 deg  lat  -11.026 lon    85.396 r 6351.5 km
+  ST05 face  1061  dist   90.00 deg  lat   20.733 lon   104.285 r 6350.7 km
+  ST06 face   765  dist  104.99 deg  lat  -80.916 lon  -160.047 r 6352.9 km
+  ST07 face  1089  dist  120.02 deg  lat   32.094 lon   143.275 r 6351.3 km
+  ST08 face    11  dist  134.81 deg  lat   14.371 lon  -127.334 r 6352.6 km
+  ST09 face    93  dist  150.07 deg  lat   -9.204 lon   161.966 r 6351.5 km
+  ST10 face     2  dist  160.07 deg  lat    4.407 lon   174.974 r 6352.3 km
+  ST11 face  1263  dist  170.04 deg  lat   -6.240 lon  -178.018 r 6351.9 km
+wrote DSM inputs + manifest.json
+== DSM runs 00:08:15 ==
+-- homog_q50 tipsv mrr 00:08:15
+-- homog_q50 tish  mrr 00:08:15
+-- homog_q50 tipsv mrt 00:08:15
+-- homog_q50 tish  mrt 00:08:16
+-- corefluid_q50 tipsv mrr 00:08:16
+-- corefluid_q50 tish  mrr 00:08:16
+-- corefluid_q50 tipsv mrt 00:08:16
+-- corefluid_q50 tish  mrt 00:08:16
+-- ocsplit2_q50 tipsv mrr 00:08:16
+-- ocsplit2_q50 tish  mrr 00:08:17
+-- ocsplit2_q50 tipsv mrt 00:08:17
+-- ocsplit2_q50 tish  mrt 00:08:17
+-- ocstair2_q50 tipsv mrr 00:08:17
+-- ocstair2_q50 tish  mrr 00:08:17
+-- ocstair2_q50 tipsv mrt 00:08:17
+-- ocstair2_q50 tish  mrt 00:08:18
+== BEM leg: homog_q50 00:08:18 ==
+homog_q50: 1 layers, system size 4752, geometry built in 4.1 s, solver dense
+source at r0 = 5733.9 km -> layer 0 (outer radius 6371.0 km)
+  k= 17 f=6.4850e-05 Hz  15.3 s
+  k= 18 f=6.8665e-05 Hz  15.5 s
+  k= 13 f=4.9591e-05 Hz  15.5 s
+  k=  3 f=1.1444e-05 Hz  15.5 s
+  k=  6 f=2.2888e-05 Hz  15.5 s
+  k=  1 f=3.8147e-06 Hz  15.5 s
+  k=  5 f=1.9073e-05 Hz  15.6 s
+  k= 11 f=4.1962e-05 Hz  15.6 s
+  k= 21 f=8.0109e-05 Hz  15.6 s
+  k= 23 f=8.7738e-05 Hz  15.6 s
+  k= 19 f=7.2479e-05 Hz  15.6 s
+  k= 14 f=5.3406e-05 Hz  15.6 s
+  k= 24 f=9.1553e-05 Hz  15.6 s
+  k= 22 f=8.3923e-05 Hz  15.6 s
+  k= 16 f=6.1035e-05 Hz  15.7 s
+  k=  9 f=3.4332e-05 Hz  15.7 s
+  k=  7 f=2.6703e-05 Hz  15.7 s
+  k=  8 f=3.0518e-05 Hz  15.7 s
+  k=  2 f=7.6294e-06 Hz  15.7 s
+  k=  4 f=1.5259e-05 Hz  15.8 s
+  k= 10 f=3.8147e-05 Hz  15.9 s
+  k= 20 f=7.6294e-05 Hz  16.0 s
+  k= 12 f=4.5776e-05 Hz  16.0 s
+  k= 15 f=5.7220e-05 Hz  16.0 s
+  k= 25 f=9.5367e-05 Hz  15.4 s
+  k= 27 f=1.0300e-04 Hz  15.5 s
+  k= 26 f=9.9182e-05 Hz  15.5 s
+  k= 29 f=1.1063e-04 Hz  15.5 s
+  k= 28 f=1.0681e-04 Hz  15.5 s
+  k= 30 f=1.1444e-04 Hz  15.6 s
+  k= 31 f=1.1826e-04 Hz  15.5 s
+  k= 32 f=1.2207e-04 Hz  15.6 s
+  k= 35 f=1.3351e-04 Hz  15.6 s
+  k= 39 f=1.4877e-04 Hz  15.6 s
+  k= 33 f=1.2589e-04 Hz  15.6 s
+  k= 38 f=1.4496e-04 Hz  15.6 s
+  k= 37 f=1.4114e-04 Hz  15.6 s
+  k= 34 f=1.2970e-04 Hz  15.7 s
+  k= 41 f=1.5640e-04 Hz  15.6 s
+  k= 42 f=1.6022e-04 Hz  15.6 s
+  k= 44 f=1.6785e-04 Hz  15.5 s
+  k= 36 f=1.3733e-04 Hz  15.7 s
+  k= 43 f=1.6403e-04 Hz  15.6 s
+  k= 40 f=1.5259e-04 Hz  15.7 s
+  k= 45 f=1.7166e-04 Hz  15.7 s
+  k= 48 f=1.8311e-04 Hz  15.6 s
+  k= 47 f=1.7929e-04 Hz  15.6 s
+  k= 46 f=1.7548e-04 Hz  15.9 s
+  k= 49 f=1.8692e-04 Hz  15.5 s
+  k= 50 f=1.9073e-04 Hz  15.6 s
+  k= 52 f=1.9836e-04 Hz  15.6 s
+  k= 53 f=2.0218e-04 Hz  15.6 s
+  k= 51 f=1.9455e-04 Hz  15.6 s
+  k= 55 f=2.0981e-04 Hz  15.6 s
+  k= 54 f=2.0599e-04 Hz  15.6 s
+  k= 56 f=2.1362e-04 Hz  15.6 s
+  k= 57 f=2.1744e-04 Hz  15.6 s
+  k= 65 f=2.4796e-04 Hz  15.5 s
+  k= 58 f=2.2125e-04 Hz  15.6 s
+  k= 60 f=2.2888e-04 Hz  15.6 s
+  k= 61 f=2.3270e-04 Hz  15.7 s
+  k= 64 f=2.4414e-04 Hz  15.6 s
+  k= 63 f=2.4033e-04 Hz  15.6 s
+  k= 59 f=2.2507e-04 Hz  15.7 s
+  k= 62 f=2.3651e-04 Hz  15.7 s
+  k= 67 f=2.5558e-04 Hz  15.7 s
+  k= 66 f=2.5177e-04 Hz  15.7 s
+  k= 68 f=2.5940e-04 Hz  15.7 s
+  k= 70 f=2.6703e-04 Hz  15.6 s
+  k= 69 f=2.6321e-04 Hz  15.7 s
+  k= 71 f=2.7084e-04 Hz  15.6 s
+  k= 72 f=2.7466e-04 Hz  16.0 s
+  k= 73 f=2.7847e-04 Hz  15.6 s
+  k= 74 f=2.8229e-04 Hz  15.7 s
+  k= 76 f=2.8992e-04 Hz  15.6 s
+  k= 77 f=2.9373e-04 Hz  15.6 s
+  k= 75 f=2.8610e-04 Hz  15.7 s
+  k= 78 f=2.9755e-04 Hz  15.6 s
+  k= 82 f=3.1281e-04 Hz  15.6 s
+  k= 80 f=3.0518e-04 Hz  15.7 s
+  k= 79 f=3.0136e-04 Hz  15.7 s
+  k= 81 f=3.0899e-04 Hz  15.7 s
+  k= 86 f=3.2806e-04 Hz  15.6 s
+  k= 84 f=3.2043e-04 Hz  15.7 s
+  k= 83 f=3.1662e-04 Hz  15.8 s
+  k= 87 f=3.3188e-04 Hz  15.7 s
+  k= 85 f=3.2425e-04 Hz  15.7 s
+  k= 90 f=3.4332e-04 Hz  15.7 s
+  k= 88 f=3.3569e-04 Hz  15.7 s
+  k= 89 f=3.3951e-04 Hz  15.8 s
+  k= 91 f=3.4714e-04 Hz  15.8 s
+  k= 92 f=3.5095e-04 Hz  15.7 s
+  k= 93 f=3.5477e-04 Hz  15.6 s
+  k= 95 f=3.6240e-04 Hz  15.7 s
+  k= 94 f=3.5858e-04 Hz  15.8 s
+  k= 96 f=3.6621e-04 Hz  16.0 s
+  k= 97 f=3.7003e-04 Hz  15.6 s
+  k=100 f=3.8147e-04 Hz  15.6 s
+  k= 99 f=3.7766e-04 Hz  15.7 s
+  k= 98 f=3.7384e-04 Hz  15.7 s
+  k=103 f=3.9291e-04 Hz  15.6 s
+  k=101 f=3.8528e-04 Hz  15.8 s
+  k=102 f=3.8910e-04 Hz  15.7 s
+  k=104 f=3.9673e-04 Hz  15.7 s
+  k=105 f=4.0054e-04 Hz  15.8 s
+  k=106 f=4.0436e-04 Hz  15.8 s
+  k=107 f=4.0817e-04 Hz  15.8 s
+  k=108 f=4.1199e-04 Hz  15.8 s
+  k=109 f=4.1580e-04 Hz  15.8 s
+  k=110 f=4.1962e-04 Hz  15.9 s
+  k=111 f=4.2343e-04 Hz  16.0 s
+  k=112 f=4.2725e-04 Hz  16.0 s
+  k=113 f=4.3106e-04 Hz  16.1 s
+  k=114 f=4.3488e-04 Hz  16.2 s
+  k=115 f=4.3869e-04 Hz  16.3 s
+  k=117 f=4.4632e-04 Hz  16.3 s
+  k=116 f=4.4250e-04 Hz  16.3 s
+  k=118 f=4.5013e-04 Hz  16.4 s
+  k=119 f=4.5395e-04 Hz  16.8 s
+  k=120 f=4.5776e-04 Hz  17.1 s
+  k=121 f=4.6158e-04 Hz  15.4 s
+  k=127 f=4.8447e-04 Hz  14.9 s
+  k=126 f=4.8065e-04 Hz  15.1 s
+  k=125 f=4.7684e-04 Hz  15.2 s
+  k=122 f=4.6539e-04 Hz  15.5 s
+  k=124 f=4.7302e-04 Hz  15.5 s
+  k=123 f=4.6921e-04 Hz  15.6 s
+  k=134 f=5.1117e-04 Hz  15.0 s
+  k=136 f=5.1880e-04 Hz  14.9 s
+  k=129 f=4.9210e-04 Hz  15.7 s
+  k=131 f=4.9973e-04 Hz  15.7 s
+  k=128 f=4.8828e-04 Hz  15.9 s
+  k=130 f=4.9591e-04 Hz  15.9 s
+  k=132 f=5.0354e-04 Hz  15.7 s
+  k=133 f=5.0735e-04 Hz  15.7 s
+  k=135 f=5.1498e-04 Hz  15.7 s
+  k=137 f=5.2261e-04 Hz  15.8 s
+  k=138 f=5.2643e-04 Hz  15.7 s
+homog_q50: 138 harmonics in 94.8 s (24 procs)
+wrote bem_homog_q50.npz
+== BEM leg: corefluid_q50 00:09:57 ==
+corefluid_q50: 3 layers, system size 12560, geometry built in 14.0 s, solver dense
+source at r0 = 5733.9 km -> layer 2 (outer radius 6371.0 km)
+  k=  7 f=2.6703e-05 Hz  95.6 s
+  k= 10 f=3.8147e-05 Hz  96.1 s
+  k=  2 f=7.6294e-06 Hz  96.1 s
+  k= 14 f=5.3406e-05 Hz  96.2 s
+  k=  8 f=3.0518e-05 Hz  96.3 s
+  k=  6 f=2.2888e-05 Hz  96.3 s
+  k= 23 f=8.7738e-05 Hz  96.4 s
+  k= 22 f=8.3923e-05 Hz  96.4 s
+  k=  3 f=1.1444e-05 Hz  96.4 s
+  k= 12 f=4.5776e-05 Hz  96.5 s
+  k= 11 f=4.1962e-05 Hz  96.7 s
+  k= 17 f=6.4850e-05 Hz  96.7 s
+  k= 19 f=7.2479e-05 Hz  96.8 s
+  k=  9 f=3.4332e-05 Hz  96.8 s
+  k= 24 f=9.1553e-05 Hz  96.9 s
+  k= 20 f=7.6294e-05 Hz  96.9 s
+  k=  4 f=1.5259e-05 Hz  97.0 s
+  k= 16 f=6.1035e-05 Hz  97.0 s
+  k=  1 f=3.8147e-06 Hz  97.0 s
+  k= 21 f=8.0109e-05 Hz  97.0 s
+  k= 13 f=4.9591e-05 Hz  97.0 s
+  k= 18 f=6.8665e-05 Hz  97.1 s
+  k=  5 f=1.9073e-05 Hz  97.1 s
+  k= 15 f=5.7220e-05 Hz  97.1 s
+  k= 25 f=9.5367e-05 Hz  94.0 s
+  k= 26 f=9.9182e-05 Hz  93.6 s
+  k= 29 f=1.1063e-04 Hz  94.0 s
+  k= 31 f=1.1826e-04 Hz  94.2 s
+  k= 28 f=1.0681e-04 Hz  94.5 s
+  k= 32 f=1.2207e-04 Hz  94.7 s
+  k= 30 f=1.1444e-04 Hz  94.9 s
+  k= 33 f=1.2589e-04 Hz  95.0 s
+  k= 27 f=1.0300e-04 Hz  95.4 s
+  k= 34 f=1.2970e-04 Hz  95.0 s
+  k= 37 f=1.4114e-04 Hz  94.8 s
+  k= 35 f=1.3351e-04 Hz  95.1 s
+  k= 39 f=1.4877e-04 Hz  94.9 s
+  k= 45 f=1.7166e-04 Hz  94.8 s
+  k= 36 f=1.3733e-04 Hz  95.1 s
+  k= 46 f=1.7548e-04 Hz  95.0 s
+  k= 42 f=1.6022e-04 Hz  95.2 s
+  k= 40 f=1.5259e-04 Hz  95.4 s
+  k= 38 f=1.4496e-04 Hz  95.7 s
+  k= 47 f=1.7929e-04 Hz  95.5 s
+  k= 41 f=1.5640e-04 Hz  95.8 s
+  k= 44 f=1.6785e-04 Hz  95.8 s
+  k= 48 f=1.8311e-04 Hz  95.8 s
+  k= 43 f=1.6403e-04 Hz  96.0 s
+  k= 50 f=1.9073e-04 Hz  93.3 s
+  k= 49 f=1.8692e-04 Hz  94.0 s
+  k= 51 f=1.9455e-04 Hz  93.9 s
+  k= 56 f=2.1362e-04 Hz  94.0 s
+  k= 52 f=1.9836e-04 Hz  94.9 s
+  k= 53 f=2.0218e-04 Hz  94.7 s
+  k= 55 f=2.0981e-04 Hz  94.5 s
+  k= 54 f=2.0599e-04 Hz  95.0 s
+  k= 60 f=2.2888e-04 Hz  94.4 s
+  k= 62 f=2.3651e-04 Hz  94.3 s
+  k= 63 f=2.4033e-04 Hz  94.3 s
+  k= 59 f=2.2507e-04 Hz  94.6 s
+  k= 57 f=2.1744e-04 Hz  94.9 s
+  k= 58 f=2.2125e-04 Hz  94.9 s
+  k= 61 f=2.3270e-04 Hz  94.7 s
+  k= 64 f=2.4414e-04 Hz  94.9 s
+  k= 65 f=2.4796e-04 Hz  94.8 s
+  k= 67 f=2.5558e-04 Hz  94.8 s
+  k= 69 f=2.6321e-04 Hz  95.2 s
+  k= 70 f=2.6703e-04 Hz  95.0 s
+  k= 66 f=2.5177e-04 Hz  95.6 s
+  k= 68 f=2.5940e-04 Hz  95.4 s
+  k= 71 f=2.7084e-04 Hz  95.3 s
+  k= 72 f=2.7466e-04 Hz  95.7 s
+  k= 73 f=2.7847e-04 Hz  93.5 s
+  k= 74 f=2.8229e-04 Hz  93.9 s
+  k= 75 f=2.8610e-04 Hz  93.8 s
+  k= 76 f=2.8992e-04 Hz  93.6 s
+  k= 83 f=3.1662e-04 Hz  93.9 s
+  k= 78 f=2.9755e-04 Hz  94.6 s
+  k= 81 f=3.0899e-04 Hz  94.2 s
+  k= 80 f=3.0518e-04 Hz  94.3 s
+  k= 82 f=3.1281e-04 Hz  94.5 s
+  k= 84 f=3.2043e-04 Hz  94.5 s
+  k= 77 f=2.9373e-04 Hz  95.3 s
+  k= 86 f=3.2806e-04 Hz  94.3 s
+  k= 79 f=3.0136e-04 Hz  95.4 s
+  k= 87 f=3.3188e-04 Hz  94.9 s
+  k= 88 f=3.3569e-04 Hz  94.4 s
+  k= 85 f=3.2425e-04 Hz  95.1 s
+  k= 90 f=3.4332e-04 Hz  94.5 s
+  k= 89 f=3.3951e-04 Hz  95.2 s
+  k= 91 f=3.4714e-04 Hz  94.8 s
+  k= 92 f=3.5095e-04 Hz  94.8 s
+  k= 93 f=3.5477e-04 Hz  94.8 s
+  k= 95 f=3.6240e-04 Hz  95.2 s
+  k= 94 f=3.5858e-04 Hz  95.4 s
+  k= 96 f=3.6621e-04 Hz  95.6 s
+  k= 97 f=3.7003e-04 Hz  94.0 s
+  k= 98 f=3.7384e-04 Hz  94.0 s
+  k= 99 f=3.7766e-04 Hz  93.6 s
+  k=100 f=3.8147e-04 Hz  93.9 s
+  k=101 f=3.8528e-04 Hz  94.1 s
+  k=103 f=3.9291e-04 Hz  94.2 s
+  k=106 f=4.0436e-04 Hz  94.2 s
+  k=108 f=4.1199e-04 Hz  94.2 s
+  k=105 f=4.0054e-04 Hz  94.4 s
+  k=102 f=3.8910e-04 Hz  94.9 s
+  k=104 f=3.9673e-04 Hz  94.8 s
+  k=107 f=4.0817e-04 Hz  95.2 s
+  k=110 f=4.1962e-04 Hz  94.9 s
+  k=111 f=4.2343e-04 Hz  95.0 s
+  k=109 f=4.1580e-04 Hz  95.3 s
+  k=113 f=4.3106e-04 Hz  94.9 s
+  k=112 f=4.2725e-04 Hz  95.5 s
+  k=114 f=4.3488e-04 Hz  95.2 s
+  k=115 f=4.3869e-04 Hz  95.0 s
+  k=116 f=4.4250e-04 Hz  95.1 s
+  k=117 f=4.4632e-04 Hz  95.5 s
+  k=119 f=4.5395e-04 Hz  95.5 s
+  k=118 f=4.5013e-04 Hz  95.7 s
+  k=120 f=4.5776e-04 Hz  96.8 s
+  k=126 f=4.8065e-04 Hz  86.6 s
+  k=121 f=4.6158e-04 Hz  91.8 s
+  k=131 f=4.9973e-04 Hz  87.6 s
+  k=123 f=4.6921e-04 Hz  91.2 s
+  k=132 f=5.0354e-04 Hz  87.3 s
+  k=133 f=5.0735e-04 Hz  87.1 s
+  k=122 f=4.6539e-04 Hz  91.9 s
+  k=136 f=5.1880e-04 Hz  87.1 s
+  k=135 f=5.1498e-04 Hz  87.4 s
+  k=124 f=4.7302e-04 Hz  91.2 s
+  k=138 f=5.2643e-04 Hz  87.1 s
+  k=130 f=4.9591e-04 Hz  89.6 s
+  k=125 f=4.7684e-04 Hz  90.9 s
+  k=128 f=4.8828e-04 Hz  90.2 s
+  k=134 f=5.1117e-04 Hz  89.3 s
+  k=129 f=4.9210e-04 Hz  90.7 s
+  k=127 f=4.8447e-04 Hz  90.9 s
+  k=137 f=5.2261e-04 Hz  90.4 s
+corefluid_q50: 138 harmonics in 567.5 s (24 procs)
+wrote bem_corefluid_q50.npz
+== BEM leg: ocsplit2_q50 00:19:40 ==
+ocsplit2_q50: 4 layers, system size 13200, geometry built in 15.6 s, solver block-elimination
+source at r0 = 5733.9 km -> layer 3 (outer radius 6371.0 km)
+  k= 13 f=4.9591e-05 Hz  89.9 s
+  k= 14 f=5.3406e-05 Hz  90.3 s
+  k= 22 f=8.3923e-05 Hz  90.6 s
+  k=  6 f=2.2888e-05 Hz  90.7 s
+  k= 10 f=3.8147e-05 Hz  90.9 s
+  k= 19 f=7.2479e-05 Hz  90.9 s
+  k= 18 f=6.8665e-05 Hz  91.0 s
+  k= 23 f=8.7738e-05 Hz  91.0 s
+  k= 20 f=7.6294e-05 Hz  91.0 s
+  k= 12 f=4.5776e-05 Hz  91.1 s
+  k=  2 f=7.6294e-06 Hz  91.2 s
+  k=  5 f=1.9073e-05 Hz  91.3 s
+  k= 11 f=4.1962e-05 Hz  91.4 s
+  k=  3 f=1.1444e-05 Hz  91.4 s
+  k= 21 f=8.0109e-05 Hz  91.5 s
+  k=  9 f=3.4332e-05 Hz  91.5 s
+  k=  7 f=2.6703e-05 Hz  91.6 s
+  k= 17 f=6.4850e-05 Hz  91.6 s
+  k=  1 f=3.8147e-06 Hz  91.7 s
+  k= 15 f=5.7220e-05 Hz  91.7 s
+  k=  8 f=3.0518e-05 Hz  91.8 s
+  k=  4 f=1.5259e-05 Hz  92.1 s
+  k= 24 f=9.1553e-05 Hz  92.2 s
+  k= 16 f=6.1035e-05 Hz  92.2 s
+  k= 25 f=9.5367e-05 Hz  88.7 s
+  k= 26 f=9.9182e-05 Hz  88.9 s
+  k= 27 f=1.0300e-04 Hz  89.1 s
+  k= 28 f=1.0681e-04 Hz  89.2 s
+  k= 33 f=1.2589e-04 Hz  88.9 s
+  k= 29 f=1.1063e-04 Hz  89.2 s
+  k= 32 f=1.2207e-04 Hz  89.5 s
+  k= 30 f=1.1444e-04 Hz  89.9 s
+  k= 31 f=1.1826e-04 Hz  90.0 s
+  k= 34 f=1.2970e-04 Hz  89.9 s
+  k= 35 f=1.3351e-04 Hz  89.9 s
+  k= 45 f=1.7166e-04 Hz  89.3 s
+  k= 36 f=1.3733e-04 Hz  90.1 s
+  k= 44 f=1.6785e-04 Hz  89.6 s
+  k= 46 f=1.7548e-04 Hz  89.4 s
+  k= 40 f=1.5259e-04 Hz  90.0 s
+  k= 37 f=1.4114e-04 Hz  90.3 s
+  k= 38 f=1.4496e-04 Hz  90.4 s
+  k= 43 f=1.6403e-04 Hz  90.2 s
+  k= 41 f=1.5640e-04 Hz  90.4 s
+  k= 39 f=1.4877e-04 Hz  90.5 s
+  k= 42 f=1.6022e-04 Hz  90.5 s
+  k= 48 f=1.8311e-04 Hz  90.1 s
+  k= 47 f=1.7929e-04 Hz  90.3 s
+  k= 49 f=1.8692e-04 Hz  89.1 s
+  k= 50 f=1.9073e-04 Hz  89.4 s
+  k= 54 f=2.0599e-04 Hz  88.9 s
+  k= 52 f=1.9836e-04 Hz  89.1 s
+  k= 51 f=1.9455e-04 Hz  89.3 s
+  k= 53 f=2.0218e-04 Hz  89.2 s
+  k= 55 f=2.0981e-04 Hz  89.3 s
+  k= 58 f=2.2125e-04 Hz  88.9 s
+  k= 56 f=2.1362e-04 Hz  89.5 s
+  k= 59 f=2.2507e-04 Hz  89.6 s
+  k= 57 f=2.1744e-04 Hz  90.0 s
+  k= 60 f=2.2888e-04 Hz  89.8 s
+  k= 64 f=2.4414e-04 Hz  89.5 s
+  k= 68 f=2.5940e-04 Hz  89.2 s
+  k= 61 f=2.3270e-04 Hz  89.9 s
+  k= 63 f=2.4033e-04 Hz  89.7 s
+  k= 62 f=2.3651e-04 Hz  90.1 s
+  k= 66 f=2.5177e-04 Hz  89.9 s
+  k= 65 f=2.4796e-04 Hz  90.1 s
+  k= 67 f=2.5558e-04 Hz  90.0 s
+  k= 71 f=2.7084e-04 Hz  89.9 s
+  k= 70 f=2.6703e-04 Hz  90.1 s
+  k= 69 f=2.6321e-04 Hz  90.2 s
+  k= 72 f=2.7466e-04 Hz  90.1 s
+  k= 74 f=2.8229e-04 Hz  89.6 s
+  k= 76 f=2.8992e-04 Hz  89.2 s
+  k= 75 f=2.8610e-04 Hz  89.4 s
+  k= 73 f=2.7847e-04 Hz  90.7 s
+  k= 77 f=2.9373e-04 Hz  89.4 s
+  k= 78 f=2.9755e-04 Hz  89.4 s
+  k= 79 f=3.0136e-04 Hz  89.1 s
+  k= 80 f=3.0518e-04 Hz  89.5 s
+  k= 81 f=3.0899e-04 Hz  90.2 s
+  k= 85 f=3.2425e-04 Hz  89.5 s
+  k= 84 f=3.2043e-04 Hz  89.6 s
+  k= 82 f=3.1281e-04 Hz  89.9 s
+  k= 83 f=3.1662e-04 Hz  89.7 s
+  k= 88 f=3.3569e-04 Hz  89.5 s
+  k= 86 f=3.2806e-04 Hz  90.0 s
+  k= 87 f=3.3188e-04 Hz  90.1 s
+  k= 89 f=3.3951e-04 Hz  89.9 s
+  k= 92 f=3.5095e-04 Hz  89.9 s
+  k= 91 f=3.4714e-04 Hz  90.3 s
+  k= 90 f=3.4332e-04 Hz  90.5 s
+  k= 95 f=3.6240e-04 Hz  90.1 s
+  k= 93 f=3.5477e-04 Hz  90.2 s
+  k= 94 f=3.5858e-04 Hz  90.3 s
+  k= 96 f=3.6621e-04 Hz  90.2 s
+  k= 98 f=3.7384e-04 Hz  89.4 s
+  k= 99 f=3.7766e-04 Hz  89.5 s
+  k= 97 f=3.7003e-04 Hz  89.6 s
+  k=101 f=3.8528e-04 Hz  89.3 s
+  k=103 f=3.9291e-04 Hz  89.2 s
+  k=102 f=3.8910e-04 Hz  89.8 s
+  k=104 f=3.9673e-04 Hz  89.7 s
+  k=100 f=3.8147e-04 Hz  90.9 s
+  k=105 f=4.0054e-04 Hz  90.1 s
+  k=107 f=4.0817e-04 Hz  90.0 s
+  k=106 f=4.0436e-04 Hz  90.1 s
+  k=108 f=4.1199e-04 Hz  90.1 s
+  k=110 f=4.1962e-04 Hz  90.0 s
+  k=109 f=4.1580e-04 Hz  90.1 s
+  k=113 f=4.3106e-04 Hz  90.0 s
+  k=111 f=4.2343e-04 Hz  90.4 s
+  k=112 f=4.2725e-04 Hz  90.4 s
+  k=114 f=4.3488e-04 Hz  90.4 s
+  k=116 f=4.4250e-04 Hz  90.7 s
+  k=118 f=4.5013e-04 Hz  90.6 s
+  k=117 f=4.4632e-04 Hz  90.9 s
+  k=115 f=4.3869e-04 Hz  91.3 s
+  k=119 f=4.5395e-04 Hz  91.1 s
+  k=120 f=4.5776e-04 Hz  90.7 s
+  k=121 f=4.6158e-04 Hz  84.1 s
+  k=124 f=4.7302e-04 Hz  84.6 s
+  k=127 f=4.8447e-04 Hz  83.6 s
+  k=125 f=4.7684e-04 Hz  85.5 s
+  k=126 f=4.8065e-04 Hz  85.3 s
+  k=129 f=4.9210e-04 Hz  83.4 s
+  k=122 f=4.6539e-04 Hz  86.4 s
+  k=131 f=4.9973e-04 Hz  83.6 s
+  k=132 f=5.0354e-04 Hz  83.6 s
+  k=123 f=4.6921e-04 Hz  86.6 s
+  k=128 f=4.8828e-04 Hz  85.2 s
+  k=136 f=5.1880e-04 Hz  83.1 s
+  k=138 f=5.2643e-04 Hz  83.0 s
+  k=137 f=5.2261e-04 Hz  83.8 s
+  k=130 f=4.9591e-04 Hz  85.2 s
+  k=134 f=5.1117e-04 Hz  85.4 s
+  k=133 f=5.0735e-04 Hz  85.5 s
+  k=135 f=5.1498e-04 Hz  85.2 s
+ocsplit2_q50: 138 harmonics in 536.7 s (24 procs)
+wrote bem_ocsplit2_q50.npz
+== BEM leg: ocstair2_q50 00:28:54 ==
+ocstair2_q50: 4 layers, system size 13200, geometry built in 15.6 s, solver block-elimination
+source at r0 = 5733.9 km -> layer 3 (outer radius 6371.0 km)
+  k= 13 f=4.9591e-05 Hz  90.4 s
+  k=  2 f=7.6294e-06 Hz  90.4 s
+  k=  4 f=1.5259e-05 Hz  90.5 s
+  k=  6 f=2.2888e-05 Hz  90.7 s
+  k= 14 f=5.3406e-05 Hz  90.8 s
+  k= 16 f=6.1035e-05 Hz  90.9 s
+  k= 18 f=6.8665e-05 Hz  91.0 s
+  k= 12 f=4.5776e-05 Hz  91.0 s
+  k=  9 f=3.4332e-05 Hz  91.1 s
+  k= 11 f=4.1962e-05 Hz  91.1 s
+  k= 21 f=8.0109e-05 Hz  91.3 s
+  k= 10 f=3.8147e-05 Hz  91.3 s
+  k= 20 f=7.6294e-05 Hz  91.4 s
+  k=  1 f=3.8147e-06 Hz  91.5 s
+  k= 19 f=7.2479e-05 Hz  91.6 s
+  k= 24 f=9.1553e-05 Hz  91.6 s
+  k= 22 f=8.3923e-05 Hz  91.6 s
+  k= 23 f=8.7738e-05 Hz  91.6 s
+  k=  5 f=1.9073e-05 Hz  91.7 s
+  k= 15 f=5.7220e-05 Hz  91.7 s
+  k=  3 f=1.1444e-05 Hz  92.1 s
+  k=  8 f=3.0518e-05 Hz  92.1 s
+  k= 17 f=6.4850e-05 Hz  92.2 s
+  k=  7 f=2.6703e-05 Hz  92.3 s
+  k= 25 f=9.5367e-05 Hz  89.4 s
+  k= 27 f=1.0300e-04 Hz  89.3 s
+  k= 28 f=1.0681e-04 Hz  89.3 s
+  k= 26 f=9.9182e-05 Hz  89.6 s
+  k= 31 f=1.1826e-04 Hz  89.2 s
+  k= 30 f=1.1444e-04 Hz  89.7 s
+  k= 33 f=1.2589e-04 Hz  89.6 s
+  k= 29 f=1.1063e-04 Hz  90.0 s
+  k= 35 f=1.3351e-04 Hz  89.5 s
+  k= 37 f=1.4114e-04 Hz  89.5 s
+  k= 32 f=1.2207e-04 Hz  89.9 s
+  k= 36 f=1.3733e-04 Hz  90.0 s
+  k= 39 f=1.4877e-04 Hz  90.1 s
+  k= 41 f=1.5640e-04 Hz  90.0 s
+  k= 42 f=1.6022e-04 Hz  90.0 s
+  k= 44 f=1.6785e-04 Hz  90.0 s
+  k= 38 f=1.4496e-04 Hz  90.3 s
+  k= 40 f=1.5259e-04 Hz  90.3 s
+  k= 43 f=1.6403e-04 Hz  90.3 s
+  k= 34 f=1.2970e-04 Hz  91.3 s
+  k= 47 f=1.7929e-04 Hz  90.3 s
+  k= 46 f=1.7548e-04 Hz  90.6 s
+  k= 45 f=1.7166e-04 Hz  90.8 s
+  k= 48 f=1.8311e-04 Hz  90.5 s
+  k= 53 f=2.0218e-04 Hz  89.0 s
+  k= 52 f=1.9836e-04 Hz  89.3 s
+  k= 50 f=1.9073e-04 Hz  89.6 s
+  k= 51 f=1.9455e-04 Hz  89.5 s
+  k= 54 f=2.0599e-04 Hz  89.3 s
+  k= 49 f=1.8692e-04 Hz  90.4 s
+  k= 58 f=2.2125e-04 Hz  89.6 s
+  k= 56 f=2.1362e-04 Hz  89.8 s
+  k= 57 f=2.1744e-04 Hz  89.7 s
+  k= 55 f=2.0981e-04 Hz  90.0 s
+  k= 62 f=2.3651e-04 Hz  89.1 s
+  k= 59 f=2.2507e-04 Hz  90.2 s
+  k= 60 f=2.2888e-04 Hz  90.0 s
+  k= 61 f=2.3270e-04 Hz  89.9 s
+  k= 63 f=2.4033e-04 Hz  89.9 s
+  k= 64 f=2.4414e-04 Hz  90.1 s
+  k= 65 f=2.4796e-04 Hz  90.2 s
+  k= 66 f=2.5177e-04 Hz  90.1 s
+  k= 67 f=2.5558e-04 Hz  90.1 s
+  k= 69 f=2.6321e-04 Hz  89.8 s
+  k= 70 f=2.6703e-04 Hz  89.9 s
+  k= 71 f=2.7084e-04 Hz  90.4 s
+  k= 72 f=2.7466e-04 Hz  90.5 s
+  k= 68 f=2.5940e-04 Hz  91.2 s
+  k= 73 f=2.7847e-04 Hz  89.1 s
+  k= 75 f=2.8610e-04 Hz  89.6 s
+  k= 76 f=2.8992e-04 Hz  89.6 s
+  k= 74 f=2.8229e-04 Hz  89.9 s
+  k= 77 f=2.9373e-04 Hz  89.4 s
+  k= 78 f=2.9755e-04 Hz  89.3 s
+  k= 81 f=3.0899e-04 Hz  89.5 s
+  k= 79 f=3.0136e-04 Hz  89.8 s
+  k= 83 f=3.1662e-04 Hz  89.7 s
+  k= 82 f=3.1281e-04 Hz  90.0 s
+  k= 80 f=3.0518e-04 Hz  90.1 s
+  k= 84 f=3.2043e-04 Hz  90.1 s
+  k= 87 f=3.3188e-04 Hz  89.7 s
+  k= 86 f=3.2806e-04 Hz  89.8 s
+  k= 88 f=3.3569e-04 Hz  89.9 s
+  k= 85 f=3.2425e-04 Hz  90.5 s
+  k= 89 f=3.3951e-04 Hz  90.0 s
+  k= 90 f=3.4332e-04 Hz  90.2 s
+  k= 91 f=3.4714e-04 Hz  90.2 s
+  k= 92 f=3.5095e-04 Hz  90.4 s
+  k= 93 f=3.5477e-04 Hz  90.6 s
+  k= 94 f=3.5858e-04 Hz  90.2 s
+  k= 95 f=3.6240e-04 Hz  90.5 s
+  k= 96 f=3.6621e-04 Hz  91.8 s
+  k= 97 f=3.7003e-04 Hz  89.6 s
+  k= 99 f=3.7766e-04 Hz  89.3 s
+  k= 98 f=3.7384e-04 Hz  90.0 s
+  k=100 f=3.8147e-04 Hz  89.8 s
+  k=101 f=3.8528e-04 Hz  90.3 s
+  k=103 f=3.9291e-04 Hz  89.5 s
+  k=102 f=3.8910e-04 Hz  90.1 s
+  k=105 f=4.0054e-04 Hz  89.8 s
+  k=104 f=3.9673e-04 Hz  90.3 s
+  k=106 f=4.0436e-04 Hz  90.3 s
+  k=108 f=4.1199e-04 Hz  89.7 s
+  k=110 f=4.1962e-04 Hz  89.9 s
+  k=109 f=4.1580e-04 Hz  90.2 s
+  k=107 f=4.0817e-04 Hz  90.8 s
+  k=113 f=4.3106e-04 Hz  90.0 s
+  k=111 f=4.2343e-04 Hz  90.5 s
+  k=112 f=4.2725e-04 Hz  90.6 s
+  k=114 f=4.3488e-04 Hz  90.4 s
+  k=115 f=4.3869e-04 Hz  90.5 s
+  k=116 f=4.4250e-04 Hz  90.6 s
+  k=117 f=4.4632e-04 Hz  91.2 s
+  k=118 f=4.5013e-04 Hz  91.0 s
+  k=119 f=4.5395e-04 Hz  91.4 s
+  k=120 f=4.5776e-04 Hz  92.5 s
+  k=121 f=4.6158e-04 Hz  86.0 s
+  k=126 f=4.8065e-04 Hz  84.6 s
+  k=122 f=4.6539e-04 Hz  86.1 s
+  k=127 f=4.8447e-04 Hz  85.2 s
+  k=128 f=4.8828e-04 Hz  85.2 s
+  k=130 f=4.9591e-04 Hz  84.7 s
+  k=124 f=4.7302e-04 Hz  86.8 s
+  k=129 f=4.9210e-04 Hz  85.4 s
+  k=125 f=4.7684e-04 Hz  86.5 s
+  k=133 f=5.0735e-04 Hz  84.7 s
+  k=123 f=4.6921e-04 Hz  87.3 s
+  k=132 f=5.0354e-04 Hz  85.3 s
+  k=131 f=4.9973e-04 Hz  85.9 s
+  k=135 f=5.1498e-04 Hz  84.9 s
+  k=137 f=5.2261e-04 Hz  84.8 s
+  k=136 f=5.1880e-04 Hz  85.4 s
+  k=138 f=5.2643e-04 Hz  85.0 s
+  k=134 f=5.1117e-04 Hz  86.3 s
+ocstair2_q50: 138 harmonics in 538.0 s (24 procs)
+wrote bem_ocstair2_q50.npz
+== synthesis + comparison 00:38:09 ==
+conjugation=False: homog_q50 median rel RMS 1.153e+00
+conjugation=True: homog_q50 median rel RMS 1.288e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 1.288e-01, max 3.012e-01, min corr 0.959881
+corefluid_q50 (layered): median rel RMS 2.783e-01, max 5.564e-01, min corr 0.904897, median amp ratio 1.0133
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [True]
+ocsplit2_q50 (layered): median rel RMS 2.779e-01, max 5.559e-01, min corr 0.905250, median amp ratio 1.0141
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [True]
+ocstair2_q50 (layered): median rel RMS 2.766e-01, max 5.467e-01, min corr 0.907766, median amp ratio 1.0121
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION PASSED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_homog_q50_mrr_Z.png (error magnification x10)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_homog_q50_mrt_T.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_corefluid_q50_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_corefluid_q50_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_ocsplit2_q50_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_ocsplit2_q50_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_ocstair2_q50_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ff/waveforms_ocstair2_q50_mrt_T.png (error magnification x1)
+== CAMPAIGN DONE 00:38:14 ==
