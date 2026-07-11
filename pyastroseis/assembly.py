@@ -27,7 +27,7 @@ import numpy as np
 
 from .greens import (bmat_func, g_singular_value, green_traction_tensor,
                      greens_func_deri_p, greens_func_p)
-from .quadrature import simplex_rule, triasymq
+from .quadrature import simplex_rule, simplex_rule_composite, triasymq
 
 NINT = 10          # quadrature degree (MATLAB: "can only be 10, 20, 40, 50")
 NXI_SELF = 300     # self-integration grid resolution (int_self, nxi=300)
@@ -198,7 +198,7 @@ class Geometry:
     def __init__(self, faces, nint=NINT, nxi=NXI_SELF, self_scheme="grid",
                  ntheta=16, nrho=12, ntheta_weak=32, nrho_weak=24,
                  ridfac=RIDFAC, quad_mode="full", tiers=TIERS_DEFAULT,
-                 osc_limits=OSC_LIMITS_DEFAULT):
+                 osc_limits=OSC_LIMITS_DEFAULT, near_tier=None):
         self.faces = faces
         self.nint = nint
         self.ridfac = ridfac
@@ -210,6 +210,20 @@ class Geometry:
         self.n3a = faces.nvec[:, 2:3]
         self.area = faces.area
 
+        # near-singular promotion tier for graded meshes (STRICT NO-OP
+        # when near_tier is None): (edge_ratio, (degree, levels)),
+        # e.g. (1.5, (10, 2)), prepended to the tier ladder so
+        # cross-panel pairs at dist < edge_ratio * h_source get a
+        # composite subdivided rule (a small panel's collocation point
+        # close to a LARGE neighbor panel makes the 1/r^2 kernels
+        # near-singular; the default deg-10 rule silently
+        # under-integrates there). The oscillation cap arithmetic in
+        # tier_cap is unchanged: with len(osc_limits) relaxation steps
+        # the strictest cap lands on the deg-10 tier, never forcing
+        # far pairs onto the near rule.
+        if near_tier is not None:
+            tiers = (tuple(near_tier),) + tuple(tiers)
+
         # distance-adaptive tiers (quad_mode="adaptive"): per-tier
         # sub-grids, selected per (collocation, source-face) pair by
         # distance / source-element size
@@ -219,7 +233,10 @@ class Geometry:
             self.osc_limits = np.asarray(osc_limits, dtype=float)
             self.tier_grids = []
             for _, deg in tiers:
-                if deg == nint:
+                if isinstance(deg, (tuple, list)):
+                    ref, wi = simplex_rule_composite(*deg)
+                    grids = subgrid_from_rule(faces, ref, wi)
+                elif deg == nint:
                     grids = (self.xia, self.yia, self.zia, self.wi)
                 else:
                     ref, wi = simplex_rule(deg)

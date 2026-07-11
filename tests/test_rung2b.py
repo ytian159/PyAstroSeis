@@ -109,9 +109,15 @@ def gate_validation(f_core, f_mid, f_surf):
     expects(NotImplementedError, lambda: nested_shell_model(
         [f_core, f_surf], [MAT_S, MAT_F], W0),
         "fluid outermost rejected")
-    expects(NotImplementedError, lambda: nested_shell_model(
-        [f_core, f_mid, f_surf], [MAT_F, MAT_F, MAT_S], W0),
-        "adjacent fluid layers rejected")
+    # adjacent fluid layers became the fluid_fluid condition
+    # (docs/fluid_fluid_derivation.md; gates in tests/test_ff.py)
+    model_ff, _ = nested_shell_model([f_core, f_mid, f_surf],
+                                     [MAT_F, MAT_F, MAT_S], W0)
+    kinds_ff = [k for k, _ in model_ff.blocks]
+    check("adjacent fluid layers build: 2 p + 1 un blocks, "
+          "no u on the split",
+          kinds_ff.count("p") == 2 and kinds_ff.count("un") == 1
+          and kinds_ff.count("u") == 2 and kinds_ff.count("t") == 0)
 
 
 def gate_tiny_core(f_core, f_surf):

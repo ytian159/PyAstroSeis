@@ -1,7 +1,16 @@
 # Fluid–fluid interfaces: derivation + implementation plan (rung-4 candidate)
 
-Status: DERIVATION ONLY — no code changed. Written 2026-07-10, to be
-adversarially checked (Codex second opinion) before implementation.
+Status: IMPLEMENTED 2026-07-11 (domains.py / elimination.py /
+layered.py, new block kind "un"). Gates G0-G4 PASSED
+(validation/ff_gate.txt, tests/test_ff.py): full existing battery
+unchanged; transparent split 7.0e-4 (gate 8e-2); registration swap
+1.5e-16; A_(+) + A_(-) = I to 1.4e-21; dense==eliminated 1.8e-14 -
+5.2e-14 on 4/5-layer fluid-fluid stacks incl. the middle-fluid
+own-modulus _scale fallback and a rho 9.0-vs-4.0 contrast; cache
+bitwise, 12/24 blocks recomputed as expected. G5 (DSM arbitration,
+graded-OC staircase) in dsm_arbitration_ff/. Derivation history:
+written 2026-07-10, adversarially checked by Codex before
+implementation (section 8).
 Goal: graded (staircase) outer core and, later, sub-surface oceans —
 stacks of homogeneous fluid shells separated by fluid–fluid interfaces.
 

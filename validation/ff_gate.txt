@@ -1,0 +1,263 @@
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+=== test_oracle ===
+kernel green_traction_tensor:
+  [ok ] T11                      max rel err = 7.824e-14 (tol 1e-13)
+  [ok ] T12                      max rel err = 4.221e-14 (tol 1e-13)
+  [ok ] T13                      max rel err = 5.624e-14 (tol 1e-13)
+  [ok ] T21                      max rel err = 3.992e-14 (tol 1e-13)
+  [ok ] T22                      max rel err = 3.838e-14 (tol 1e-13)
+  [ok ] T23                      max rel err = 1.229e-14 (tol 1e-13)
+  [ok ] T31                      max rel err = 5.478e-14 (tol 1e-13)
+  [ok ] T32                      max rel err = 2.951e-14 (tol 1e-13)
+  [ok ] T33                      max rel err = 9.267e-14 (tol 1e-13)
+sub-grid quadrature (face 3):
+  [ok ] subgrid x                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid y                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid z                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid w                max rel err = 0.000e+00 (tol 1e-13)
+self integral (face 5):
+  [ok ] ST5                      max rel err = 1.290e-15 (tol 1e-12)
+60-face system:
+  [ok ] TRAC(60)                 max rel err = 4.535e-14 (tol 1e-12)
+  [ok ] u0                       max rel err = 1.289e-14 (tol 1e-13)
+  [ok ] solve                    max rel err = 2.643e-14 (tol 1e-09)
+mesh rebuild from V/Tri:
+  [ok ] faces.ic                 max rel err = 1.520e-16 (tol 1e-12)
+  [ok ] faces.nvec               max rel err = 3.331e-16 (tol 1e-12)
+  [ok ] faces.area               max rel err = 1.224e-15 (tol 1e-12)
+  [ok ] faces.r                  max rel err = 1.011e-15 (tol 1e-12)
+
+all oracle checks passed
+=== test_oracle2 ===
+kernels:
+  [ok ] B11            max rel err = 4.062e-16 (tol 1e-13)
+  [ok ] B12            max rel err = 9.766e-16 (tol 1e-13)
+  [ok ] B13            max rel err = 1.176e-15 (tol 1e-13)
+  [ok ] B21            max rel err = 9.766e-16 (tol 1e-13)
+  [ok ] B22            max rel err = 3.529e-16 (tol 1e-13)
+  [ok ] B23            max rel err = 1.161e-15 (tol 1e-13)
+  [ok ] B31            max rel err = 1.176e-15 (tol 1e-13)
+  [ok ] B32            max rel err = 1.161e-15 (tol 1e-13)
+  [ok ] B33            max rel err = 4.839e-16 (tol 1e-13)
+  [ok ] greens_func_p  max rel err = 1.552e-16 (tol 1e-13)
+  [ok ] greens_deri_p  max rel err = 2.204e-16 (tol 1e-13)
+  [ok ] G_singular     max rel err = 1.868e-16 (tol 1e-13)
+  [ok ] gd1            max rel err = 6.193e-16 (tol 1e-13)
+  [ok ] gd2            max rel err = 7.283e-16 (tol 1e-13)
+  [ok ] gd3            max rel err = 9.179e-16 (tol 1e-13)
+liquid-core matrices (subsets):
+  [ok ] T11            max rel err = 4.004e-14 (tol 1e-12)
+  [ok ] T22            max rel err = 6.650e-14 (tol 1e-12)
+  [ok ] T12            max rel err = 6.750e-16 (tol 1e-12)
+  [ok ] T21            max rel err = 5.935e-16 (tol 1e-12)
+  [ok ] G12            max rel err = 4.794e-16 (tol 1e-12)
+  [ok ] G22            max rel err = 1.166e-14 (tol 1e-12)
+  [ok ] A22            max rel err = 2.220e-16 (tol 1e-12)
+  [ok ] B22            max rel err = 4.449e-16 (tol 1e-12)
+sources + coupled system:
+  [ok ] u0eM(f1)       max rel err = 1.293e-15 (tol 1e-13)
+  [ok ] u0eM(f2)       max rel err = 1.116e-14 (tol 1e-13)
+  [ok ] u0p_exp        max rel err = 1.483e-16 (tol 1e-13)
+  [ok ] A_lc           max rel err = 6.650e-14 (tol 1e-12)
+  [ok ] b_lc           max rel err = 1.116e-14 (tol 1e-13)
+  [ok ] solve_lc       max rel err = 1.046e-14 (tol 1e-08)
+spherical harmonics + topography:
+  [ok ] ylm(45,17)     max rel err = 1.359e-14 (tol 1e-11)
+  [ok ] ylm(5,3)       max rel err = 9.039e-16 (tol 1e-13)
+  [ok ] ylm(7,-4)      max rel err = 1.130e-15 (tol 1e-13)
+  [ok ] phobos_topo    max rel err = 9.762e-16 (tol 1e-10)
+  [ok ] mars_topo      max rel err = 1.265e-15 (tol 1e-12)
+spherical subdivision (fixed icosahedron):
+  [ok ] subdiv V       max rel err = 0.000e+00 (tol 1e-15)
+  [ok ] subdiv F      exact face match: True
+
+all oracle2 checks passed
+=== test_kernel_equiv ===
+canonical kernel == reference on 6x4000 random points, worst rel err = 2.342e-15
+kernel equivalence PASSED
+=== test_meshgen ===
+particle_sample_sphere (N=50, seed 0):
+  [ok ] unit sphere 
+  [ok ] energy decreased (E0=2301.3 -> 1925.6)
+  [ok ] closed surface (chi=2)
+  [ok ] deterministic w/ seed 
+  [ok ] subdivision x4 faces 
+  [ok ] subdivided closed 
+gen_mesh_ph_topo (Phobos, n=50, nfold=1, matlab radius mode):
+  [ok ] areas positive 
+  [ok ] normals outward 
+  [ok ] Phobos double-radius quirk (mean r = 21708 m; my_mesh.mat has 21918)
+  [ok ] element-size spread ~ MATLAB mesh (norm-size q10/q90: [0.9  1.12] vs [0.9  1.11])
+gen_mesh_topo_layers (sphere, nfold=0):
+  [ok ] exact sphere at nfold=0 (max dev 1.82e-12 m)
+gen_mesh_topo_layers (Mars-like topo):
+  [ok ] topo present (max |h| = 934 m at nfold=1e-3)
+  [ok ] topo linear in nfold 
+
+all meshgen checks passed
+=== test_adaptive_quad ===
+f=0.12 Hz (resolved): cap median tier 2, assembly full 21.2 s / adaptive 8.5 s (2.48x), solution rel err 1.656e-06
+f=0.88 Hz (band-top): cap median tier 0, assembly full 21.7 s / adaptive 22.6 s (0.96x), solution rel err 0.000e+00
+adaptive quadrature gate PASSED
+=== test_rung0 ===
+[homog/synthetic production] n=184 f=0.05 Hz (1.9 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/synthetic matlab-exact] n=184 f=0.05 Hz (2.7 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic production] n1=184 n2=80 f=0.05 Hz (4.5 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic matlab-exact] n1=184 n2=80 f=0.05 Hz (6.1 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[validation]
+    unknown condition rejected: OK
+    fluid-side sign convention enforced: OK
+    missing w0 rejected for fluid regions: OK
+rung-0 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+=== test_rung1 ===
+[transparent/synthetic] n1=184 n2=80 f=0.05 Hz (3.4 s)
+    surface field vs single-region: OK  (rel err 1.272e-02, gate 0.025)
+[transparent-refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (15.3 s)
+    transparent err: 1.272e-02  7.400e-03  5.156e-03
+    transparent error converges: OK
+[swap/synthetic] n1=184 n2=80 f=0.05 Hz (4.9 s)
+    u_surf A/B-swap: OK  (rel 2.330e-16)
+    u_core A/B-swap: OK  (rel 6.178e-16)
+    t_core A/B-swap (physical): OK  (rel 1.828e-15)
+[refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (14.4 s)
+    surface-field err vs finest core: 1.966e-02  5.801e-03
+    interface refinement converges: OK
+[validation]
+    one-sided welded rejected: OK
+    same-sign welded rejected: OK
+    missing w0 rejected for welded: OK
+rung-1 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+=== test_rung2 ===
+[bitwise special cases]
+    welded_two_layer matrix: OK
+    welded_two_layer rhs: OK
+    welded_two_layer solution: OK
+    liquid_core matrix: OK
+    liquid_core rhs: OK
+    liquid_core solution: OK
+[transparent-3shell] n=[80, 128, 184] f=0.05 Hz (6.0 s)
+    surface field vs single-region: OK  (rel err 3.982e-02, gate 0.05)
+[lc-transparent] n=[80, 128, 184] f=0.05 Hz (7.2 s)
+    fluid-core + artificial weld vs 2-region LC: OK  (rel err 3.653e-02, gate 0.08)
+[validation]
+    fluid outermost rejected: OK
+    material/mesh count mismatch rejected: OK
+rung-2 gate PASSED
+=== test_rung2b ===
+[validation]
+    solid/fluid/solid builds: 2 p blocks, no t blocks: OK
+    fluid outermost rejected: OK
+    adjacent fluid layers rejected: FAIL
+[auto_nmesh]
+    Earth campaign surface ~200: OK  (n=199)
+    CMB reflector: max(wavelength, curvature h/R<=0.09): OK  (n_cmb=196)
+    welded boundary uses h/R<=0.2 tier: OK  (n_welded=42)
+    explicit nmesh override kept: OK
+[perturbation]
+    amp=0 relief BITWISE == unperturbed sphere: OK
+    perturbed mesh outward-closed (amp=100): OK
+    perturbed mesh outward-closed (amp=200): OK
+    solution change ~linear in amp: OK  (err 9.592e-03 -> 1.919e-02, ratio 2.00)
+[tiny-core limit] inner n=32 (5.2 s)
+    solid(tiny)/fluid/solid vs liquid core: OK  (rel err 4.663e-05, gate 0.08)
+[annulus refinement] internal meshes x1/x2/x4, surface fixed
+    x1: internal n=(80,128) size=1384 (4.8 s)
+    x2: internal n=(176,272) size=2344 (9.3 s)
+    x4: internal n=(368,560) size=4264 (20.5 s)
+    surface field converges under internal refinement: OK  (err x1 1.259e-01 -> x2 4.337e-02, need ratio < 0.75)
+rung-2b gate FAILED: ['adjacent fluid layers rejected']
+BATTERY-FAIL test_rung2b
+=== test_rung2c ===
+[l=0 radial arbiter] analytic root 0.140674 Hz
+    x1: peak 0.143308 (+1.873%) (103.0 s)
+    x2: peak 0.141960 (+0.915%) (311.1 s)
+    x2 offset below gate: OK  (0.915% < 1.4%)
+    convergence order >= 1.4: OK  (order 2.07)
+rung-2c gate PASSED
+=== test_self_convergence ===
+ face  grid300 err polar8x 6 polar16x12 polar32x24   (rel to nxi=1501 reference, traction self block)
+    0    4.503e-05 9.911e-06 9.817e-06 9.817e-06
+  100    1.623e-04 4.144e-05 4.094e-05 4.094e-05
+  777    4.307e-05 1.101e-05 1.089e-05 1.089e-05
+polar self-convergence (16x12 vs 96x64): 7.488e-13
+grid(nxi= 300) vs converged polar: 3.866e-05
+grid(nxi= 600) vs converged polar: 1.994e-05
+grid(nxi=1200) vs converged polar: 7.602e-06
+grid(nxi=2400) vs converged polar: 5.333e-06
+G self block polar16x12: vs grid1501 1.021e-03, self-convergence vs 96x64 4.658e-12
+G self block polar32x24: vs grid1501 1.021e-03, self-convergence vs 96x64 9.411e-16
+G self block: grid300 err 4.247e-03 (production = polar32x24)
+per-face timing: grid300 5.6 ms, polar16x12 0.49 ms (11x)
+
+self-quadrature study PASSED: polar16x12 worst err 4.094e-05 vs grid300 1.623e-04 (errors rel to nxi=1501 grid, which itself carries ~1e-5 stair-step error; grid marches to the polar limit)
+=== test_elim ===
+[dense vs eliminated]
+    welded3 full solution: OK  (rel err 1.171e-15; dense 3.6 s, elim 3.5 s, size 1800)
+    welded3 multi-RHS: OK  (rel err 1.196e-15)
+    welded3 surface-only == full surface block: OK
+    fluid_core3 full solution: OK  (rel err 1.076e-14; dense 3.4 s, elim 3.4 s, size 1640)
+    fluid_core3 multi-RHS: OK  (rel err 1.045e-14)
+    fluid_core3 surface-only == full surface block: OK
+    annulus full solution: OK  (rel err 2.159e-14; dense 2.5 s, elim 2.4 s, size 1384)
+    annulus multi-RHS: OK  (rel err 2.116e-14)
+    annulus surface-only == full surface block: OK
+    mixed5 full solution: OK  (rel err 2.933e-14; dense 6.5 s, elim 5.8 s, size 2792)
+    mixed5 multi-RHS: OK  (rel err 2.939e-14)
+    mixed5 surface-only == full surface block: OK
+[rung-3 block cache]
+    cached blocks bitwise == fresh: OK  (recomputed 11/16 blocks, expected 11; fresh 2.3 s, cached 1.5 s)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+[thin-shell probe]
+    t =   5000 m  t/h =  1.56  surface rel err 6.282e-02
+    t =   4000 m  t/h =  1.19  surface rel err 5.884e-02
+    t =   2000 m  t/h =  0.54  surface rel err 5.378e-02
+    t =   1000 m  t/h =  0.26  surface rel err 5.371e-02
+    t =    500 m  t/h =  0.13  surface rel err 1.124e-01
+    t/h >= 1 stays in the transparent-interface class: OK  (max 6.282e-02, gate 0.15)
+[source-layer placement]
+    outermost layer == incident_outer_source (bitwise): OK
+    middle-shell source vs single-region: OK  (rel err 3.950e-02, gate 8e-2)
+elimination gate PASSED
+=== test_ff ===
+[G1 transparent fluid-fluid split]
+    split fluid core vs unsplit (surface): OK  (rel err 7.019e-04, gate 0.08, size 1032 vs 872)
+[G2 A/B swap + self-operator identity]
+    registration swap (surface): OK  (rel err 1.541e-16, gate 1e-08)
+    A_(+) + A_(-) == I: OK  (max abs 1.359e-21)
+[G3 dense vs eliminated, fluid-fluid]
+    ff_annulus4 full solution: OK  (rel err 1.831e-14; 1 ff ifaces; cond 3.69e+08; dense 0.2 s, elim 2.3 s, size 1512)
+    ff_annulus4 multi-RHS: OK  (rel err 1.811e-14)
+    ff_annulus4 surface-only == full surface block: OK
+    ff_core4 full solution: OK  (rel err 1.685e-14; 1 ff ifaces; cond 3.99e+09; dense 0.4 s, elim 3.7 s, size 1864)
+    ff_core4 multi-RHS: OK  (rel err 1.513e-14)
+    ff_core4 surface-only == full surface block: OK
+    ff_contrast4 full solution: OK  (rel err 2.010e-14; 1 ff ifaces; cond 3.90e+09; dense 0.4 s, elim 3.6 s, size 1864)
+    ff_contrast4 multi-RHS: OK  (rel err 1.837e-14)
+    ff_contrast4 surface-only == full surface block: OK
+    ff_stack5 full solution: OK  (rel err 5.205e-14; 2 ff ifaces; cond 4.45e+09; dense 0.5 s, elim 3.7 s, size 2024)
+    ff_stack5 multi-RHS: OK  (rel err 5.123e-14)
+    ff_stack5 surface-only == full surface block: OK
+    incident helpers agree bitwise (with un blocks): OK
+[G4 block cache across a fluid-fluid boundary]
+    cached blocks bitwise == fresh: OK  (recomputed 12/24 blocks, expected 12)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+fluid-fluid gate PASSED

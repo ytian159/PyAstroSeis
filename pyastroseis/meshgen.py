@@ -498,3 +498,51 @@ def gen_layer(rpl, nmesh, nfold, rng=None, verbose=False):
     for r, n, f in zip(rpl, nmesh, nfold):
         out.append(gen_mesh_topo_layers(r, n, f, rng=rng, verbose=verbose))
     return out
+
+
+def _mid_radial(P, Q):
+    """Edge midpoints radially projected to the mean endpoint radius
+    (keeps sphere meshes on the sphere; topo meshes approximately)."""
+    M = 0.5 * (P + Q)
+    rm = 0.5 * (np.linalg.norm(P, axis=1) + np.linalg.norm(Q, axis=1))
+    return M * (rm / np.linalg.norm(M, axis=1))[:, None]
+
+
+def refine_toward(faces, target, hmin, grade=1.0, max_levels=8):
+    """Graded local refinement toward the surface point `target`
+    (3-vector, mesh units): a face is quadrisected while its longest
+    side exceeds max(grade * |incenter - target|, hmin), so panel size
+    tracks distance from the target down to the hmin floor
+    (logarithmic extra-face count) and neighboring rings differ by one
+    level. Midpoints are radially projected (_mid_radial).
+
+    The result is NONCONFORMING (hanging nodes) — legal for
+    piecewise-constant collocation at incenters, PROVIDED near
+    cross-panel pairs get the near-singular quadrature tier
+    (Geometry/MultiDomainModel near_tier, e.g. (1.5, (10, 2))): a
+    small panel's collocation point sits close to its large neighbors
+    in units of the NEIGHBOR's size. Gate: tests/test_near_quad.py.
+
+    Returns a new Faces (refined faces appended after kept ones)."""
+    A, B, C = faces.A.copy(), faces.B.copy(), faces.C.copy()
+    tgt = np.asarray(target, dtype=float)
+    for _ in range(max_levels):
+        ic = (A + B + C) / 3.0
+        hmax = np.maximum.reduce([
+            np.linalg.norm(A - B, axis=1),
+            np.linalg.norm(B - C, axis=1),
+            np.linalg.norm(C - A, axis=1)])
+        d = np.linalg.norm(ic - tgt, axis=1)
+        split = hmax > np.maximum(grade * d, hmin)
+        if not split.any():
+            break
+        sA, sB, sC = A[split], B[split], C[split]
+        mAB = _mid_radial(sA, sB)
+        mBC = _mid_radial(sB, sC)
+        mCA = _mid_radial(sC, sA)
+        A = np.vstack([A[~split], sA, mAB, mCA, mAB])
+        B = np.vstack([B[~split], mAB, sB, mBC, mBC])
+        C = np.vstack([C[~split], mCA, mBC, sC, mCA])
+    V = np.stack([A, B, C], axis=1).reshape(-1, 3)
+    tri = np.arange(1, V.shape[0] + 1).reshape(-1, 3)
+    return faces_from_vertices(V, tri)

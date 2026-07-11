@@ -204,3 +204,31 @@ def simplex_rule(degree):
         w = np.array([9.0 / 80.0, w1, w1, w1, w2, w2, w2])
         return ref, w
     raise ValueError(f"no simplex rule for degree {degree} (1, 2, 5, 10)")
+
+
+def simplex_rule_composite(degree, levels):
+    """Composite rule: the unit simplex quadrisected `levels` times
+    with the degree-`degree` rule mapped into every sub-simplex
+    (4^levels * npts points, weights still summing to 1/2). For
+    near-singular integrands (a collocation point within ~1 panel size
+    of a large panel) shrinking the effective panel beats raising the
+    polynomial degree — the difficulty is the 1/r^2 boundary layer,
+    not polynomial order. Used by the near-singular assembly tier
+    (assembly.Geometry near_tier)."""
+    ref, w = simplex_rule(degree)
+    tris = [(np.array([0.0, 0.0]), np.array([1.0, 0.0]),
+             np.array([0.0, 1.0]))]
+    for _ in range(levels):
+        nxt = []
+        for a, b, c in tris:
+            ab, bc, ca = (a + b) / 2, (b + c) / 2, (c + a) / 2
+            nxt += [(a, ab, ca), (ab, b, bc), (ca, bc, c), (ab, bc, ca)]
+        tris = nxt
+    pts, ws = [], []
+    scale = 0.25 ** levels
+    for a, b, c in tris:
+        x = a[0] + (b[0] - a[0]) * ref[0] + (c[0] - a[0]) * ref[1]
+        y = a[1] + (b[1] - a[1]) * ref[0] + (c[1] - a[1]) * ref[1]
+        pts.append(np.vstack([x, y]))
+        ws.append(w * scale)
+    return np.hstack(pts), np.concatenate(ws)

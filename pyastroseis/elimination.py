@@ -22,7 +22,7 @@ reassembled (cached_blocks).
 
 import numpy as np
 
-from .domains import FLUID_SOLID, WELDED
+from .domains import FLUID_FLUID, FLUID_SOLID, WELDED
 
 
 class ShellElimination:
@@ -177,14 +177,17 @@ def _structural_keys(model):
         row = (kind_r, ifr)
         if kind_r == "p":
             reg, _sr = model._fluid_of[ifr]
+        elif kind_r == "un":
+            reg, _sr = model._fluid_b_of[ifr]
         elif kind_r == "u":
             reg, _sr = model._solid_of[ifr]
         else:
             reg, _sr = model._solid_b_of[ifr]
         for ifc, _sc in reg.interfaces:
-            if kind_r == "p":
+            if kind_r in ("p", "un"):
                 keys.append((row, ("p", ifc)))
-                keys.append((row, ("u", ifc)))
+                keys.append((row, ("un" if ifc.condition == FLUID_FLUID
+                                   else "u", ifc)))
             else:
                 keys.append((row, ("u", ifc)))
                 if ifc.condition == FLUID_SOLID:

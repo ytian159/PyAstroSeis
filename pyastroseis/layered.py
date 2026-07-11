@@ -152,7 +152,7 @@ def incident_outer_source(model, ifaces, field):
         if kind == "u" and (iface is ifaces[-1]
                             or (len(ifaces) > 1 and iface is ifaces[-2])):
             inc[(kind, iface)] = field(iface.faces)
-        elif kind == "p":
+        elif kind in ("p", "un"):
             inc[(kind, iface)] = np.zeros(n, dtype=complex)
         else:
             inc[(kind, iface)] = np.zeros(3 * n, dtype=complex)
@@ -181,7 +181,7 @@ def incident_solid_layer_source(model, ifaces, layer, field):
             own = model._solid_b_of[iface][0].name
         if own == name:
             inc[(kind, iface)] = field(iface.faces)
-        elif kind == "p":
+        elif kind in ("p", "un"):
             inc[(kind, iface)] = np.zeros(n, dtype=complex)
         else:
             inc[(kind, iface)] = np.zeros(3 * n, dtype=complex)

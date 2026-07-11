@@ -35,7 +35,7 @@ PKG = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, PKG)
 
 from pyastroseis.liquidcore import flip_normals   # noqa: E402
-from pyastroseis.meshgen import gen_layer          # noqa: E402
+from pyastroseis.meshgen import gen_layer, refine_toward   # noqa: E402
 
 R_KM = 6371.0
 RC_KM = 3185.5
@@ -83,6 +83,10 @@ MAT_OC2 = (5.0, 5.5, 0.0)       # corefluid2 fluid outer core
 MAT_SHELL_Q = (3.0, 6.0, 3.0, 50.0)   # rung 2d: attenuated solids
 MAT_CORE_Q = (4.0, 8.0, 4.5, 50.0)
 MAT_IC2Q = (6.0, 7.0, 3.5, 50.0)
+# fluid-fluid gate (G5, docs/fluid_fluid_derivation.md): a two-step
+# fluid staircase around MAT_OC2 (~30% impedance jump at the split)
+MAT_OC2A = (5.3, 5.9, 0.0)
+MAT_OC2B = (4.7, 5.1, 0.0)
 
 # model registry: (r_km, nmesh, material) innermost first; selected
 # via ARB_MODELS (comma list, default "homog,twolayer")
@@ -129,6 +133,16 @@ LAYER_SPECS = {
     "twolayer_q50": ((RC_KM, 50, MAT_CORE_Q), (R_KM, 200, MAT_SHELL_Q)),
     "corefluid_q50": ((1221.5, 48, MAT_IC2Q), (3480.0, 200, MAT_OC2),
                       (R_KM, 200, MAT_SHELL_Q)),
+    # fluid-fluid gate G5: corefluid_q50 with the outer core split at
+    # 2350 km. ocsplit2 = IDENTICAL fluid both sides (transparent
+    # split; the DSM model is physically corefluid_q50); ocstair2 = a
+    # real two-step fluid staircase, DSM runs the SAME staircase
+    # zones. Split mesh: n=42 -> 320 faces, h/R 0.198 (transmissive
+    # class), sub-shell t/h ~ 2.4 (>= the h <= 2t staircase rule).
+    "ocsplit2_q50": ((1221.5, 48, MAT_IC2Q), (2350.0, 42, MAT_OC2),
+                     (3480.0, 200, MAT_OC2), (R_KM, 200, MAT_SHELL_Q)),
+    "ocstair2_q50": ((1221.5, 48, MAT_IC2Q), (2350.0, 42, MAT_OC2A),
+                     (3480.0, 200, MAT_OC2B), (R_KM, 200, MAT_SHELL_Q)),
 }
 
 # ------------------------------------------------------- graded PREM (2e)
@@ -456,6 +470,23 @@ def main():
             faces = outward(gen_layer((r_km * 1e3,), (nmesh * scale,),
                                       (0,), rng=rng)[0][0])
             fn = "mesh_r%05d_n%d.npz" % (int(round(r_km)), nmesh * scale)
+            # ARB_REFINE_HMIN_KM: graded epicentral refinement of the
+            # SURFACE mesh for shallow sources (h <= max(grade*dist,
+            # hmin) toward the epicenter; log extra-face count). Needs
+            # the near-singular quadrature tier on the solver side
+            # (ARB_NEAR_TIER in run_bem).
+            hmin_km = os.environ.get("ARB_REFINE_HMIN_KM")
+            if hmin_km and abs(r_km - R_KM) < 1e-6:
+                grade = float(os.environ.get("ARB_REFINE_GRADE", "1.0"))
+                epi = unit_vec(SOURCE_LAT, SOURCE_LON) * R_KM * 1e3
+                n0 = faces.n
+                faces = refine_toward(faces, epi, float(hmin_km) * 1e3,
+                                      grade=grade)
+                fn = "mesh_r%05d_n%d_ref%g.npz" % (
+                    int(round(r_km)), nmesh * scale, float(hmin_km))
+                print("surface refined toward the epicenter: hmin %s km"
+                      " grade %g, %d -> %d faces"
+                      % (hmin_km, grade, n0, faces.n))
             save_faces(os.path.join(ROOT, fn), faces)
             meshes[key] = fn
             print("mesh r=%7.1f km: n=%d faces, mean r %.1f km -> %s"

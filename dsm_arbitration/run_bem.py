@@ -140,7 +140,17 @@ def main():
     w0 = 2.0 * np.pi * imax * df / 3.0   # reference frequency for scaling
 
     t_build = time.time()
-    model, ifaces = nested_shell_model(faces_list, mats, w0)
+    # ARB_NEAR_TIER="edge:deg:levels" (e.g. "1.5:10:2"): near-singular
+    # composite quadrature tier for graded meshes (assembly.Geometry
+    # near_tier; strict no-op when unset)
+    opts = {}
+    nt = os.environ.get("ARB_NEAR_TIER")
+    if nt:
+        edge, deg, lev = nt.split(":")
+        opts["near_tier"] = (float(edge), (int(deg), int(lev)))
+        print("near-singular quadrature tier: dist/h < %s -> "
+              "deg %s x 4^%s composite" % (edge, deg, lev))
+    model, ifaces = nested_shell_model(faces_list, mats, w0, **opts)
     use_elim = os.environ.get("ARB_ELIM", "auto")
     elim = None
     if use_elim == "1" or (use_elim == "auto" and len(layers) >= 4):

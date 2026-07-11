@@ -46,6 +46,7 @@ from .liquidcore import flip_normals
 FREE = "free"
 FLUID_SOLID = "fluid_solid"
 WELDED = "welded"
+FLUID_FLUID = "fluid_fluid"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -110,7 +111,8 @@ class MultiDomainModel:
     """
 
     def __init__(self, regions, w0=None, self_scheme="polar",
-                 quad_mode="adaptive", nint=NINT, nxi=NXI_SELF):
+                 quad_mode="adaptive", nint=NINT, nxi=NXI_SELF,
+                 near_tier=None):
         self.regions = tuple(regions)
         self.w0 = w0
 
@@ -121,25 +123,30 @@ class MultiDomainModel:
                 side = fluids_of if reg.material.fluid else solids_of
                 side.setdefault(iface, []).append((reg, sign))
 
-        # unknown/row blocks: p blocks, then u blocks, then t blocks
-        p_ifaces, u_ifaces, seen = [], [], set()
+        # unknown/row blocks: p blocks, then u blocks, then t blocks,
+        # then un blocks (fluid-fluid scalar normal displacement
+        # q = u . n_canonical; docs/fluid_fluid_derivation.md)
+        p_ifaces, u_ifaces, seen_p, seen = [], [], set(), set()
         for reg in self.regions:
             for iface, _ in reg.interfaces:
-                if reg.material.fluid:
+                if reg.material.fluid and iface not in seen_p:
+                    seen_p.add(iface)
                     p_ifaces.append(iface)
-                if iface not in seen:
+                if iface not in seen and iface.condition != FLUID_FLUID:
                     seen.add(iface)
                     u_ifaces.append(iface)
         t_ifaces = [i for i in u_ifaces if i.condition == WELDED]
+        un_ifaces = [i for i in p_ifaces if i.condition == FLUID_FLUID]
 
-        self._solid_of, self._solid_b_of, self._fluid_of = {}, {}, {}
-        for iface in u_ifaces:
+        self._solid_of, self._solid_b_of = {}, {}
+        self._fluid_of, self._fluid_b_of = {}, {}
+        for iface in u_ifaces + un_ifaces:
             sol = solids_of.get(iface, [])
             flu = fluids_of.get(iface, [])
-            if len(flu) > 1:
-                raise NotImplementedError(
-                    f"interface {iface.name!r} has two fluid sides "
-                    "(fluid-fluid interfaces are a later rung)")
+            if len(flu) > 1 and iface.condition != FLUID_FLUID:
+                raise ValueError(
+                    f"interface {iface.name!r} has two fluid sides but "
+                    f"is not declared {FLUID_FLUID!r}")
             if iface.condition == FREE:
                 if len(sol) != 1 or flu:
                     raise ValueError(f"free interface {iface.name!r} needs "
@@ -163,11 +170,22 @@ class MultiDomainModel:
                         f"welded interface {iface.name!r}: the two solid "
                         "sides must register opposite orientation signs")
                 self._solid_b_of[iface] = sol[1]
+            elif iface.condition == FLUID_FLUID:
+                if len(flu) != 2 or sol:
+                    raise ValueError(
+                        f"fluid_fluid interface {iface.name!r} needs "
+                        "exactly two fluid sides and no solid side")
+                if flu[0][1] * flu[1][1] >= 0:
+                    raise ValueError(
+                        f"fluid_fluid interface {iface.name!r}: the two "
+                        "fluid sides must register opposite orientation "
+                        "signs")
+                self._fluid_b_of[iface] = flu[1]
             else:
                 raise NotImplementedError(
                     f"interface condition {iface.condition!r} is not "
-                    "supported (rung 1 supports free / fluid_solid / "
-                    "welded)")
+                    "supported (free / fluid_solid / welded / "
+                    "fluid_fluid)")
             if sol:
                 self._solid_of[iface] = sol[0]
             if flu:
@@ -175,10 +193,12 @@ class MultiDomainModel:
 
         self.blocks = [("p", i) for i in p_ifaces] \
             + [("u", i) for i in u_ifaces] \
-            + [("t", i) for i in t_ifaces]
+            + [("t", i) for i in t_ifaces] \
+            + [("un", i) for i in un_ifaces]
         self._slices, off = {}, 0
         for kind, iface in self.blocks:
-            n = iface.faces.n if kind == "p" else 3 * iface.faces.n
+            n = iface.faces.n if kind in ("p", "un") \
+                else 3 * iface.faces.n
             self._slices[(kind, iface)] = slice(off, off + n)
             off += n
         self.size = off
@@ -196,24 +216,34 @@ class MultiDomainModel:
                 self._oriented[key] = fc
                 self._geom[key] = Geometry(fc, nint=nint, nxi=nxi,
                                            self_scheme=self_scheme,
-                                           quad_mode=quad_mode)
+                                           quad_mode=quad_mode,
+                                           near_tier=near_tier)
 
         self._smat = {i: smat_func(i.faces) for i in p_ifaces}
 
         # fluid row scaling, verbatim liq_core scale_fac (rho*c*w0 with
-        # c from the adjacent solid's P modulus)
+        # c from the P modulus of the solid adjacent to the fluid's
+        # first interface). Built for EVERY fluid region — the second
+        # fluid of a fluid-fluid pair owns the "un" rows and needs a
+        # scale too; a region bounded only by fluid-fluid interfaces
+        # has no adjacent solid and falls back to its own P modulus
+        # (same rho*c*w0 form).
         self._scale = {}
-        for iface in p_ifaces:
-            freg = self._fluid_of[iface][0]
-            if freg in self._scale:
+        for reg in self.regions:
+            if not reg.material.fluid:
                 continue
             if w0 is None:
                 raise ValueError("w0 is required when a region is fluid "
                                  "(fluid row scaling)")
-            smat_reg = self._solid_of[freg.interfaces[0][0]][0].material
-            self._scale[freg] = freg.material.rho \
-                * np.sqrt(smat_reg.lamda + 2 * smat_reg.mu) \
-                / np.sqrt(freg.material.rho) * w0
+            sol = self._solid_of.get(reg.interfaces[0][0])
+            if sol is not None:
+                smat_reg = sol[0].material
+                self._scale[reg] = reg.material.rho \
+                    * np.sqrt(smat_reg.lamda + 2 * smat_reg.mu) \
+                    / np.sqrt(reg.material.rho) * w0
+            else:
+                self._scale[reg] = np.sqrt(
+                    reg.material.rho * reg.material.lamda) * w0
 
         # welded traction column scaling (same rho*c*w0 form, from the
         # first-registered solid's material)
@@ -271,6 +301,44 @@ class MultiDomainModel:
                               disp_ref_hz=m.disp_ref_hz)
                 yield ("t", ifc), (-sc * self._tscale[ifc]) * Gb
 
+    def _fluid_entries(self, reg, ifr, sr, w, row=None, skip=None):
+        """One fluid region's representation equation collocated on
+        interface ifr (used for both "p" and "un" row blocks): yields
+        (col_block, matrix) pairs, mirroring _solid_entries."""
+        m = reg.material
+        fr = self._oriented[(ifr, sr)]
+        scale = self._scale[reg]
+
+        def keep(col):
+            return not (skip and skip(row, col))
+
+        for ifc, sc in reg.interfaces:
+            fc = self._oriented[(ifc, sc)]
+            geo = self._geom[(ifc, sc)]
+            if keep(("p", ifc)):
+                Ab = cal_A_st(fr, fc, w, m.lamda, m.mu, m.rho,
+                              m.Q, qp_fac=m.qp_fac, geom=geo,
+                              disp_ref_hz=m.disp_ref_hz)
+                yield ("p", ifc), Ab / scale
+            if ifc.condition == FLUID_FLUID:
+                if keep(("un", ifc)):
+                    Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho,
+                                  m.Q, qp_fac=m.qp_fac, geom=geo,
+                                  disp_ref_hz=m.disp_ref_hz)
+                    # u . n_fluid_out = sc * q (q = u . n_canonical is
+                    # the scalar unknown; no Smat)
+                    yield ("un", ifc), \
+                        -sc * m.rho * w ** 2 * Bb / scale
+            elif keep(("u", ifc)):
+                Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho,
+                              m.Q, qp_fac=m.qp_fac, geom=geo,
+                              disp_ref_hz=m.disp_ref_hz)
+                # u . n_fluid_out = sc * (Smat u): the B coupling
+                # carries the fluid's orientation sign
+                yield ("u", ifc), \
+                    -sc * m.rho * w ** 2 * (Bb @ self._smat[ifc]) \
+                    / scale
+
     def _block_entries(self, w, skip=None):
         """Yield (row_block, col_block, matrix) for every structurally
         nonzero block of the system matrix at angular frequency w.
@@ -278,28 +346,14 @@ class MultiDomainModel:
         suppress computing selected blocks (rung-3 block caching)."""
         for kind_r, ifr in self.blocks:
             row = (kind_r, ifr)
-            if kind_r == "p":
-                reg, sr = self._fluid_of[ifr]
-                m = reg.material
-                fr = self._oriented[(ifr, sr)]
-                scale = self._scale[reg]
-                for ifc, sc in reg.interfaces:
-                    fc = self._oriented[(ifc, sc)]
-                    geo = self._geom[(ifc, sc)]
-                    if not (skip and skip(row, ("p", ifc))):
-                        Ab = cal_A_st(fr, fc, w, m.lamda, m.mu, m.rho,
-                                      m.Q, qp_fac=m.qp_fac, geom=geo,
-                                      disp_ref_hz=m.disp_ref_hz)
-                        yield row, ("p", ifc), Ab / scale
-                    if not (skip and skip(row, ("u", ifc))):
-                        Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho,
-                                      m.Q, qp_fac=m.qp_fac, geom=geo,
-                                      disp_ref_hz=m.disp_ref_hz)
-                        # u . n_fluid_out = sc * (Smat u): the B coupling
-                        # carries the fluid's orientation sign
-                        yield row, ("u", ifc), \
-                            -sc * m.rho * w ** 2 * (Bb @ self._smat[ifc]) \
-                            / scale
+            if kind_r in ("p", "un"):
+                # "p": first-registered fluid; "un": the second fluid's
+                # equation on a fluid-fluid interface
+                reg, sr = (self._fluid_of[ifr] if kind_r == "p"
+                           else self._fluid_b_of[ifr])
+                for col, M in self._fluid_entries(reg, ifr, sr, w,
+                                                  row=row, skip=skip):
+                    yield row, col, M
             else:
                 # "u": first-registered solid; "t": the second solid's
                 # equation on a welded interface
@@ -331,6 +385,8 @@ class MultiDomainModel:
             v = np.asarray(incident[(kind, iface)], dtype=complex).ravel()
             if kind == "p":
                 v = v / self._scale[self._fluid_of[iface][0]]
+            elif kind == "un":
+                v = v / self._scale[self._fluid_b_of[iface][0]]
             b[self._slices[(kind, iface)]] = v
         return b
 
@@ -381,15 +437,19 @@ def nested_shell_model(faces_list, materials, w0, **opts):
     faces_list[i] is the OUTER boundary mesh of layer i (stored
     normals pointing away from the center), so faces_list[-1] is the
     free surface; materials[i] is layer i's material. Consecutive
-    solid layers are welded; a fluid layer may sit anywhere below the
+    solid layers are welded; fluid layers may sit anywhere below the
     surface (innermost = liquid core, internal = fluid annulus /
-    subsurface ocean; both its boundaries become fluid_solid). Not
-    supported: fluid outermost (free fluid surface) and two adjacent
-    fluid layers. Regions are registered outermost-first, so for each
-    internal interface the OUTER layer's equation fills the
-    ("u", iface) rows and the inner layer's the ("t", iface) rows;
-    the 2-layer solid case reproduces welded_two_layer_model and the
-    fluid-core case reproduces liquid_core_model exactly.
+    subsurface ocean); a fluid-solid contact becomes fluid_solid and
+    two adjacent fluid layers a fluid_fluid interface (shared p +
+    shared scalar normal displacement "un" unknowns — a graded /
+    staircase outer core; docs/fluid_fluid_derivation.md). Not
+    supported: fluid outermost (free fluid surface). Regions are
+    registered outermost-first, so for each internal interface the
+    OUTER layer's equation fills the ("u", iface) rows (fluid_fluid:
+    the ("p", iface) rows) and the inner layer's the ("t", iface)
+    rows (fluid_fluid: the ("un", iface) rows); the 2-layer solid
+    case reproduces welded_two_layer_model and the fluid-core case
+    reproduces liquid_core_model exactly.
 
     Returns (model, interfaces) with interfaces innermost-first
     (interfaces[-1] = the free surface)."""
@@ -401,14 +461,13 @@ def nested_shell_model(faces_list, materials, w0, **opts):
             raise NotImplementedError(
                 "outermost layer cannot be fluid (a free fluid "
                 "surface / ocean top is a later rung)")
-        if m.fluid and i + 1 < n and materials[i + 1].fluid:
-            raise NotImplementedError(
-                "adjacent fluid layers (fluid-fluid interface) are a "
-                "later rung")
     ifaces = []
     for i in range(n):
         if i == n - 1:
             ifaces.append(Interface(faces_list[i], FREE, "surface"))
+        elif materials[i].fluid and materials[i + 1].fluid:
+            ifaces.append(Interface(faces_list[i], FLUID_FLUID,
+                                    "interface%d" % i))
         elif materials[i].fluid or materials[i + 1].fluid:
             ifaces.append(Interface(faces_list[i], FLUID_SOLID,
                                     "interface%d" % i))
