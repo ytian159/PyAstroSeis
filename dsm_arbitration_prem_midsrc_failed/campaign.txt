@@ -1,0 +1,107 @@
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+== stage meshes + DSM inputs 15:59:11 ==
+mesh r= 6371.0 km: n=1584 faces, mean r 6351.4 km -> mesh_r06371_n200.npz
+mesh r= 1221.5 km: n=368 faces, mean r 1205.4 km -> mesh_r01222_n48.npz
+mesh r= 3480.0 km: n=1584 faces, mean r 3469.3 km -> mesh_r03480_n200.npz
+mesh r= 4925.5 km: n=320 faces, mean r 4851.4 km -> mesh_r04926_n42.npz
+mesh r= 4202.8 km: n=320 faces, mean r 4139.6 km -> mesh_r04203_n42.npz
+mesh r= 5648.2 km: n=320 faces, mean r 5563.3 km -> mesh_r05648_n42.npz
+mesh r= 3841.4 km: n=360 faces, mean r 3789.6 km -> mesh_r03841_n47.npz
+mesh r= 4202.8 km: n=432 faces, mean r 4155.6 km -> mesh_r04203_n56.npz
+mesh r= 4564.1 km: n=504 faces, mean r 4520.2 km -> mesh_r04564_n65.npz
+mesh r= 4925.5 km: n=584 faces, mean r 4884.6 km -> mesh_r04926_n75.npz
+mesh r= 5286.9 km: n=680 faces, mean r 5249.2 km -> mesh_r05287_n87.npz
+mesh r= 5648.2 km: n=768 faces, mean r 5612.6 km -> mesh_r05648_n98.npz
+mesh r= 6009.6 km: n=872 faces, mean r 5976.2 km -> mesh_r06010_n111.npz
+  ST00 face  1428  dist   20.07 deg  lat    7.364 lon    32.166 r 6352.1 km
+  ST01 face   298  dist   29.95 deg  lat   35.720 lon    16.020 r 6352.2 km
+  ST02 face  1514  dist   45.05 deg  lat   -3.830 lon    56.028 r 6351.4 km
+  ST03 face   282  dist   59.82 deg  lat   50.977 lon    59.693 r 6350.9 km
+  ST04 face  1528  dist   74.99 deg  lat  -11.026 lon    85.396 r 6351.5 km
+  ST05 face  1061  dist   90.00 deg  lat   20.733 lon   104.285 r 6350.7 km
+  ST06 face   765  dist  104.99 deg  lat  -80.916 lon  -160.047 r 6352.9 km
+  ST07 face  1089  dist  120.02 deg  lat   32.094 lon   143.275 r 6351.3 km
+  ST08 face    11  dist  134.81 deg  lat   14.371 lon  -127.334 r 6352.6 km
+  ST09 face    93  dist  150.07 deg  lat   -9.204 lon   161.966 r 6351.5 km
+  ST10 face     2  dist  160.07 deg  lat    4.407 lon   174.974 r 6352.3 km
+  ST11 face  1263  dist  170.04 deg  lat   -6.240 lon  -178.018 r 6351.9 km
+wrote DSM inputs + manifest.json
+== DSM runs 15:59:34 ==
+-- homog_q50 tipsv mrr 15:59:34
+-- homog_q50 tish  mrr 15:59:35
+-- homog_q50 tipsv mrt 15:59:35
+-- homog_q50 tish  mrt 15:59:35
+-- prem_s2 tipsv mrr 15:59:35
+-- prem_s2 tish  mrr 15:59:37
+-- prem_s2 tipsv mrt 15:59:37
+-- prem_s2 tish  mrt 15:59:38
+-- prem_s4 tipsv mrr 15:59:38
+-- prem_s4 tish  mrr 15:59:38
+-- prem_s4 tipsv mrt 15:59:38
+-- prem_s4 tish  mrt 15:59:38
+-- prem_s8 tipsv mrr 15:59:39
+-- prem_s8 tish  mrr 15:59:39
+-- prem_s8 tipsv mrt 15:59:39
+-- prem_s8 tish  mrt 15:59:40
+-- prem_s2c tipsv mrr 15:59:40
+-- prem_s2c tish  mrr 15:59:40
+-- prem_s2c tipsv mrt 15:59:40
+-- prem_s2c tish  mrt 15:59:42
+-- prem_s8c tipsv mrr 15:59:42
+-- prem_s8c tish  mrr 15:59:42
+-- prem_s8c tipsv mrt 15:59:42
+-- prem_s8c tish  mrt 15:59:42
+== BEM leg: homog_q50 15:59:42 ==
+homog_q50: 1 layers, system size 4752, geometry built in 4.0 s, solver dense
+homog_q50: 138 harmonics in 95.6 s (24 procs)
+wrote bem_homog_q50.npz
+== BEM leg: prem_s2 16:01:23 ==
+prem_s2: 4 layers, system size 14480, geometry built in 15.5 s, solver block-elimination
+prem_s2: 138 harmonics in 500.1 s (24 procs)
+wrote bem_prem_s2.npz
+== BEM leg: prem_s4 16:09:59 ==
+prem_s4: 6 layers, system size 18320, geometry built in 18.7 s, solver block-elimination
+prem_s4: 138 harmonics in 591.2 s (24 procs)
+wrote bem_prem_s4.npz
+== BEM leg: prem_s8 16:20:12 ==
+prem_s8: 10 layers, system size 37760, geometry built in 35.2 s, solver block-elimination
+prem_s8: 138 harmonics in 1504.9 s (24 procs)
+wrote bem_prem_s8.npz
+== BEM leg: prem_s2c 16:46:00 ==
+prem_s2c: BEM leg aliased to prem_s2 (control model, DSM side only) — skipping
+== BEM leg: prem_s8c 16:46:05 ==
+prem_s8c: BEM leg aliased to prem_s8 (control model, DSM side only) — skipping
+== synthesis + comparison 16:46:05 ==
+conjugation=False: homog_q50 median rel RMS 1.153e+00
+conjugation=True: homog_q50 median rel RMS 1.288e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 1.288e-01, max 3.012e-01, min corr 0.959881
+prem_s2    (layered): median rel RMS 3.446e-01, max 1.194e+00, min corr 0.738650, median amp ratio 1.1065
+prem_s4    (layered): median rel RMS 6.743e-01, max 6.172e+00, min corr -0.121372, median amp ratio 1.1448
+prem_s8    (layered): median rel RMS 8.827e-01, max 3.830e+00, min corr -0.385040, median amp ratio 0.7639
+prem_s2c   (layered): median rel RMS 2.751e-01, max 4.948e-01, min corr 0.874797, median amp ratio 1.0302
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [False], amp ratio in [0.9,1.1] [True]
+prem_s8c   (layered): median rel RMS 8.620e-01, max 3.447e+00, min corr -0.369300, median amp ratio 0.7074
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+ladder prem_s2->prem_s4->prem_s8 medians: 3.446e-01, 6.743e-01, 8.827e-01
+  gate: monotone decrease along the ladder [False]
+  control prem_s8c (DSM runs the same staircase): e <= 2.5*e0 [False], min corr > 0.9 [False], amp in [0.9,1.1] [False]
+  gate: finest leg within 1.5x of its control (8.827e-01 vs 8.620e-01) [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION FAILED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_homog_q50_mrr_Z.png (error magnification x10)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_homog_q50_mrt_T.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s4_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s4_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2c_mrt_T.png (error magnification x2)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8c_mrt_T.png (error magnification x1)

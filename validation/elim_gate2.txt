@@ -1,0 +1,36 @@
+[dense vs eliminated]
+    welded3 full solution: OK  (rel err 1.158e-15; dense 3.6 s, elim 3.4 s, size 1800)
+    welded3 multi-RHS: OK  (rel err 1.174e-15)
+    welded3 surface-only == full surface block: OK
+    fluid_core3 full solution: OK  (rel err 1.055e-14; dense 3.4 s, elim 3.3 s, size 1640)
+    fluid_core3 multi-RHS: OK  (rel err 1.023e-14)
+    fluid_core3 surface-only == full surface block: OK
+    annulus full solution: OK  (rel err 2.153e-14; dense 2.5 s, elim 2.4 s, size 1384)
+    annulus multi-RHS: OK  (rel err 2.172e-14)
+    annulus surface-only == full surface block: OK
+    mixed5 full solution: OK  (rel err 2.948e-14; dense 6.6 s, elim 5.6 s, size 2792)
+    mixed5 multi-RHS: OK  (rel err 2.937e-14)
+    mixed5 surface-only == full surface block: OK
+[rung-3 block cache]
+    cached blocks bitwise == fresh: OK  (recomputed 11/16 blocks, expected 11; fresh 2.3 s, cached 1.5 s)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+[thin-shell probe]
+    t =   5000 m  t/h =  1.56  surface rel err 6.282e-02
+    t =   4000 m  t/h =  1.19  surface rel err 5.884e-02
+    t =   2000 m  t/h =  0.54  surface rel err 5.378e-02
+    t =   1000 m  t/h =  0.26  surface rel err 5.371e-02
+    t =    500 m  t/h =  0.13  surface rel err 1.124e-01
+    t/h >= 1 stays in the transparent-interface class: OK  (max 6.282e-02, gate 0.15)
+[source-layer placement]
+    outermost layer == incident_outer_source (bitwise): OK
+    middle-shell source vs single-region: OK  (rel err 3.950e-02, gate 8e-2)
+elimination gate PASSED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_y20_2500_mrr_Z.png (difference magnification x155)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_y20_2500_mrt_T.png (difference magnification x36)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_y20_5000_mrr_Z.png (difference magnification x78)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_y20_5000_mrt_T.png (difference magnification x18)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_rand_l4_5000_mrr_Z.png (difference magnification x144)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/rung3_ensemble/ens_rand_l4_5000_mrt_T.png (difference magnification x56)
+time-domain (0-24000 s): |du|/|u0|  Y20 2.5 km 2.278e-03, Y20 5 km 4.556e-03, random l<=4 5 km 2.517e-03
+Y20 time-domain amplitude scaling: 1.9997 (linear = 2)

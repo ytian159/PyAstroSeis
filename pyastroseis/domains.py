@@ -236,41 +236,48 @@ class MultiDomainModel:
         (t = sigma . n_canonical)."""
         return self._tscale[iface]
 
-    def _solid_rows(self, A, rows, reg, ifr, sr, w):
+    def _solid_entries(self, reg, ifr, sr, w, row=None, skip=None):
         """One solid region's representation equation collocated on
-        interface ifr (used for both "u" and "t" row blocks)."""
+        interface ifr (used for both "u" and "t" row blocks): yields
+        (col_block, matrix) pairs. skip(row, col) -> True suppresses
+        that block's kernel evaluation (rung-3 block caching)."""
         m = reg.material
         fr = self._oriented[(ifr, sr)]
+
+        def keep(col):
+            return not (skip and skip(row, col))
+
         for ifc, sc in reg.interfaces:
             fc = self._oriented[(ifc, sc)]
             geo = self._geom[(ifc, sc)]
-            Tb = cal_T_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                          qp_fac=m.qp_fac, geom=geo,
-                          disp_ref_hz=m.disp_ref_hz)
-            A[rows, self._slices[("u", ifc)]] = Tb
-            if ifc.condition == FLUID_SOLID:
+            if keep(("u", ifc)):
+                Tb = cal_T_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
+                              qp_fac=m.qp_fac, geom=geo,
+                              disp_ref_hz=m.disp_ref_hz)
+                yield ("u", ifc), Tb
+            if ifc.condition == FLUID_SOLID and keep(("p", ifc)):
                 # traction on the solid from the fluid, w.r.t. the
                 # region's outward normal: t = -p n_out = -sc * p n_can,
                 # so the -G t term contributes +sc * G (Smat^T p)
                 Gb = cal_G_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
                               qp_fac=m.qp_fac, geom=geo,
                               disp_ref_hz=m.disp_ref_hz)
-                A[rows, self._slices[("p", ifc)]] = \
-                    sc * Gb @ self._smat[ifc].T
-            elif ifc.condition == WELDED:
+                yield ("p", ifc), sc * Gb @ self._smat[ifc].T
+            elif ifc.condition == WELDED and keep(("t", ifc)):
                 # T u - G t_region = u0 with t_region = sc * t_canonical
                 # and t_canonical = tscale * t'
                 Gb = cal_G_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
                               qp_fac=m.qp_fac, geom=geo,
                               disp_ref_hz=m.disp_ref_hz)
-                A[rows, self._slices[("t", ifc)]] = \
-                    (-sc * self._tscale[ifc]) * Gb
+                yield ("t", ifc), (-sc * self._tscale[ifc]) * Gb
 
-    def assemble(self, w):
-        """Assemble the coupled system matrix for angular frequency w."""
-        A = np.zeros((self.size, self.size), dtype=complex)
+    def _block_entries(self, w, skip=None):
+        """Yield (row_block, col_block, matrix) for every structurally
+        nonzero block of the system matrix at angular frequency w.
+        skip: optional predicate skip(row_block, col_block) -> bool to
+        suppress computing selected blocks (rung-3 block caching)."""
         for kind_r, ifr in self.blocks:
-            rows = self._slices[(kind_r, ifr)]
+            row = (kind_r, ifr)
             if kind_r == "p":
                 reg, sr = self._fluid_of[ifr]
                 m = reg.material
@@ -279,23 +286,38 @@ class MultiDomainModel:
                 for ifc, sc in reg.interfaces:
                     fc = self._oriented[(ifc, sc)]
                     geo = self._geom[(ifc, sc)]
-                    Ab = cal_A_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                                  qp_fac=m.qp_fac, geom=geo,
-                                  disp_ref_hz=m.disp_ref_hz)
-                    Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho, m.Q,
-                                  qp_fac=m.qp_fac, geom=geo,
-                                  disp_ref_hz=m.disp_ref_hz)
-                    A[rows, self._slices[("p", ifc)]] = Ab / scale
-                    # u . n_fluid_out = sc * (Smat u): the B coupling
-                    # carries the fluid's orientation sign
-                    A[rows, self._slices[("u", ifc)]] = \
-                        -sc * m.rho * w ** 2 * (Bb @ self._smat[ifc]) / scale
-            elif kind_r == "u":
-                reg, sr = self._solid_of[ifr]
-                self._solid_rows(A, rows, reg, ifr, sr, w)
-            else:   # "t": the second solid's equation on a welded iface
-                reg, sr = self._solid_b_of[ifr]
-                self._solid_rows(A, rows, reg, ifr, sr, w)
+                    if not (skip and skip(row, ("p", ifc))):
+                        Ab = cal_A_st(fr, fc, w, m.lamda, m.mu, m.rho,
+                                      m.Q, qp_fac=m.qp_fac, geom=geo,
+                                      disp_ref_hz=m.disp_ref_hz)
+                        yield row, ("p", ifc), Ab / scale
+                    if not (skip and skip(row, ("u", ifc))):
+                        Bb = cal_B_st(fr, fc, w, m.lamda, m.mu, m.rho,
+                                      m.Q, qp_fac=m.qp_fac, geom=geo,
+                                      disp_ref_hz=m.disp_ref_hz)
+                        # u . n_fluid_out = sc * (Smat u): the B coupling
+                        # carries the fluid's orientation sign
+                        yield row, ("u", ifc), \
+                            -sc * m.rho * w ** 2 * (Bb @ self._smat[ifc]) \
+                            / scale
+            else:
+                # "u": first-registered solid; "t": the second solid's
+                # equation on a welded interface
+                reg, sr = (self._solid_of[ifr] if kind_r == "u"
+                           else self._solid_b_of[ifr])
+                for col, M in self._solid_entries(reg, ifr, sr, w,
+                                                  row=row, skip=skip):
+                    yield row, col, M
+
+    def assemble_blocks(self, w, skip=None):
+        """All nonzero blocks as {(row_block, col_block): matrix}."""
+        return {(r, c): M for r, c, M in self._block_entries(w, skip=skip)}
+
+    def assemble(self, w):
+        """Assemble the coupled system matrix for angular frequency w."""
+        A = np.zeros((self.size, self.size), dtype=complex)
+        for row, col, M in self._block_entries(w):
+            A[self._slices[row], self._slices[col]] = M
         return A
 
     def assemble_rhs(self, incident):
@@ -393,6 +415,18 @@ def nested_shell_model(faces_list, materials, w0, **opts):
         else:
             ifaces.append(Interface(faces_list[i], WELDED,
                                     "interface%d" % i))
+    model = nested_shell_model_from_ifaces(ifaces, materials, w0, **opts)
+    return model, ifaces
+
+
+def nested_shell_model_from_ifaces(ifaces, materials, w0, **opts):
+    """Nested-shell model over an EXISTING innermost-first Interface
+    list (conditions already set). Reusing Interface objects keeps
+    assemble_blocks cache keys valid across models that share
+    boundaries — the rung-3 block-caching hook: to perturb boundary k,
+    replace ifaces[k] with a new Interface carrying the perturbed mesh
+    and rebuild; every block not touching the new object is reusable."""
+    n = len(ifaces)
     regions = []
     for i in range(n - 1, -1, -1):
         bounds = (((ifaces[i - 1], -1),) if i > 0 else ()) \
@@ -401,5 +435,4 @@ def nested_shell_model(faces_list, materials, w0, **opts):
     if materials[0].fluid:
         # fluid region first, matching liquid_core_model registration
         regions = regions[-1:] + regions[:-1]
-    model = MultiDomainModel(tuple(regions), w0=w0, **opts)
-    return model, ifaces
+    return MultiDomainModel(tuple(regions), w0=w0, **opts)

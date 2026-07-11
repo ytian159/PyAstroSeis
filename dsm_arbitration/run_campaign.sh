@@ -20,13 +20,16 @@ echo "== stage meshes + DSM inputs $(date +%T) =="
 python "$SCRIPTS/make_inputs.py"
 
 echo "== DSM runs $(date +%T) =="
+SRCS="${ARB_SOURCES:-mrr,mrt}"
 for model in ${MODELS//,/ }; do
   cd "$ROOT/dsm/$model"
-  for src in mrr mrt; do
+  for src in ${SRCS//,/ }; do
     echo "-- $model tipsv $src $(date +%T)"
     "$DSM/tipsv-mpi/tipsv" < "tipsv_$src.inf" > "tipsv_$src.log" 2>&1
-    echo "-- $model tish  $src $(date +%T)"
-    "$DSM/tish-mpi/tish" < "tish_$src.inf" > "tish_$src.log" 2>&1
+    if [ -f "tish_$src.inf" ]; then
+      echo "-- $model tish  $src $(date +%T)"
+      "$DSM/tish-mpi/tish" < "tish_$src.inf" > "tish_$src.log" 2>&1
+    fi
   done
 done
 cd "$ROOT"

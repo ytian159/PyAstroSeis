@@ -24,6 +24,7 @@ exactly as in bench/dsm_reference/scripts/make_dsm_inputs.py.
 import json
 import math
 import os
+import re
 import sys
 
 import numpy as np
@@ -51,11 +52,19 @@ OMEGAI = math.log(1.0 / ADAMP) / TLEN
 
 SOURCE_LAT = 6.0
 SOURCE_LON = 12.0
-SOURCE_DEPTH_KM = 637.1
+# ARB_SRC_DEPTH_KM: e.g. 5771 puts the source in the inner core
+# (r0 = 600 km) so a many-shell mantle staircase never places a weld
+# near the source (rung-2e lesson: the incident-field trace on a
+# boundary at distance d needs panel size h <~ d)
+SOURCE_DEPTH_KM = float(os.environ.get("ARB_SRC_DEPTH_KM", "637.1"))
 SOURCE_R0_KM = R_KM - SOURCE_DEPTH_KM
 
-SOURCES = {"mrr": (100.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-           "mrt": (0.0, 100.0, 0.0, 0.0, 0.0, 0.0)}
+SOURCES_ALL = {"mrr": (100.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+               "mrt": (0.0, 100.0, 0.0, 0.0, 0.0, 0.0)}
+# ARB_SOURCES: comma list; a source below the outermost fluid cannot
+# drive tish (SH), so deep-source campaigns run mrr/PSV only
+SOURCES = {k: SOURCES_ALL[k]
+           for k in os.environ.get("ARB_SOURCES", "mrr,mrt").split(",")}
 
 TARGET_DIST_DEG = (20, 30, 45, 60, 75, 90, 105, 120, 135, 150, 160, 170)
 
@@ -121,6 +130,199 @@ LAYER_SPECS = {
     "corefluid_q50": ((1221.5, 48, MAT_IC2Q), (3480.0, 200, MAT_OC2),
                       (R_KM, 200, MAT_SHELL_Q)),
 }
+
+# ------------------------------------------------------- graded PREM (2e)
+# Isotropic PREM "onecrust"/no-ocean polynomial zones (x = r/6371),
+# identical to the DFDM-campaign DSM inputs
+# (bench/dsm_reference/scripts/make_dsm_inputs.py) and SPECFEM
+# model_prem.f90 with ONE_CRUST/no ocean.
+PREM_MOHO = R_KM - 24.4
+PREM_ZONES_DEF = [
+    # rmin, rmax, rho coefs, vp coefs, vs coefs
+    (0.0, 1221.5,
+     (13.0885, 0.0, -8.8381, 0.0),
+     (11.2622, 0.0, -6.3640, 0.0),
+     (3.6678, 0.0, -4.4475, 0.0)),
+    (1221.5, 3480.0,
+     (12.5815, -1.2638, -3.6426, -5.5281),
+     (11.0487, -4.0362, 4.8023, -13.5732),
+     (0.0, 0.0, 0.0, 0.0)),
+    (3480.0, 3630.0,
+     (7.9565, -6.4761, 5.5283, -3.0807),
+     (15.3891, -5.3181, 5.5242, -2.5514),
+     (6.9254, 1.4672, -2.0834, 0.9783)),
+    (3630.0, 5600.0,
+     (7.9565, -6.4761, 5.5283, -3.0807),
+     (24.9520, -40.4673, 51.4832, -26.6419),
+     (11.1671, -13.7818, 17.4575, -9.2777)),
+    (5600.0, 5701.0,
+     (7.9565, -6.4761, 5.5283, -3.0807),
+     (29.2766, -23.6027, 5.5242, -2.5514),
+     (22.3459, -17.2473, -2.0834, 0.9783)),
+    (5701.0, 5771.0,
+     (5.3197, -1.4836, 0.0, 0.0),
+     (19.0957, -9.8672, 0.0, 0.0),
+     (9.9839, -4.9324, 0.0, 0.0)),
+    (5771.0, 5971.0,
+     (11.2494, -8.0298, 0.0, 0.0),
+     (39.7027, -32.6166, 0.0, 0.0),
+     (22.3512, -18.5856, 0.0, 0.0)),
+    (5971.0, 6151.0,
+     (7.1089, -3.8045, 0.0, 0.0),
+     (20.3926, -12.2569, 0.0, 0.0),
+     (8.9496, -4.4597, 0.0, 0.0)),
+    (6151.0, 6291.0,
+     (2.6910, 0.6924, 0.0, 0.0),
+     (4.1875, 3.9382, 0.0, 0.0),
+     (2.1519, 2.3481, 0.0, 0.0)),
+    (6291.0, PREM_MOHO,
+     (2.6910, 0.6924, 0.0, 0.0),
+     (4.1875, 3.9382, 0.0, 0.0),
+     (2.1519, 2.3481, 0.0, 0.0)),
+    (PREM_MOHO, R_KM,
+     (2.6, 0.0, 0.0, 0.0),
+     (5.8, 0.0, 0.0, 0.0),
+     (3.2, 0.0, 0.0, 0.0)),
+]
+
+QMU_STAIR = 50.0     # uniform pure-shear Q for the graded-PREM legs:
+                     # keeps the trapped fluid-core coda damped so the
+                     # metric measures the mantle staircase, not the
+                     # known O((h/R)^2) mesh eigenfrequency bias
+                     # (rung 2c/2d); true PREM-Q (~300 in the lower
+                     # mantle) damps only ~10% in this band
+RC_ICB, RC_CMB = 1221.5, 3480.0
+
+
+def poly_eval(coefs, r_km):
+    x = r_km / R_KM
+    return coefs[0] + x * (coefs[1] + x * (coefs[2] + x * coefs[3]))
+
+
+def prem_sample(r_km):
+    for rmin, rmax, rho, vp, vs in PREM_ZONES_DEF:
+        if r_km <= rmax:
+            return tuple(poly_eval(c, r_km) for c in (rho, vp, vs))
+    raise ValueError("r beyond surface")
+
+
+def prem_shell_avg(rlo, rhi, npts=4000):
+    """Volume-weighted PREM average over a shell, midpoint rule
+    (samples strictly inside, so zone-boundary points never leak the
+    neighboring zone into the average; handles internal polynomial
+    breaks/discontinuities)."""
+    dr = (rhi - rlo) / npts
+    r = rlo + (np.arange(npts) + 0.5) * dr
+    vals = np.array([prem_sample(x) for x in r])
+    w = r * r
+    return tuple(float(np.sum(vals[:, k] * w) / np.sum(w))
+                 for k in range(3))
+
+
+MAT_PREM_IC = prem_shell_avg(0.0, RC_ICB) + (QMU_STAIR,)
+MAT_PREM_OC = prem_shell_avg(RC_ICB, RC_CMB)   # fluid, elastic
+
+
+def prem_graded_zones():
+    """DSM zones for the graded reference: constant IC/OC exactly as
+    the BEM cartoon, true PREM polynomials through the mantle, uniform
+    Qmu with Qkappa = 1e8 (pure shear, BEM physical qp_fac)."""
+    zones = [const_zone(0.0, RC_ICB, MAT_PREM_IC),
+             const_zone(RC_ICB, RC_CMB, MAT_PREM_OC)]
+    for rmin, rmax, rho, vp, vs in PREM_ZONES_DEF:
+        if rmin < RC_CMB:
+            continue
+        zones.append({"rmin": rmin, "rmax": rmax,
+                      "rho": rho, "vp": vp, "vs": vs,
+                      "qmu": fmt(QMU_STAIR), "qkappa": "1e8"})
+    return zones
+
+
+def _mantle_stair(ns, kappa):
+    """ns equal-thickness constant mantle shells (volume-averaged
+    PREM), innermost first; internal welded meshes obey
+    h <= min(kappa * shell thickness, 0.2 r) (thin-shell accuracy
+    measured in tests/test_elim.py; welded curvature floor from
+    rung 2b). Returns (shells, t)."""
+    bounds = np.linspace(RC_CMB, R_KM, ns + 1)
+    t = float(bounds[1] - bounds[0])
+    shells = []
+    for k in range(ns):
+        rhi = float(bounds[k + 1])
+        mat = prem_shell_avg(float(bounds[k]), rhi) + (QMU_STAIR,)
+        if k == ns - 1:
+            shells.append((R_KM, 200, mat))
+        else:
+            hr = min(kappa * t / rhi, 0.2)
+            F = 4.0 * math.pi / hr ** 2
+            nm = max(12, int(math.ceil((F + 16.0) / 8.0)))
+            shells.append((rhi, nm, mat))
+    return shells, t
+
+
+def prem_stair_spec(ns, kappa):
+    """PREM-topology staircase: constant IC + constant fluid OC (the
+    graded target is the MANTLE; fluid-fluid interfaces are a later
+    rung) + ns constant mantle shells."""
+    shells, _ = _mantle_stair(ns, kappa)
+    return tuple([(RC_ICB, 48, MAT_PREM_IC),
+                  (RC_CMB, 200, MAT_PREM_OC)] + shells)
+
+
+def gprem_stair_spec(ns, kappa):
+    """ALL-SOLID graded-mantle family (rung 2e closure): one constant
+    solid core 0-3480 km (PREM-IC-like material) + ns constant mantle
+    shells. Rationale: an interior source suffers a low-frequency
+    deficit for w R_region/vs <~ 1 (measured, k-scan 2026-07-10), so
+    the source region must be LARGE (R = 3480 km, vs 3.57 km/s ->
+    deficit ends by k ~ 43) and the Ricker recentered above it
+    (ARB_F0 = 3.2e-4); DSM cannot place a source in a fluid zone, and
+    a mid-mantle source cannot keep d/h >= 1 from dense staircase
+    welds, so the fluid core is dropped for THIS convergence study
+    (the fluid-core topology is separately validated, rungs 2b/2d).
+    The CMB becomes a transmissive weld (curvature floor h/R 0.2)."""
+    shells, t = _mantle_stair(ns, kappa)
+    hr = min(kappa * t / RC_CMB, 0.2)
+    F = 4.0 * math.pi / hr ** 2
+    nm = max(12, int(math.ceil((F + 16.0) / 8.0)))
+    return tuple([(RC_CMB, nm, MAT_PREM_IC)] + shells)
+
+
+def gprem_graded_zones():
+    zones = [const_zone(0.0, RC_CMB, MAT_PREM_IC)]
+    for rmin, rmax, rho, vp, vs in PREM_ZONES_DEF:
+        if rmin < RC_CMB:
+            continue
+        zones.append({"rmin": rmin, "rmax": rmax,
+                      "rho": rho, "vp": vp, "vs": vs,
+                      "qmu": fmt(QMU_STAIR), "qkappa": "1e8"})
+    return zones
+
+
+def model_spec(name):
+    """-> (layer spec, DSM zones or None for default constant zones,
+    bem_alias or None). prem_s<N> / gprem_s<N> = N-shell mantle
+    staircase vs graded DSM (PREM topology / all-solid); a trailing
+    'c' = control leg: same BEM spectra (aliased, not re-run) vs a
+    DSM running the SAME staircase constants (isolates BEM mesh error
+    from the model-approximation error)."""
+    m = re.match(r"^(g?)prem_s(\d+)(c?)$", name)
+    if not m:
+        return LAYER_SPECS[name], None, None
+    # thin-shell accuracy (tests/test_elim.py probe): the surface
+    # error stays at the transparent-interface class down to
+    # t/h ~ 0.26 and only degrades at ~0.13, so h <= 2t keeps a 2x
+    # margin
+    allsolid = bool(m.group(1))
+    ns, control = int(m.group(2)), bool(m.group(3))
+    kappa = float(os.environ.get("ARB_KAPPA", "2.0"))
+    if allsolid:
+        spec, zones = gprem_stair_spec(ns, kappa), gprem_graded_zones()
+    else:
+        spec, zones = prem_stair_spec(ns, kappa), prem_graded_zones()
+    if control:
+        return spec, None, "%sprem_s%d" % ("g" if allsolid else "", ns)
+    return spec, zones, None
 
 
 def undo_geocentric(lat_deg):
@@ -241,10 +443,12 @@ def main():
     model_names = os.environ.get("ARB_MODELS",
                                  "homog,twolayer").split(",")
 
+    specs = {name: model_spec(name) for name in model_names}
+
     # one deterministic mesh per unique boundary (rng seeded by radius)
     meshes = {}
     for name in model_names:
-        for r_km, nmesh, _ in LAYER_SPECS[name]:
+        for r_km, nmesh, _ in specs[name][0]:
             key = (r_km, nmesh * scale)
             if key in meshes:
                 continue
@@ -266,34 +470,43 @@ def main():
               "r %.1f km" % (st["name"], st["face"], st["dist_deg"],
                              st["lat"], st["lon"], st["r_km"]))
 
-    models_manifest = {}
+    models_manifest, bem_alias = {}, {}
     for name in model_names:
-        spec = LAYER_SPECS[name]
-        zones, r_prev = [], 0.0
-        for r_km, nmesh, mat in spec:
-            zones.append(const_zone(r_prev, r_km, mat))
-            r_prev = r_km
+        spec, zones_override, alias = specs[name]
+        if alias:
+            bem_alias[name] = alias
+        if zones_override is not None:
+            zones = zones_override
+        else:
+            zones, r_prev = [], 0.0
+            for r_km, nmesh, mat in spec:
+                zones.append(const_zone(r_prev, r_km, mat))
+                r_prev = r_km
         models_manifest[name] = [
             {"r_km": r_km, "nmesh": nmesh * scale, "mat": list(mat),
              "mesh": meshes[(r_km, nmesh * scale)]}
             for r_km, nmesh, mat in spec]
         # SH sees only the contiguous solid stack under the surface:
         # zones above the outermost fluid zone (standard DSM PREM
-        # convention — tish inputs start at the CMB). The source must
-        # sit in that stack.
+        # convention — tish inputs start at the CMB). A source below
+        # that stack cannot drive SH: skip tish (BEM/DSM then compare
+        # the PSV wavefield; enforced via ARB_SOURCES=mrr).
         fluid_tops = [z["rmax"] for z in zones if z["vs"][0] == 0.0]
         zones_sh = [z for z in zones
                     if not fluid_tops or z["rmin"] >= max(fluid_tops)]
-        if fluid_tops:
-            assert SOURCE_R0_KM >= max(fluid_tops), \
-                "source below the fluid layer: tish model would miss it"
+        sh_ok = not fluid_tops or SOURCE_R0_KM >= max(fluid_tops)
+        if not sh_ok:
+            assert list(SOURCES) == ["mrr"], \
+                "source below the fluid: run ARB_SOURCES=mrr (no SH)"
         mdir = os.path.join(ROOT, "dsm", name)
         os.makedirs(os.path.join(mdir, "spc"), exist_ok=True)
         for srcname, mt in SOURCES.items():
             write_inf(os.path.join(mdir, "tipsv_%s.inf" % srcname),
                       zones, True, mt, stations, "%s.PSV" % srcname)
-            write_inf(os.path.join(mdir, "tish_%s.inf" % srcname),
-                      zones_sh, False, mt, stations, "%s.SH" % srcname)
+            if sh_ok:
+                write_inf(os.path.join(mdir, "tish_%s.inf" % srcname),
+                          zones_sh, False, mt, stations,
+                          "%s.SH" % srcname)
 
     manifest = {
         "tlen": TLEN, "np": NP, "re": RE, "ratc": RATC, "ratl": RATL,
@@ -310,6 +523,9 @@ def main():
         "elastic": "Qmu=Qkappa=-1 (DSM) / Q=1e8 (BEM)",
         "mesh_scale": int(os.environ.get("ARB_MESH_SCALE", "1")),
         "models": models_manifest,
+        # control legs: the BEM spectra of the aliased model are
+        # reused (run_bem skips them); only the DSM side differs
+        "bem_alias": bem_alias,
     }
     with open(os.path.join(ROOT, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)

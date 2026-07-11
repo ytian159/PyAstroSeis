@@ -1,0 +1,18 @@
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 1.265e-01, max 1.433e-01, min corr 0.990036
+gprem_s2   (layered): median rel RMS 3.454e-01, max 6.890e-01, min corr 0.850162, median amp ratio 1.1458
+gprem_s4   (layered): median rel RMS 4.573e-01, max 1.037e+00, min corr 0.741660, median amp ratio 1.2031
+gprem_s8   (layered): median rel RMS 5.756e-01, max 1.398e+00, min corr 0.601837, median amp ratio 1.3007
+gprem_s2c  (layered): median rel RMS 3.073e-01, max 5.190e-01, min corr 0.915250, median amp ratio 1.1096
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [False]
+gprem_s4c  (layered): median rel RMS 5.031e-01, max 1.066e+00, min corr 0.712040, median amp ratio 1.1988
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+gprem_s8c  (layered): median rel RMS 5.929e-01, max 1.410e+00, min corr 0.590423, median amp ratio 1.2987
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+ladder gprem_s2->gprem_s4->gprem_s8 medians: 3.454e-01, 4.573e-01, 5.756e-01
+  gate: monotone decrease along the ladder [False]
+  control gprem_s8c (DSM runs the same staircase): e <= 2.5*e0 [False], min corr > 0.9 [False], amp in [0.9,1.1] [False]
+  gate: finest leg within 1.5x of its control (5.756e-01 vs 5.929e-01) [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION FAILED
+conjugate=True

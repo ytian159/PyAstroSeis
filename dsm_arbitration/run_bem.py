@@ -28,7 +28,8 @@ PKG = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, PKG)
 
 from pyastroseis.domains import Material, nested_shell_model  # noqa: E402
-from pyastroseis.layered import incident_outer_source         # noqa: E402
+from pyastroseis.elimination import ShellElimination          # noqa: E402
+from pyastroseis.layered import incident_solid_layer_source   # noqa: E402
 from pyastroseis.mesh import Faces                            # noqa: E402
 from pyastroseis.source import u0eM                           # noqa: E402
 
@@ -86,9 +87,8 @@ def _worker(k):
     t0 = time.time()
     w = 2.0 * np.pi * k * _W["df"] + 1j * _W["omegai"]
     model, ifaces = _W["model"], _W["ifaces"]
-    A = model.assemble(w)
 
-    m = _W["mat_outer"]
+    m = _W["mat_src"]
     xs, ys, zs = _W["src_xyz"]
     B = np.empty((model.size, len(_W["mts"])), dtype=complex)
     for col, M in enumerate(_W["mts"]):
@@ -96,18 +96,24 @@ def _worker(k):
             return u0eM(faces, w, m.rho, m.mu, m.lamda, xs, ys, zs,
                         m.Q, M, qp_fac=m.qp_fac,
                         disp_ref_hz=m.disp_ref_hz)
-        B[:, col] = model.assemble_rhs(
-            incident_outer_source(model, ifaces, field))
-    X = np.linalg.solve(A, B)
-    del A
+        B[:, col] = model.assemble_rhs(incident_solid_layer_source(
+            model, ifaces, _W["src_layer"], field))
 
     surf = ifaces[-1]
-    sl = model.block_slice("u", surf)
+    if _W["elim"] is not None:
+        # shell-by-shell block elimination: the last interface group is
+        # the free surface, so full=False returns u_surf directly
+        US = _W["elim"].solve(w=w, b=B, full=False)
+    else:
+        A = model.assemble(w)
+        US = np.linalg.solve(A, B)[model.block_slice("u", surf)]
+        del A
+
     n1 = surf.faces.n
     st = _W["st_faces"]
     out = np.empty((len(_W["mts"]), len(st), 3), dtype=complex)
     for col in range(len(_W["mts"])):
-        us = X[sl, col]
+        us = US[:, col]
         for i, j in enumerate(st):
             out[col, i] = (us[j], us[n1 + j], us[2 * n1 + j])
     return k, out, time.time() - t0
@@ -117,6 +123,11 @@ def main():
     model_name = sys.argv[1]
     nprocs = int(sys.argv[2]) if len(sys.argv) > 2 else 1
     man = json.load(open(os.path.join(ROOT, "manifest.json")))
+    alias = man.get("bem_alias", {}).get(model_name)
+    if alias:
+        print("%s: BEM leg aliased to %s (control model, DSM side "
+              "only) — skipping" % (model_name, alias))
+        return
     layers = man["models"][model_name]
 
     faces_list = [load_faces(os.path.join(ROOT, la["mesh"]))
@@ -130,11 +141,27 @@ def main():
 
     t_build = time.time()
     model, ifaces = nested_shell_model(faces_list, mats, w0)
-    print("%s: %d layers, system size %d, geometry built in %.1f s" %
-          (model_name, len(layers), model.size, time.time() - t_build),
+    use_elim = os.environ.get("ARB_ELIM", "auto")
+    elim = None
+    if use_elim == "1" or (use_elim == "auto" and len(layers) >= 4):
+        elim = ShellElimination(model, ifaces)
+    print("%s: %d layers, system size %d, geometry built in %.1f s, "
+          "solver %s" %
+          (model_name, len(layers), model.size, time.time() - t_build,
+           "block-elimination" if elim is not None else "dense"),
           flush=True)
 
     src = man["source"]
+    # the layer containing the source: its material drives u0eM and
+    # its region's equations carry the incident field (the rung-2e
+    # lesson: a source is NOT necessarily in the outermost layer)
+    src_layer = next(i for i, la in enumerate(layers)
+                     if src["r0_km"] <= la["r_km"])
+    if mats[src_layer].fluid:
+        raise ValueError("source sits in a fluid layer")
+    print("source at r0 = %.1f km -> layer %d (outer radius %.1f km)"
+          % (src["r0_km"], src_layer, layers[src_layer]["r_km"]),
+          flush=True)
     th = math.radians(90.0 - src["lat"])
     ph = math.radians(src["lon"])
     r0 = src["r0_km"] * 1e3
@@ -150,9 +177,9 @@ def main():
            for s in src_names]
 
     st_faces = [st["face"] for st in man["stations"]]
-    _W.update(dict(model=model, ifaces=ifaces, mat_outer=mats[-1],
-                   df=df, omegai=omegai, mts=mts, src_xyz=src_xyz,
-                   st_faces=st_faces))
+    _W.update(dict(model=model, ifaces=ifaces, mat_src=mats[src_layer],
+                   src_layer=src_layer, df=df, omegai=omegai, mts=mts,
+                   src_xyz=src_xyz, st_faces=st_faces, elim=elim))
 
     ks = list(range(1, imax + 1))
     u = np.zeros((len(mts), len(st_faces), 3, imax + 1), dtype=complex)

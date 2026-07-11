@@ -40,7 +40,10 @@ METRICS_T = 24000.0               # metric window: P, S and R1 at all
                                   # distances; the later elastic coda
                                   # only accumulates mesh-dispersion
                                   # dephasing (see verdict notes)
-F0 = 1.75e-4                      # Ricker center frequency [Hz]
+# Ricker center frequency [Hz]; ARB_F0 raises the band when the
+# source region's low-frequency deficit zone (w R/vs <~ 1) must be
+# avoided (rung 2e)
+F0 = float(os.environ.get("ARB_F0", "1.75e-4"))
 RICKER_SHIFT = 1.2 / F0
 
 COMPONENT_FLOOR = 0.1             # skip comps with <10% of station peak
@@ -120,16 +123,23 @@ def load_dsm(model, source, stations, syn):
     for st in stations:
         base = os.path.join(ROOT, "dsm", model, "spc", st["name"])
         _, oi1, u_psv = read_spc("%s.%s.PSV.spc" % (base, source))
-        _, oi2, u_sh = read_spc("%s.%s.SH.spc" % (base, source))
-        assert abs(oi1 - syn.omegai) < 1e-12 and abs(oi2 - oi1) < 1e-12
+        assert abs(oi1 - syn.omegai) < 1e-12
+        sh_path = "%s.%s.SH.spc" % (base, source)
+        if os.path.exists(sh_path):
+            _, oi2, u_sh = read_spc(sh_path)
+            assert abs(oi2 - oi1) < 1e-12
+        else:
+            # deep-source campaigns (source below the outermost
+            # fluid) have no SH leg
+            u_sh = 0.0
         u = (u_psv + u_sh) * 1000.0     # -> meters
         out[st["name"]] = tuple(syn.to_time(u[c]) for c in range(3))
     return out
 
 
-def load_bem(model, stations, syn, conj):
+def load_bem(model, stations, syn, conj, alias=None):
     """-> dict source -> station -> (ux, uy, uz) time series [m]."""
-    z = np.load(os.path.join(ROOT, "bem_%s.npz" % model))
+    z = np.load(os.path.join(ROOT, "bem_%s.npz" % (alias or model)))
     srcs = [str(s) for s in z["sources"]]
     u = z["u"]
     if conj:
@@ -174,7 +184,8 @@ def trace_metrics(b, d):
 def compare_model(model, man, syn, conj, nout):
     src_meta = man["source"]
     stations = man["stations"]
-    bem = load_bem(model, stations, syn, conj)
+    bem = load_bem(model, stations, syn, conj,
+                   alias=man.get("bem_alias", {}).get(model))
     rows = []
     traces = {}
     for source in man["moment_tensors_1e25dyncm"]:
@@ -304,6 +315,9 @@ def main():
                 float(np.min([r["corr"] for r in vec])),
                 float(np.median([r["amp_ratio"] for r in vec])))
 
+    ladder = [m for m in os.environ.get("ARB_LADDER", "").split(",")
+              if m]
+
     e0, e0max, cmin0, amp0 = stats(baseline)
     verdict = []
     verdict.append("metric window 0-%.0f s (P, S, R1 at all "
@@ -320,12 +334,52 @@ def main():
         verdict.append("%-10s (layered): median rel RMS %.3e, max %.3e, "
                        "min corr %.6f, median amp ratio %.4f"
                        % (model, e1, e1max, cmin1, amp1))
-        verdict.append("  gate: e <= 2.5*e0 [%s], min corr > 0.9 [%s], "
-                       "amp ratio in [0.9,1.1] [%s]"
-                       % (e1 <= 2.5 * e0, cmin1 > 0.9, 0.9 < amp1 < 1.1))
+        if model not in ladder:
+            verdict.append("  gate: e <= 2.5*e0 [%s], min corr > 0.9 "
+                           "[%s], amp ratio in [0.9,1.1] [%s]"
+                           % (e1 <= 2.5 * e0, cmin1 > 0.9,
+                              0.9 < amp1 < 1.1))
         summary[model] = {"median": e1, "max": e1max, "corr_min": cmin1,
                           "amp_med": amp1}
-        ok = ok and m_ok
+        if model not in ladder:
+            ok = ok and m_ok
+
+    if ladder:
+        # staircase-convergence verdict (graded-PREM campaign): the
+        # ladder legs share one graded DSM reference, coarse -> fine;
+        # each may exceed the fixed-model error gate (that is the
+        # model-approximation error being measured), but the misfit
+        # must DECREASE along the ladder and the finest leg must land
+        # near its control (same staircase on the DSM side), which in
+        # turn must pass the standard fixed-model gates.
+        controls = {a: m for m, a in man.get("bem_alias", {}).items()
+                    if m in summary}
+        meds = [summary[m]["median"] for m in ladder]
+        mono = all(a > b for a, b in zip(meds, meds[1:]))
+        verdict.append("ladder %s medians: %s" %
+                       ("->".join(ladder),
+                        ", ".join("%.3e" % e for e in meds)))
+        verdict.append("  gate: monotone decrease along the ladder "
+                       "[%s]" % mono)
+        ok = ok and mono
+        fin = ladder[-1]
+        ctrl = controls.get(fin)
+        if ctrl:
+            ec, cminc, ampc = (summary[ctrl]["median"],
+                               summary[ctrl]["corr_min"],
+                               summary[ctrl]["amp_med"])
+            c_ok = (ec <= 2.5 * e0) and (cminc > 0.9) \
+                and (0.9 < ampc < 1.1)
+            near = summary[fin]["median"] <= 1.5 * ec
+            verdict.append("  control %s (DSM runs the same "
+                           "staircase): e <= 2.5*e0 [%s], min corr > "
+                           "0.9 [%s], amp in [0.9,1.1] [%s]"
+                           % (ctrl, ec <= 2.5 * e0, cminc > 0.9,
+                              0.9 < ampc < 1.1))
+            verdict.append("  gate: finest leg within 1.5x of its "
+                           "control (%.3e vs %.3e) [%s]"
+                           % (summary[fin]["median"], ec, near))
+            ok = ok and c_ok and near
     verdict.append("baseline floor sane e0 < 20%%: %s" % (e0 < 0.2))
     verdict.append("DSM ARBITRATION %s" % ("PASSED" if ok else "FAILED"))
     txt = "\n".join(verdict)
@@ -338,13 +392,16 @@ def main():
                    "summary": summary}, f, indent=2)
 
     # figures: mrr -> Z (P-SV), mrt -> T (SH through the weld)
+    sources = list(man["moment_tensors_1e25dyncm"])
     for model in models:
-        record_section(model, "mrr", "Z", all_traces[model], man, syn,
-                       nout, os.path.join(ROOT,
-                       "waveforms_%s_mrr_Z.png" % model))
-        record_section(model, "mrt", "T", all_traces[model], man, syn,
-                       nout, os.path.join(ROOT,
-                       "waveforms_%s_mrt_T.png" % model))
+        if "mrr" in sources:
+            record_section(model, "mrr", "Z", all_traces[model], man,
+                           syn, nout, os.path.join(ROOT,
+                           "waveforms_%s_mrr_Z.png" % model))
+        if "mrt" in sources:
+            record_section(model, "mrt", "T", all_traces[model], man,
+                           syn, nout, os.path.join(ROOT,
+                           "waveforms_%s_mrt_T.png" % model))
 
     sys.exit(0 if ok else 1)
 

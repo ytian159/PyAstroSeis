@@ -1,0 +1,91 @@
+tee: dsm_arbitration_prem/campaign.log: No such file or directory
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+== stage meshes + DSM inputs 16:57:52 ==
+mesh r= 6371.0 km: n=1584 faces, mean r 6351.4 km -> mesh_r06371_n200.npz
+mesh r= 1221.5 km: n=368 faces, mean r 1205.4 km -> mesh_r01222_n48.npz
+mesh r= 3480.0 km: n=1584 faces, mean r 3469.3 km -> mesh_r03480_n200.npz
+mesh r= 4925.5 km: n=320 faces, mean r 4851.4 km -> mesh_r04926_n42.npz
+mesh r= 4202.8 km: n=320 faces, mean r 4139.6 km -> mesh_r04203_n42.npz
+mesh r= 5648.2 km: n=320 faces, mean r 5563.3 km -> mesh_r05648_n42.npz
+mesh r= 3841.4 km: n=360 faces, mean r 3789.6 km -> mesh_r03841_n47.npz
+mesh r= 4202.8 km: n=432 faces, mean r 4155.6 km -> mesh_r04203_n56.npz
+mesh r= 4564.1 km: n=504 faces, mean r 4520.2 km -> mesh_r04564_n65.npz
+mesh r= 4925.5 km: n=584 faces, mean r 4884.6 km -> mesh_r04926_n75.npz
+mesh r= 5286.9 km: n=680 faces, mean r 5249.2 km -> mesh_r05287_n87.npz
+mesh r= 5648.2 km: n=768 faces, mean r 5612.6 km -> mesh_r05648_n98.npz
+mesh r= 6009.6 km: n=872 faces, mean r 5976.2 km -> mesh_r06010_n111.npz
+  ST00 face  1428  dist   20.07 deg  lat    7.364 lon    32.166 r 6352.1 km
+  ST01 face   298  dist   29.95 deg  lat   35.720 lon    16.020 r 6352.2 km
+  ST02 face  1514  dist   45.05 deg  lat   -3.830 lon    56.028 r 6351.4 km
+  ST03 face   282  dist   59.82 deg  lat   50.977 lon    59.693 r 6350.9 km
+  ST04 face  1528  dist   74.99 deg  lat  -11.026 lon    85.396 r 6351.5 km
+  ST05 face  1061  dist   90.00 deg  lat   20.733 lon   104.285 r 6350.7 km
+  ST06 face   765  dist  104.99 deg  lat  -80.916 lon  -160.047 r 6352.9 km
+  ST07 face  1089  dist  120.02 deg  lat   32.094 lon   143.275 r 6351.3 km
+  ST08 face    11  dist  134.81 deg  lat   14.371 lon  -127.334 r 6352.6 km
+  ST09 face    93  dist  150.07 deg  lat   -9.204 lon   161.966 r 6351.5 km
+  ST10 face     2  dist  160.07 deg  lat    4.407 lon   174.974 r 6352.3 km
+  ST11 face  1263  dist  170.04 deg  lat   -6.240 lon  -178.018 r 6351.9 km
+wrote DSM inputs + manifest.json
+== DSM runs 16:58:15 ==
+-- homog_q50 tipsv mrr 16:58:15
+-- homog_q50 tish  mrr 16:58:16
+-- prem_s2 tipsv mrr 16:58:16
+-- prem_s4 tipsv mrr 16:58:16
+-- prem_s8 tipsv mrr 16:58:16
+-- prem_s2c tipsv mrr 16:58:16
+-- prem_s8c tipsv mrr 16:58:16
+== BEM leg: homog_q50 16:58:16 ==
+homog_q50: 1 layers, system size 4752, geometry built in 4.0 s, solver dense
+source at r0 = 600.0 km -> layer 0 (outer radius 6371.0 km)
+homog_q50: 138 harmonics in 95.0 s (24 procs)
+wrote bem_homog_q50.npz
+== BEM leg: prem_s2 16:59:56 ==
+prem_s2: 4 layers, system size 14480, geometry built in 15.6 s, solver block-elimination
+source at r0 = 600.0 km -> layer 0 (outer radius 1221.5 km)
+prem_s2: 138 harmonics in 496.6 s (24 procs)
+wrote bem_prem_s2.npz
+== BEM leg: prem_s4 17:08:29 ==
+prem_s4: 6 layers, system size 18320, geometry built in 18.8 s, solver block-elimination
+source at r0 = 600.0 km -> layer 0 (outer radius 1221.5 km)
+prem_s4: 138 harmonics in 592.1 s (24 procs)
+wrote bem_prem_s4.npz
+== BEM leg: prem_s8 17:18:41 ==
+prem_s8: 10 layers, system size 37760, geometry built in 35.0 s, solver block-elimination
+source at r0 = 600.0 km -> layer 0 (outer radius 1221.5 km)
+prem_s8: 138 harmonics in 1505.8 s (24 procs)
+wrote bem_prem_s8.npz
+== BEM leg: prem_s2c 17:44:24 ==
+prem_s2c: BEM leg aliased to prem_s2 (control model, DSM side only) — skipping
+== BEM leg: prem_s8c 17:44:24 ==
+prem_s8c: BEM leg aliased to prem_s8 (control model, DSM side only) — skipping
+== synthesis + comparison 17:44:25 ==
+conjugation=False: homog_q50 median rel RMS 1.190e+00
+conjugation=True: homog_q50 median rel RMS 2.297e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 2.297e-01, max 3.354e-01, min corr 0.946727
+prem_s2    (layered): median rel RMS 9.997e-01, max 1.005e+00, min corr -0.066561, median amp ratio 0.0552
+prem_s4    (layered): median rel RMS 9.998e-01, max 1.007e+00, min corr -0.066708, median amp ratio 0.0571
+prem_s8    (layered): median rel RMS 9.999e-01, max 1.009e+00, min corr -0.067511, median amp ratio 0.0626
+prem_s2c   (layered): median rel RMS 9.999e-01, max 1.005e+00, min corr -0.065752, median amp ratio 0.0541
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+prem_s8c   (layered): median rel RMS 9.999e-01, max 1.009e+00, min corr -0.067614, median amp ratio 0.0625
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+ladder prem_s2->prem_s4->prem_s8 medians: 9.997e-01, 9.998e-01, 9.999e-01
+  gate: monotone decrease along the ladder [False]
+  control prem_s8c (DSM runs the same staircase): e <= 2.5*e0 [False], min corr > 0.9 [False], amp in [0.9,1.1] [False]
+  gate: finest leg within 1.5x of its control (9.999e-01 vs 9.999e-01) [True]
+baseline floor sane e0 < 20%: False
+DSM ARBITRATION FAILED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_homog_q50_mrr_Z.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s4_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s2c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_prem/waveforms_prem_s8c_mrr_Z.png (error magnification x1)
+srun: error: nid004160: task 0: Exited with exit code 1
+srun: Terminating StepId=55779954.0

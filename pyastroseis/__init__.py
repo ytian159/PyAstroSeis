@@ -20,9 +20,11 @@ from .solver import run_case, qp_factors
 from .liquidcore import run_case_lc, load_layers_mat
 from .domains import (Material, Interface, Region, MultiDomainModel,
                       homogeneous_model, liquid_core_model,
-                      welded_two_layer_model, nested_shell_model)
+                      welded_two_layer_model, nested_shell_model,
+                      nested_shell_model_from_ifaces)
 from .layered import (read_layered_config, build_layered_model,
                       auto_nmesh)
+from .elimination import ShellElimination, cached_blocks
 from .meshgen import relief_ylm, relief_random
 
 __all__ = [
@@ -32,6 +34,8 @@ __all__ = [
     "Material", "Interface", "Region", "MultiDomainModel",
     "homogeneous_model", "liquid_core_model",
     "welded_two_layer_model", "nested_shell_model",
+    "nested_shell_model_from_ifaces",
     "read_layered_config", "build_layered_model", "auto_nmesh",
+    "ShellElimination", "cached_blocks",
     "relief_ylm", "relief_random",
 ]

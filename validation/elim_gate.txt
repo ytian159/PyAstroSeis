@@ -1,0 +1,107 @@
+===== test_rung0 =====
+[homog/synthetic production] n=184 f=0.05 Hz (2.1 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/synthetic matlab-exact] n=184 f=0.05 Hz (3.1 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic production] n1=184 n2=80 f=0.05 Hz (4.9 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic matlab-exact] n1=184 n2=80 f=0.05 Hz (6.7 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[validation]
+    unknown condition rejected: OK
+    fluid-side sign convention enforced: OK
+    missing w0 rejected for fluid regions: OK
+rung-0 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+===== test_rung1 =====
+[transparent/synthetic] n1=184 n2=80 f=0.05 Hz (3.7 s)
+    surface field vs single-region: OK  (rel err 1.272e-02, gate 0.025)
+[transparent-refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (17.0 s)
+    transparent err: 1.272e-02  7.400e-03  5.156e-03
+    transparent error converges: OK
+[swap/synthetic] n1=184 n2=80 f=0.05 Hz (5.4 s)
+    u_surf A/B-swap: OK  (rel 2.330e-16)
+    u_core A/B-swap: OK  (rel 6.178e-16)
+    t_core A/B-swap (physical): OK  (rel 1.828e-15)
+[refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (15.9 s)
+    surface-field err vs finest core: 1.966e-02  5.801e-03
+    interface refinement converges: OK
+[validation]
+    one-sided welded rejected: OK
+    same-sign welded rejected: OK
+    missing w0 rejected for welded: OK
+rung-1 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+===== test_rung2 =====
+[bitwise special cases]
+    welded_two_layer matrix: OK
+    welded_two_layer rhs: OK
+    welded_two_layer solution: OK
+    liquid_core matrix: OK
+    liquid_core rhs: OK
+    liquid_core solution: OK
+[transparent-3shell] n=[80, 128, 184] f=0.05 Hz (6.6 s)
+    surface field vs single-region: OK  (rel err 3.982e-02, gate 0.05)
+[lc-transparent] n=[80, 128, 184] f=0.05 Hz (7.7 s)
+    fluid-core + artificial weld vs 2-region LC: OK  (rel err 3.653e-02, gate 0.08)
+[validation]
+    fluid outermost rejected: OK
+    material/mesh count mismatch rejected: OK
+rung-2 gate PASSED
+===== test_rung2b =====
+[validation]
+    solid/fluid/solid builds: 2 p blocks, no t blocks: OK
+    fluid outermost rejected: OK
+    adjacent fluid layers rejected: OK
+[auto_nmesh]
+    Earth campaign surface ~200: OK  (n=199)
+    CMB reflector: max(wavelength, curvature h/R<=0.09): OK  (n_cmb=196)
+    welded boundary uses h/R<=0.2 tier: OK  (n_welded=42)
+    explicit nmesh override kept: OK
+[perturbation]
+    amp=0 relief BITWISE == unperturbed sphere: OK
+    perturbed mesh outward-closed (amp=100): OK
+    perturbed mesh outward-closed (amp=200): OK
+    solution change ~linear in amp: OK  (err 9.592e-03 -> 1.919e-02, ratio 2.00)
+[tiny-core limit] inner n=32 (5.5 s)
+    solid(tiny)/fluid/solid vs liquid core: OK  (rel err 4.663e-05, gate 0.08)
+[annulus refinement] internal meshes x1/x2/x4, surface fixed
+    x1: internal n=(80,128) size=1384 (5.1 s)
+    x2: internal n=(176,272) size=2344 (9.9 s)
+    x4: internal n=(368,560) size=4264 (22.3 s)
+    surface field converges under internal refinement: OK  (err x1 1.259e-01 -> x2 4.337e-02, need ratio < 0.75)
+rung-2b gate PASSED
+===== test_elim =====
+[dense vs eliminated]
+    welded3 full solution: OK  (rel err 1.158e-15; dense 4.0 s, elim 3.7 s, size 1800)
+    welded3 multi-RHS: OK  (rel err 1.174e-15)
+    welded3 surface-only == full surface block: OK
+    fluid_core3 full solution: OK  (rel err 1.055e-14; dense 3.7 s, elim 3.5 s, size 1640)
+    fluid_core3 multi-RHS: OK  (rel err 1.023e-14)
+    fluid_core3 surface-only == full surface block: OK
+    annulus full solution: OK  (rel err 2.153e-14; dense 2.6 s, elim 2.5 s, size 1384)
+    annulus multi-RHS: OK  (rel err 2.172e-14)
+    annulus surface-only == full surface block: OK
+    mixed5 full solution: OK  (rel err 2.948e-14; dense 7.1 s, elim 6.0 s, size 2792)
+    mixed5 multi-RHS: OK  (rel err 2.937e-14)
+    mixed5 surface-only == full surface block: OK
+[rung-3 block cache]
+    cached blocks bitwise == fresh: OK  (recomputed 11/16 blocks, expected 11; fresh 2.4 s, cached 1.6 s)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+[thin-shell probe]
+    t =   5000 m  t/h =  1.56  surface rel err 6.282e-02
+    t =   4000 m  t/h =  1.19  surface rel err 5.884e-02
+    t =   2000 m  t/h =  0.54  surface rel err 5.378e-02
+    t =   1000 m  t/h =  0.26  surface rel err 5.371e-02
+    t =    500 m  t/h =  0.13  surface rel err 1.124e-01
+    t/h >= 1 stays in the transparent-interface class: OK  (max 6.282e-02, gate 0.15)
+elimination gate PASSED

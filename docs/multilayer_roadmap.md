@@ -241,48 +241,175 @@ policy: auto_nmesh curvature floors stand (reflector boundaries
 h/R <= 0.09; hard-ringing fluid-core models wanting lossless-coda
 correlation gates need ~0.045, which awaits block elimination).
 
-**Rung 2d — attenuated arbitration. DONE + PASSED 2026-07-10**
-(dsm_arbitration_r2d/, r2d_disp_verdict.log). Ladder: Qmu = 50
-solids (strong-signal validation: ~45% amplitude decay over the
-24-ks window; at this ultra-long-period band PREM-class Qmu ~ 300
-would damp only ~10%, so the elastic corefluid hardness persists
-for PREM-Q — Q effects scale with cycle count), fluid outer core
-elastic, pure-shear attenuation (BEM physical qp_fac == DSM
-Qkappa = 1e8).
+**Rung 2d — attenuated PREM arbitration (proposed).** The PREM
+goal itself resolves the elastic-protocol hardness: real PREM has
+Qmu ~ 80-300, which damps the late trapped coda that drives the
+min-corr failures. Both DSM (Qmu/Qkappa per zone) and the BEM
+(material Q) support attenuation natively; an attenuated
+PREM-truncated onion vs DSM at the standard meshes is the
+practical precision benchmark for the fluid-core machinery, with
+the elastic corefluid case documented as resolution-limited by the
+quantified (h/R)^2 law. Optional: CHIEF / Burton-Miller mitigation
+of the sparse spurious real-axis pressure resonances if
+resonance-style post-processing is ever needed.
 
-FINDING (first run failed at baseline 69.7%): DSM implements CAUSAL
-constant-Q — computeCoef applies the Kanamori-Anderson physical
-dispersion v(f) = v_ref (1 + ln(f/f_ref)/(pi Q)) with f_ref = 1 Hz
-(PREM convention) plus i/(2Q); the BEM's historical constant-Q was
-non-dispersive, leaving the BEM ~5.2% fast at Q=50 in this band
-(measured as lag growing with window energy age). Implemented as
-Material.disp_ref_hz (assembly.wave_speeds + source.u0eM), default
-0 = bitwise historical behavior (full rung-0..2c battery re-passed,
-validation/rung2d_battery.txt); attenuated arbitration materials
-use disp_ref_hz = 1.0.
+**Rung 2e — shell-by-shell block elimination + graded-PREM
+staircase.** Implemented 2026-07-10 (branch `multilayer`).
 
-VERDICT (vector metrics, 0-24 ks, all gates PASS): homog_q50
-baseline 12.88% / corr 0.960 (dispersion fix took it from 69.7%);
-twolayer_q50 (welded + Q) 9.59% / corr 0.984 / amp 0.977;
-corefluid_q50 (solid IC / elastic fluid OC / attenuated mantle)
-27.8% / min corr 0.905 / amp 1.013 — the fluid-core topology passes
-the min-corr gate once physical attenuation damps the trapped coda.
-Amplitude ratios 0.98-1.01 validate the Q-magnitude convention
-(factor-2 Q error would read ~0.74/1.35 at 45% window decay).
-Optional future: CHIEF / Burton-Miller mitigation of the sparse
-spurious real-axis pressure resonances if resonance-style
-post-processing is ever needed.
+*Block elimination:* the nested-shell system is block tridiagonal
+when unknowns are grouped by interface (every equation is a region's
+representation formula collocated on one of its bounding interfaces,
+and a region touches at most two consecutive interfaces).
+MultiDomainModel.assemble was refactored into a per-block generator
+(_block_entries / assemble_blocks — BITWISE gate: the full rung
+0/1/2/2b battery re-passed unchanged, validation/elim_gate.txt), and
+elimination.ShellElimination runs the generalized Thomas algorithm:
+forward elimination innermost-first with per-group dense LU,
+optional back substitution; full=False returns just the surface
+group with peak memory of a few interface-sized blocks. GATES
+(tests/test_elim.py): eliminated == dense solve at rel err 1e-15 -
+3e-14 on welded-3, fluid-core-3, annulus and mixed-5 models, plus
+multi-RHS and (bitwise) surface-only-vs-full agreement. Scale proof:
+prem_s8 (10 layers, 37,760 unknowns) runs at ~253 s/harmonic on 24
+procs — the dense matrix alone would be 43 GB per frequency.
 
-Still needed for the full PREM goal: graded radial profiles
-approximated by many constant shells, which pushes past dense
-solves -> shell-by-shell block elimination (block-tridiagonal
-structure).
+*Thin-shell accuracy (measured, tests/test_elim.py probe):* a
+transparent double interface holds the transparent-interface error
+class (~5-6e-2 on the coarse probe meshes) from t/h = 1.56 all the
+way down to t/h ~ 0.26, degrading only at ~0.13 — the adaptive
+quadrature handles near-touching boundaries gracefully. Mesh rule
+adopted for staircase shells: h <= 2 * (adjacent shell thickness)
+(ARB_KAPPA = 2, a 2x margin on the measured knee).
 
-**Rung 3 — boundary-perturbation workflows.** The science payoff:
-(a) when only one interface's shape changes between ensemble members,
-only the blocks touching that surface are reassembled (block caching);
-(b) BEM meshes never need to conform across interfaces, so only the
-perturbed boundary (CMB/Moho topography) is refined.
+*Source-placement lesson (first campaign FAILED, then bug-hunted per
+the standing rule; evidence in dsm_arbitration_prem_midsrc_failed/):*
+with the source at the historical 637-km depth, the mantle staircase
+put welds arbitrarily close to it. Two distinct causes: (1) REAL BUG
+— incident_outer_source hard-assumes the source is in the OUTERMOST
+layer; prem_s8's source actually sat in the second-from-outer shell,
+so the incident term entered the wrong region's representation
+equation (unphysical system; corr < 0). Fixed by
+layered.incident_solid_layer_source — the incident field enters
+exactly the row blocks OWNED by the source layer's region, gated
+bitwise against the old path for outermost sources and by a
+middle-shell-source transparent test (3.95e-2, single-region class).
+(2) PROTOCOL FLAW — the incident-field trace on a boundary at
+distance d from the source needs panel size h <~ d; prem_s4 had a
+weld 86 km below the source with 1119-km panels (d/h = 0.077 ->
+median error 67%, corr -0.12; prem_s2's d/h = 0.83 was only
+marginal). Campaign fix: source moved into the constant inner core
+(r0 = 600 km; d/h = 2.7 at the ICB), so NO ladder interface is ever
+near it; SH cannot be driven from below the fluid outer core, so the
+staircase arbitration runs mrr/PSV only (toroidal welds were already
+DSM-arbitrated in rungs 1-2d).
+
+*Interior-source low-frequency deficit (second campaign FAILED, then
+bug-hunted; evidence in dsm_arbitration_prem/ (IC source) and
+dsm_arbitration_deepdiag/):* moving the source into the inner core
+produced coherent but ~18x-too-small BEM waveforms on every
+fluid-core leg (amp ratio 0.025-0.06, corr ~ 0) while the deep-source
+HOMOG baseline stayed clean (23% floor = the longer-path version of
+the 12.9% one). The per-harmonic k-scan localizes it: the
+|BEM|/|DSM| ratio collapses (to 0.007 at the Ricker center) for
+harmonics with w R_region / vs <~ 1 of the SOURCE region and
+recovers above — homog (R 6371) is degraded only below k ~ 10,
+a welded core (R 3185.5, vs 4.5) through k ~ 25-46 (deep-diag leg:
+57%, amp 0.89, waveforms tracking), the inner core (R 1221.5,
+vs 3.57) through k ~ 120, i.e. the whole band. This is the rung-1
+"rigid-mode-amplified noise below w R/vs ~ 0.3" caveat, promoted to
+a hard limitation when an INTERIOR source region is acoustically
+small: the near-rigid null space of that region's T operator
+misapportions the quasi-static incident field. Remedy (future rung):
+a scattered-field interior-source formulation (needs
+incident-TRACTION kernels), or keep interior-source regions large
+in-band. Also settled: DSM tipsv REFUSES fluid-zone sources ("STOP
+The source is in a fluid zone"), so a fluid-core explosion cannot
+serve as the reference-side workaround.
+
+*Graded-mantle staircase arbitration — final design
+(dsm_arbitration_gprem/):* the three constraints (source region
+acoustically large in-band; no weld within ~1 panel of the source;
+SH needs the source above any fluid) pin the source into a LARGE
+CONSTANT SOLID CORE, so the fluid outer core is dropped for this
+convergence study (the fluid-core topology is separately validated,
+rungs 2b/2d) and the ENTIRE mantle — including the strongly graded
+upper mantle, where the staircase signal lives — is the target:
+all-solid Earth, constant core 0-3480 km (PREM-IC-like,
+12.89/11.12/3.57, Qmu 50; deficit zone ends by k ~ 43), CMB now a
+transmissive weld at the h/R 0.2 floor, ns = 2/4/8 volume-averaged
+PREM mantle shells (uniform Qmu = 50 pure-shear, disp_ref_hz = 1),
+source at r0 = 1200 km (d/h = 3.3 to the nearest boundary), mrr +
+mrt (tish accepts the deep source in an all-solid model), Ricker
+recentered at ARB_F0 = 3.2e-4 Hz so the band (k ~ 60-138) sits above
+the core's deficit zone. DSM reference: the same constant core plus
+the TRUE graded PREM polynomials; control legs (gprem_s2c/s4c/s8c:
+DSM runs the same staircase constants, BEM spectra reused via
+bem_alias) isolate BEM mesh error from model-approximation error.
+
+VERDICT (dsm_arbitration_gprem/, 2026-07-10): the protocol is sound
+— baseline 12.65% / min corr 0.990 (best floor of any campaign) —
+and every graded leg sits within 1.5x of its own control at every
+rung (34.5 vs 30.7 / 45.7 vs 50.3 / 57.6 vs 59.3 % at ns = 2/4/8):
+the BEM tracks its own model class throughout. But the ladder gate
+FAILS, and the control legs show why, cleanly:
+
+1. The graded-vs-staircase MODEL signal is unmeasurable at this
+   band: the control-subtracted misfit is +3.8 / -4.6 / -1.7 % —
+   sign-indefinite, below the between-rung mesh-error variance.
+   Physically obvious in hindsight: lambda_S/4 ~ 5000 km EXCEEDS the
+   whole mantle thickness (2891 km), so the ULP wavefield cannot
+   distinguish even a 2-shell staircase from graded PREM. A real
+   convergence demonstration needs lambda_S ~ shell thickness, i.e.
+   a ~5-10x higher band, with per-interface mesh cost growing as f^2
+   — reachable in principle with block elimination + the h/R laws
+   (+ faster kernels), out of scope here.
+2. What the controls DO measure: per-interface discretization
+   accumulation. BEM-vs-same-model-DSM misfit grows 30.7 -> 50.3 ->
+   59.3 % at 2/4/8 welds (~ +6%/interface, median amp ratio growing
+   1.11 -> 1.20 -> 1.30, ~ x1.04/interface) at interface h/R
+   0.09-0.2 in this recentered band — the record sections show pure
+   progressively-growing dephasing/amplitude drift of the late
+   multi-orbit ringing with the direct arrivals overlaying
+   perfectly. Consistent with the standing order-2 h/R
+   eigenfrequency-bias law; many-interface precision work must
+   budget h/R per interface accordingly (h/R ~ 0.05 per interface
+   for ~1-2%/interface).
+
+Rung-2e CLOSURE: the dense-solve wall is REMOVED and gated (that was
+the goal); staircase-convergence-vs-DSM is documented as
+band-limited, not machinery-limited, with the accumulation law and
+the three source-placement constraints quantified for the future
+higher-band study.
+
+**Rung 3 — boundary-perturbation ensembles with block caching.
+DONE 2026-07-10** (rung3_ensemble/). The science payoff realized:
+when only one interface's shape changes between ensemble members,
+only the blocks touching that surface are reassembled.
+elimination.cached_blocks invalidates by Interface OBJECT IDENTITY:
+domains.nested_shell_model_from_ifaces rebuilds a model sharing every
+unperturbed Interface object, so any block whose row/col interface is
+the replaced object misses the cache automatically. GATES: cached
+blocks + solution BITWISE == fresh (exactly the 11/16 blocks touching
+the perturbed boundary recomputed, tests/test_elim.py); END-TO-END
+amp=0 ensemble member (gen_mesh_relief zero relief) BITWISE == base
+across all 138 harmonics.
+
+Demo campaign: corefluid_q50 Earth, CMB radial relief members
+Y20 2.5 km / Y20 5 km / random lmax<=4 5 km + amp0, 138 harmonics x
+(base + 4 cached members) in 40 min on 24 procs
+(rung3_ensemble/ensemble_run.txt). Physics: Y20 5-km CMB topography
+changes the 0-24 ks waveforms by |du|/|u| = 4.6e-3 (time domain;
+random l<=4 5 km: 2.5e-3), and the response is LINEAR in amplitude:
+scaling ratio 2.0014 (spectra) / 1.9997 (time domain) for amp
+doubling. Record sections with magnified difference panels:
+rung3_ensemble/ens_*.png. Assembly speedup from caching is 1.29x for
+a CMB perturbation on the 3-layer model (the CMB self-blocks are
+among the largest); the win grows with shell count and for smaller
+perturbed boundaries — for many-shell staircase models a single
+perturbed internal interface leaves the vast majority of blocks
+cached. Remaining rung-3 economy (not yet needed): two-sided
+elimination sweeps cached from both ends toward the perturbed
+interface would also reuse the LU factors.
 
 ## Engineering notes
 

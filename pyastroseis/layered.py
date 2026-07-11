@@ -159,6 +159,35 @@ def incident_outer_source(model, ifaces, field):
     return inc
 
 
+def incident_solid_layer_source(model, ifaces, layer, field):
+    """Incident-field dict for a source anywhere in SOLID layer
+    `layer` (0-based, innermost first): by the representation theorem
+    the incident term enters exactly the row blocks OWNED by the
+    source region — its equation collocated on each of its bounding
+    interfaces (("u", iface) rows where it is the first-registered
+    solid, ("t", iface) rows where it is the second) — and nothing
+    else. For layer == len(ifaces)-1 this reproduces
+    incident_outer_source bitwise (gate in tests/test_elim.py).
+    field(faces) -> (3n,) incident displacement, evaluated with the
+    SOURCE layer's material."""
+    name = "layer%d" % layer
+    inc = {}
+    for kind, iface in model.blocks:
+        n = iface.faces.n
+        own = None
+        if kind == "u" and iface in model._solid_of:
+            own = model._solid_of[iface][0].name
+        elif kind == "t":
+            own = model._solid_b_of[iface][0].name
+        if own == name:
+            inc[(kind, iface)] = field(iface.faces)
+        elif kind == "p":
+            inc[(kind, iface)] = np.zeros(n, dtype=complex)
+        else:
+            inc[(kind, iface)] = np.zeros(3 * n, dtype=complex)
+    return inc
+
+
 def build_layered_model(cfg, qp_mode="physical", faces_list=None,
                         **opts):
     """cfg: dict from read_layered_config (or equivalent). Returns

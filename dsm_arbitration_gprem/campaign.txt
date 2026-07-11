@@ -1,0 +1,672 @@
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+== stage meshes + DSM inputs 18:21:40 ==
+mesh r= 6371.0 km: n=1584 faces, mean r 6351.4 km -> mesh_r06371_n200.npz
+mesh r= 3480.0 km: n=320 faces, mean r 3427.7 km -> mesh_r03480_n42.npz
+mesh r= 4925.5 km: n=320 faces, mean r 4851.4 km -> mesh_r04926_n42.npz
+mesh r= 4202.8 km: n=320 faces, mean r 4139.6 km -> mesh_r04203_n42.npz
+mesh r= 5648.2 km: n=320 faces, mean r 5563.3 km -> mesh_r05648_n42.npz
+mesh r= 3841.4 km: n=360 faces, mean r 3789.6 km -> mesh_r03841_n47.npz
+mesh r= 4202.8 km: n=432 faces, mean r 4155.6 km -> mesh_r04203_n56.npz
+mesh r= 4564.1 km: n=504 faces, mean r 4520.2 km -> mesh_r04564_n65.npz
+mesh r= 4925.5 km: n=584 faces, mean r 4884.6 km -> mesh_r04926_n75.npz
+mesh r= 5286.9 km: n=680 faces, mean r 5249.2 km -> mesh_r05287_n87.npz
+mesh r= 5648.2 km: n=768 faces, mean r 5612.6 km -> mesh_r05648_n98.npz
+mesh r= 6009.6 km: n=872 faces, mean r 5976.2 km -> mesh_r06010_n111.npz
+  ST00 face  1428  dist   20.07 deg  lat    7.364 lon    32.166 r 6352.1 km
+  ST01 face   298  dist   29.95 deg  lat   35.720 lon    16.020 r 6352.2 km
+  ST02 face  1514  dist   45.05 deg  lat   -3.830 lon    56.028 r 6351.4 km
+  ST03 face   282  dist   59.82 deg  lat   50.977 lon    59.693 r 6350.9 km
+  ST04 face  1528  dist   74.99 deg  lat  -11.026 lon    85.396 r 6351.5 km
+  ST05 face  1061  dist   90.00 deg  lat   20.733 lon   104.285 r 6350.7 km
+  ST06 face   765  dist  104.99 deg  lat  -80.916 lon  -160.047 r 6352.9 km
+  ST07 face  1089  dist  120.02 deg  lat   32.094 lon   143.275 r 6351.3 km
+  ST08 face    11  dist  134.81 deg  lat   14.371 lon  -127.334 r 6352.6 km
+  ST09 face    93  dist  150.07 deg  lat   -9.204 lon   161.966 r 6351.5 km
+  ST10 face     2  dist  160.07 deg  lat    4.407 lon   174.974 r 6352.3 km
+  ST11 face  1263  dist  170.04 deg  lat   -6.240 lon  -178.018 r 6351.9 km
+wrote DSM inputs + manifest.json
+== DSM runs 18:21:55 ==
+-- homog_q50 tipsv mrr 18:21:55
+-- homog_q50 tish  mrr 18:21:55
+-- homog_q50 tipsv mrt 18:21:55
+-- homog_q50 tish  mrt 18:21:55
+-- gprem_s2 tipsv mrr 18:21:55
+-- gprem_s2 tish  mrr 18:21:55
+-- gprem_s2 tipsv mrt 18:21:55
+-- gprem_s2 tish  mrt 18:21:55
+-- gprem_s4 tipsv mrr 18:21:55
+-- gprem_s4 tish  mrr 18:21:55
+-- gprem_s4 tipsv mrt 18:21:56
+-- gprem_s4 tish  mrt 18:21:56
+-- gprem_s8 tipsv mrr 18:21:56
+-- gprem_s8 tish  mrr 18:21:56
+-- gprem_s8 tipsv mrt 18:21:56
+-- gprem_s8 tish  mrt 18:21:56
+-- gprem_s2c tipsv mrr 18:21:56
+-- gprem_s2c tish  mrr 18:21:56
+-- gprem_s2c tipsv mrt 18:21:56
+-- gprem_s2c tish  mrt 18:21:56
+-- gprem_s4c tipsv mrr 18:21:56
+-- gprem_s4c tish  mrr 18:21:56
+-- gprem_s4c tipsv mrt 18:21:56
+-- gprem_s4c tish  mrt 18:21:56
+-- gprem_s8c tipsv mrr 18:21:56
+-- gprem_s8c tish  mrr 18:21:57
+-- gprem_s8c tipsv mrt 18:21:57
+-- gprem_s8c tish  mrt 18:21:57
+== BEM leg: homog_q50 18:21:57 ==
+homog_q50: 1 layers, system size 4752, geometry built in 4.0 s, solver dense
+source at r0 = 1200.0 km -> layer 0 (outer radius 6371.0 km)
+  k= 17 f=6.4850e-05 Hz  15.0 s
+  k=  7 f=2.6703e-05 Hz  15.4 s
+  k= 21 f=8.0109e-05 Hz  15.4 s
+  k=  2 f=7.6294e-06 Hz  15.4 s
+  k=  6 f=2.2888e-05 Hz  15.5 s
+  k=  8 f=3.0518e-05 Hz  15.5 s
+  k= 10 f=3.8147e-05 Hz  15.5 s
+  k= 23 f=8.7738e-05 Hz  15.6 s
+  k= 22 f=8.3923e-05 Hz  15.6 s
+  k= 24 f=9.1553e-05 Hz  15.6 s
+  k= 13 f=4.9591e-05 Hz  15.8 s
+  k= 11 f=4.1962e-05 Hz  15.8 s
+  k= 14 f=5.3406e-05 Hz  15.8 s
+  k=  1 f=3.8147e-06 Hz  15.8 s
+  k= 15 f=5.7220e-05 Hz  15.8 s
+  k= 16 f=6.1035e-05 Hz  15.9 s
+  k=  9 f=3.4332e-05 Hz  15.9 s
+  k= 12 f=4.5776e-05 Hz  16.0 s
+  k=  5 f=1.9073e-05 Hz  16.0 s
+  k=  3 f=1.1444e-05 Hz  16.0 s
+  k= 20 f=7.6294e-05 Hz  16.1 s
+  k= 19 f=7.2479e-05 Hz  16.1 s
+  k= 18 f=6.8665e-05 Hz  16.2 s
+  k=  4 f=1.5259e-05 Hz  16.2 s
+  k= 25 f=9.5367e-05 Hz  15.4 s
+  k= 26 f=9.9182e-05 Hz  15.4 s
+  k= 27 f=1.0300e-04 Hz  15.5 s
+  k= 29 f=1.1063e-04 Hz  15.5 s
+  k= 33 f=1.2589e-04 Hz  15.4 s
+  k= 28 f=1.0681e-04 Hz  15.6 s
+  k= 30 f=1.1444e-04 Hz  15.6 s
+  k= 31 f=1.1826e-04 Hz  15.6 s
+  k= 32 f=1.2207e-04 Hz  15.6 s
+  k= 35 f=1.3351e-04 Hz  15.5 s
+  k= 34 f=1.2970e-04 Hz  15.7 s
+  k= 36 f=1.3733e-04 Hz  15.6 s
+  k= 39 f=1.4877e-04 Hz  15.5 s
+  k= 37 f=1.4114e-04 Hz  15.6 s
+  k= 38 f=1.4496e-04 Hz  15.6 s
+  k= 41 f=1.5640e-04 Hz  15.6 s
+  k= 40 f=1.5259e-04 Hz  15.6 s
+  k= 44 f=1.6785e-04 Hz  15.7 s
+  k= 43 f=1.6403e-04 Hz  15.7 s
+  k= 46 f=1.7548e-04 Hz  15.7 s
+  k= 47 f=1.7929e-04 Hz  15.6 s
+  k= 45 f=1.7166e-04 Hz  15.8 s
+  k= 48 f=1.8311e-04 Hz  15.7 s
+  k= 42 f=1.6022e-04 Hz  16.0 s
+  k= 49 f=1.8692e-04 Hz  15.5 s
+  k= 50 f=1.9073e-04 Hz  15.5 s
+  k= 53 f=2.0218e-04 Hz  15.5 s
+  k= 51 f=1.9455e-04 Hz  15.6 s
+  k= 52 f=1.9836e-04 Hz  15.6 s
+  k= 54 f=2.0599e-04 Hz  15.7 s
+  k= 55 f=2.0981e-04 Hz  15.7 s
+  k= 56 f=2.1362e-04 Hz  15.6 s
+  k= 57 f=2.1744e-04 Hz  15.7 s
+  k= 58 f=2.2125e-04 Hz  15.6 s
+  k= 61 f=2.3270e-04 Hz  15.6 s
+  k= 60 f=2.2888e-04 Hz  15.6 s
+  k= 59 f=2.2507e-04 Hz  15.7 s
+  k= 62 f=2.3651e-04 Hz  15.7 s
+  k= 64 f=2.4414e-04 Hz  15.6 s
+  k= 63 f=2.4033e-04 Hz  15.7 s
+  k= 65 f=2.4796e-04 Hz  15.7 s
+  k= 66 f=2.5177e-04 Hz  15.7 s
+  k= 67 f=2.5558e-04 Hz  15.8 s
+  k= 68 f=2.5940e-04 Hz  15.7 s
+  k= 69 f=2.6321e-04 Hz  15.7 s
+  k= 70 f=2.6703e-04 Hz  15.8 s
+  k= 71 f=2.7084e-04 Hz  15.7 s
+  k= 72 f=2.7466e-04 Hz  16.1 s
+  k= 73 f=2.7847e-04 Hz  15.5 s
+  k= 74 f=2.8229e-04 Hz  15.5 s
+  k= 75 f=2.8610e-04 Hz  15.5 s
+  k= 77 f=2.9373e-04 Hz  15.6 s
+  k= 76 f=2.8992e-04 Hz  15.6 s
+  k= 80 f=3.0518e-04 Hz  15.7 s
+  k= 78 f=2.9755e-04 Hz  15.7 s
+  k= 79 f=3.0136e-04 Hz  15.7 s
+  k= 82 f=3.1281e-04 Hz  15.6 s
+  k= 81 f=3.0899e-04 Hz  15.7 s
+  k= 83 f=3.1662e-04 Hz  15.7 s
+  k= 84 f=3.2043e-04 Hz  15.7 s
+  k= 86 f=3.2806e-04 Hz  15.7 s
+  k= 87 f=3.3188e-04 Hz  15.7 s
+  k= 85 f=3.2425e-04 Hz  15.8 s
+  k= 88 f=3.3569e-04 Hz  15.7 s
+  k= 89 f=3.3951e-04 Hz  15.7 s
+  k= 90 f=3.4332e-04 Hz  15.8 s
+  k= 91 f=3.4714e-04 Hz  15.8 s
+  k= 92 f=3.5095e-04 Hz  15.7 s
+  k= 93 f=3.5477e-04 Hz  15.7 s
+  k= 95 f=3.6240e-04 Hz  15.8 s
+  k= 94 f=3.5858e-04 Hz  15.8 s
+  k= 96 f=3.6621e-04 Hz  16.1 s
+  k= 97 f=3.7003e-04 Hz  15.6 s
+  k= 98 f=3.7384e-04 Hz  15.6 s
+  k= 99 f=3.7766e-04 Hz  15.6 s
+  k=100 f=3.8147e-04 Hz  15.7 s
+  k=101 f=3.8528e-04 Hz  15.7 s
+  k=102 f=3.8910e-04 Hz  15.7 s
+  k=103 f=3.9291e-04 Hz  15.8 s
+  k=104 f=3.9673e-04 Hz  15.8 s
+  k=105 f=4.0054e-04 Hz  15.7 s
+  k=107 f=4.0817e-04 Hz  15.8 s
+  k=108 f=4.1199e-04 Hz  15.8 s
+  k=106 f=4.0436e-04 Hz  15.8 s
+  k=109 f=4.1580e-04 Hz  15.9 s
+  k=110 f=4.1962e-04 Hz  15.9 s
+  k=112 f=4.2725e-04 Hz  16.0 s
+  k=111 f=4.2343e-04 Hz  16.1 s
+  k=113 f=4.3106e-04 Hz  16.1 s
+  k=114 f=4.3488e-04 Hz  16.2 s
+  k=116 f=4.4250e-04 Hz  16.3 s
+  k=115 f=4.3869e-04 Hz  16.3 s
+  k=117 f=4.4632e-04 Hz  16.3 s
+  k=118 f=4.5013e-04 Hz  16.4 s
+  k=119 f=4.5395e-04 Hz  16.8 s
+  k=120 f=4.5776e-04 Hz  17.2 s
+  k=126 f=4.8065e-04 Hz  15.5 s
+  k=123 f=4.6921e-04 Hz  16.0 s
+  k=121 f=4.6158e-04 Hz  16.6 s
+  k=129 f=4.9210e-04 Hz  15.4 s
+  k=131 f=4.9973e-04 Hz  15.4 s
+  k=130 f=4.9591e-04 Hz  15.4 s
+  k=132 f=5.0354e-04 Hz  15.4 s
+  k=124 f=4.7302e-04 Hz  16.1 s
+  k=122 f=4.6539e-04 Hz  16.8 s
+  k=135 f=5.1498e-04 Hz  15.4 s
+  k=127 f=4.8447e-04 Hz  16.1 s
+  k=125 f=4.7684e-04 Hz  16.5 s
+  k=128 f=4.8828e-04 Hz  16.1 s
+  k=134 f=5.1117e-04 Hz  16.0 s
+  k=133 f=5.0735e-04 Hz  16.1 s
+  k=136 f=5.1880e-04 Hz  16.0 s
+  k=137 f=5.2261e-04 Hz  16.1 s
+  k=138 f=5.2643e-04 Hz  15.9 s
+homog_q50: 138 harmonics in 95.3 s (24 procs)
+wrote bem_homog_q50.npz
+== BEM leg: gprem_s2 18:23:37 ==
+gprem_s2: 3 layers, system size 8592, geometry built in 7.2 s, solver dense
+source at r0 = 1200.0 km -> layer 0 (outer radius 3480.0 km)
+  k= 19 f=7.2479e-05 Hz  39.7 s
+  k= 20 f=7.6294e-05 Hz  39.7 s
+  k= 24 f=9.1553e-05 Hz  39.7 s
+  k= 21 f=8.0109e-05 Hz  39.7 s
+  k= 10 f=3.8147e-05 Hz  39.8 s
+  k= 18 f=6.8665e-05 Hz  39.8 s
+  k=  3 f=1.1444e-05 Hz  39.8 s
+  k= 11 f=4.1962e-05 Hz  39.9 s
+  k= 23 f=8.7738e-05 Hz  40.1 s
+  k=  2 f=7.6294e-06 Hz  40.2 s
+  k=  4 f=1.5259e-05 Hz  40.2 s
+  k= 22 f=8.3923e-05 Hz  40.2 s
+  k= 16 f=6.1035e-05 Hz  40.3 s
+  k= 13 f=4.9591e-05 Hz  40.3 s
+  k= 15 f=5.7220e-05 Hz  40.3 s
+  k= 14 f=5.3406e-05 Hz  40.4 s
+  k=  5 f=1.9073e-05 Hz  40.4 s
+  k= 12 f=4.5776e-05 Hz  40.4 s
+  k=  6 f=2.2888e-05 Hz  40.4 s
+  k=  1 f=3.8147e-06 Hz  40.5 s
+  k= 17 f=6.4850e-05 Hz  40.8 s
+  k=  9 f=3.4332e-05 Hz  40.8 s
+  k=  7 f=2.6703e-05 Hz  41.1 s
+  k=  8 f=3.0518e-05 Hz  41.1 s
+  k= 26 f=9.9182e-05 Hz  39.5 s
+  k= 31 f=1.1826e-04 Hz  39.6 s
+  k= 25 f=9.5367e-05 Hz  39.9 s
+  k= 29 f=1.1063e-04 Hz  39.8 s
+  k= 28 f=1.0681e-04 Hz  40.0 s
+  k= 27 f=1.0300e-04 Hz  40.0 s
+  k= 30 f=1.1444e-04 Hz  39.9 s
+  k= 32 f=1.2207e-04 Hz  39.9 s
+  k= 36 f=1.3733e-04 Hz  39.9 s
+  k= 33 f=1.2589e-04 Hz  40.0 s
+  k= 37 f=1.4114e-04 Hz  40.0 s
+  k= 38 f=1.4496e-04 Hz  40.1 s
+  k= 34 f=1.2970e-04 Hz  40.3 s
+  k= 43 f=1.6403e-04 Hz  40.1 s
+  k= 41 f=1.5640e-04 Hz  40.2 s
+  k= 42 f=1.6022e-04 Hz  40.2 s
+  k= 40 f=1.5259e-04 Hz  40.3 s
+  k= 39 f=1.4877e-04 Hz  40.4 s
+  k= 44 f=1.6785e-04 Hz  40.2 s
+  k= 46 f=1.7548e-04 Hz  40.1 s
+  k= 35 f=1.3351e-04 Hz  40.8 s
+  k= 45 f=1.7166e-04 Hz  40.3 s
+  k= 47 f=1.7929e-04 Hz  40.2 s
+  k= 48 f=1.8311e-04 Hz  40.2 s
+  k= 49 f=1.8692e-04 Hz  39.8 s
+  k= 50 f=1.9073e-04 Hz  39.8 s
+  k= 53 f=2.0218e-04 Hz  39.8 s
+  k= 51 f=1.9455e-04 Hz  40.1 s
+  k= 52 f=1.9836e-04 Hz  40.0 s
+  k= 54 f=2.0599e-04 Hz  40.0 s
+  k= 55 f=2.0981e-04 Hz  40.1 s
+  k= 56 f=2.1362e-04 Hz  40.0 s
+  k= 59 f=2.2507e-04 Hz  39.9 s
+  k= 58 f=2.2125e-04 Hz  40.0 s
+  k= 57 f=2.1744e-04 Hz  40.2 s
+  k= 60 f=2.2888e-04 Hz  40.1 s
+  k= 62 f=2.3651e-04 Hz  40.2 s
+  k= 65 f=2.4796e-04 Hz  40.2 s
+  k= 63 f=2.4033e-04 Hz  40.3 s
+  k= 64 f=2.4414e-04 Hz  40.4 s
+  k= 67 f=2.5558e-04 Hz  40.3 s
+  k= 61 f=2.3270e-04 Hz  40.5 s
+  k= 68 f=2.5940e-04 Hz  40.1 s
+  k= 66 f=2.5177e-04 Hz  40.4 s
+  k= 70 f=2.6703e-04 Hz  40.3 s
+  k= 71 f=2.7084e-04 Hz  40.1 s
+  k= 72 f=2.7466e-04 Hz  40.4 s
+  k= 69 f=2.6321e-04 Hz  41.4 s
+  k= 73 f=2.7847e-04 Hz  39.6 s
+  k= 74 f=2.8229e-04 Hz  39.8 s
+  k= 75 f=2.8610e-04 Hz  39.7 s
+  k= 76 f=2.8992e-04 Hz  39.9 s
+  k= 78 f=2.9755e-04 Hz  40.1 s
+  k= 77 f=2.9373e-04 Hz  40.2 s
+  k= 79 f=3.0136e-04 Hz  40.0 s
+  k= 80 f=3.0518e-04 Hz  40.0 s
+  k= 81 f=3.0899e-04 Hz  39.8 s
+  k= 82 f=3.1281e-04 Hz  40.2 s
+  k= 84 f=3.2043e-04 Hz  40.2 s
+  k= 83 f=3.1662e-04 Hz  40.5 s
+  k= 89 f=3.3951e-04 Hz  40.2 s
+  k= 86 f=3.2806e-04 Hz  40.4 s
+  k= 85 f=3.2425e-04 Hz  40.5 s
+  k= 91 f=3.4714e-04 Hz  40.3 s
+  k= 87 f=3.3188e-04 Hz  40.5 s
+  k= 94 f=3.5858e-04 Hz  40.1 s
+  k= 88 f=3.3569e-04 Hz  40.5 s
+  k= 90 f=3.4332e-04 Hz  40.4 s
+  k= 93 f=3.5477e-04 Hz  40.5 s
+  k= 92 f=3.5095e-04 Hz  40.7 s
+  k= 95 f=3.6240e-04 Hz  40.3 s
+  k= 96 f=3.6621e-04 Hz  41.7 s
+  k= 97 f=3.7003e-04 Hz  39.9 s
+  k= 98 f=3.7384e-04 Hz  39.9 s
+  k= 99 f=3.7766e-04 Hz  39.9 s
+  k=100 f=3.8147e-04 Hz  40.0 s
+  k=103 f=3.9291e-04 Hz  40.1 s
+  k=102 f=3.8910e-04 Hz  40.2 s
+  k=101 f=3.8528e-04 Hz  40.2 s
+  k=104 f=3.9673e-04 Hz  40.2 s
+  k=105 f=4.0054e-04 Hz  40.1 s
+  k=106 f=4.0436e-04 Hz  40.5 s
+  k=107 f=4.0817e-04 Hz  40.3 s
+  k=108 f=4.1199e-04 Hz  40.5 s
+  k=114 f=4.3488e-04 Hz  40.1 s
+  k=111 f=4.2343e-04 Hz  40.4 s
+  k=112 f=4.2725e-04 Hz  40.4 s
+  k=110 f=4.1962e-04 Hz  40.5 s
+  k=113 f=4.3106e-04 Hz  40.5 s
+  k=116 f=4.4250e-04 Hz  40.6 s
+  k=115 f=4.3869e-04 Hz  40.7 s
+  k=119 f=4.5395e-04 Hz  40.3 s
+  k=109 f=4.1580e-04 Hz  41.2 s
+  k=117 f=4.4632e-04 Hz  40.6 s
+  k=118 f=4.5013e-04 Hz  40.7 s
+  k=120 f=4.5776e-04 Hz  40.4 s
+  k=125 f=4.7684e-04 Hz  37.4 s
+  k=121 f=4.6158e-04 Hz  39.0 s
+  k=131 f=4.9973e-04 Hz  36.9 s
+  k=122 f=4.6539e-04 Hz  39.0 s
+  k=130 f=4.9591e-04 Hz  37.1 s
+  k=123 f=4.6921e-04 Hz  39.1 s
+  k=134 f=5.1117e-04 Hz  36.9 s
+  k=124 f=4.7302e-04 Hz  39.1 s
+  k=132 f=5.0354e-04 Hz  37.2 s
+  k=135 f=5.1498e-04 Hz  37.2 s
+  k=129 f=4.9210e-04 Hz  39.0 s
+  k=138 f=5.2643e-04 Hz  37.0 s
+  k=128 f=4.8828e-04 Hz  39.1 s
+  k=126 f=4.8065e-04 Hz  39.2 s
+  k=127 f=4.8447e-04 Hz  39.2 s
+  k=137 f=5.2261e-04 Hz  37.2 s
+  k=133 f=5.0735e-04 Hz  39.0 s
+  k=136 f=5.1880e-04 Hz  39.0 s
+gprem_s2: 138 harmonics in 240.9 s (24 procs)
+wrote bem_gprem_s2.npz
+== BEM leg: gprem_s4 18:27:46 ==
+gprem_s4: 5 layers, system size 12432, geometry built in 10.4 s, solver block-elimination
+source at r0 = 1200.0 km -> layer 0 (outer radius 3480.0 km)
+  k= 14 f=5.3406e-05 Hz  53.5 s
+  k= 21 f=8.0109e-05 Hz  53.5 s
+  k= 18 f=6.8665e-05 Hz  53.5 s
+  k=  5 f=1.9073e-05 Hz  53.5 s
+  k=  2 f=7.6294e-06 Hz  53.6 s
+  k=  1 f=3.8147e-06 Hz  53.6 s
+  k= 22 f=8.3923e-05 Hz  53.6 s
+  k= 24 f=9.1553e-05 Hz  53.6 s
+  k= 15 f=5.7220e-05 Hz  53.7 s
+  k= 23 f=8.7738e-05 Hz  53.8 s
+  k=  3 f=1.1444e-05 Hz  53.8 s
+  k=  4 f=1.5259e-05 Hz  53.9 s
+  k= 19 f=7.2479e-05 Hz  53.9 s
+  k= 20 f=7.6294e-05 Hz  53.9 s
+  k= 16 f=6.1035e-05 Hz  54.1 s
+  k= 11 f=4.1962e-05 Hz  54.1 s
+  k= 10 f=3.8147e-05 Hz  54.2 s
+  k=  6 f=2.2888e-05 Hz  54.2 s
+  k= 17 f=6.4850e-05 Hz  54.3 s
+  k=  7 f=2.6703e-05 Hz  54.4 s
+  k=  9 f=3.4332e-05 Hz  54.5 s
+  k= 12 f=4.5776e-05 Hz  54.5 s
+  k= 13 f=4.9591e-05 Hz  54.6 s
+  k=  8 f=3.0518e-05 Hz  54.7 s
+  k= 26 f=9.9182e-05 Hz  53.0 s
+  k= 28 f=1.0681e-04 Hz  53.2 s
+  k= 27 f=1.0300e-04 Hz  53.3 s
+  k= 25 f=9.5367e-05 Hz  53.5 s
+  k= 32 f=1.2207e-04 Hz  53.5 s
+  k= 35 f=1.3351e-04 Hz  53.5 s
+  k= 30 f=1.1444e-04 Hz  53.7 s
+  k= 29 f=1.1063e-04 Hz  53.8 s
+  k= 31 f=1.1826e-04 Hz  53.8 s
+  k= 36 f=1.3733e-04 Hz  53.5 s
+  k= 39 f=1.4877e-04 Hz  53.4 s
+  k= 33 f=1.2589e-04 Hz  53.8 s
+  k= 34 f=1.2970e-04 Hz  53.8 s
+  k= 38 f=1.4496e-04 Hz  53.7 s
+  k= 37 f=1.4114e-04 Hz  53.8 s
+  k= 41 f=1.5640e-04 Hz  53.8 s
+  k= 46 f=1.7548e-04 Hz  53.7 s
+  k= 40 f=1.5259e-04 Hz  54.2 s
+  k= 43 f=1.6403e-04 Hz  54.1 s
+  k= 45 f=1.7166e-04 Hz  54.0 s
+  k= 42 f=1.6022e-04 Hz  54.3 s
+  k= 44 f=1.6785e-04 Hz  54.1 s
+  k= 48 f=1.8311e-04 Hz  54.1 s
+  k= 47 f=1.7929e-04 Hz  55.0 s
+  k= 49 f=1.8692e-04 Hz  53.3 s
+  k= 50 f=1.9073e-04 Hz  53.4 s
+  k= 51 f=1.9455e-04 Hz  53.7 s
+  k= 53 f=2.0218e-04 Hz  53.5 s
+  k= 52 f=1.9836e-04 Hz  53.8 s
+  k= 55 f=2.0981e-04 Hz  53.6 s
+  k= 58 f=2.2125e-04 Hz  53.5 s
+  k= 56 f=2.1362e-04 Hz  53.7 s
+  k= 54 f=2.0599e-04 Hz  53.8 s
+  k= 60 f=2.2888e-04 Hz  53.6 s
+  k= 59 f=2.2507e-04 Hz  53.7 s
+  k= 57 f=2.1744e-04 Hz  53.9 s
+  k= 61 f=2.3270e-04 Hz  53.9 s
+  k= 62 f=2.3651e-04 Hz  54.0 s
+  k= 63 f=2.4033e-04 Hz  54.1 s
+  k= 64 f=2.4414e-04 Hz  53.9 s
+  k= 65 f=2.4796e-04 Hz  54.0 s
+  k= 68 f=2.5940e-04 Hz  54.0 s
+  k= 67 f=2.5558e-04 Hz  54.1 s
+  k= 66 f=2.5177e-04 Hz  54.3 s
+  k= 70 f=2.6703e-04 Hz  54.2 s
+  k= 69 f=2.6321e-04 Hz  54.3 s
+  k= 71 f=2.7084e-04 Hz  54.2 s
+  k= 72 f=2.7466e-04 Hz  54.8 s
+  k= 73 f=2.7847e-04 Hz  53.6 s
+  k= 74 f=2.8229e-04 Hz  53.7 s
+  k= 75 f=2.8610e-04 Hz  53.7 s
+  k= 76 f=2.8992e-04 Hz  53.7 s
+  k= 80 f=3.0518e-04 Hz  53.4 s
+  k= 79 f=3.0136e-04 Hz  53.6 s
+  k= 77 f=2.9373e-04 Hz  53.8 s
+  k= 78 f=2.9755e-04 Hz  54.0 s
+  k= 83 f=3.1662e-04 Hz  53.7 s
+  k= 82 f=3.1281e-04 Hz  53.8 s
+  k= 81 f=3.0899e-04 Hz  54.0 s
+  k= 84 f=3.2043e-04 Hz  54.1 s
+  k= 85 f=3.2425e-04 Hz  54.1 s
+  k= 86 f=3.2806e-04 Hz  53.9 s
+  k= 87 f=3.3188e-04 Hz  54.1 s
+  k= 88 f=3.3569e-04 Hz  54.1 s
+  k= 89 f=3.3951e-04 Hz  54.1 s
+  k= 90 f=3.4332e-04 Hz  53.9 s
+  k= 91 f=3.4714e-04 Hz  54.3 s
+  k= 92 f=3.5095e-04 Hz  54.5 s
+  k= 93 f=3.5477e-04 Hz  54.5 s
+  k= 94 f=3.5858e-04 Hz  54.5 s
+  k= 95 f=3.6240e-04 Hz  54.3 s
+  k= 96 f=3.6621e-04 Hz  55.0 s
+  k= 97 f=3.7003e-04 Hz  53.8 s
+  k= 98 f=3.7384e-04 Hz  53.8 s
+  k=100 f=3.8147e-04 Hz  53.7 s
+  k= 99 f=3.7766e-04 Hz  53.8 s
+  k=101 f=3.8528e-04 Hz  53.8 s
+  k=102 f=3.8910e-04 Hz  53.7 s
+  k=103 f=3.9291e-04 Hz  54.0 s
+  k=105 f=4.0054e-04 Hz  53.8 s
+  k=106 f=4.0436e-04 Hz  53.8 s
+  k=104 f=3.9673e-04 Hz  54.1 s
+  k=107 f=4.0817e-04 Hz  54.0 s
+  k=108 f=4.1199e-04 Hz  54.1 s
+  k=110 f=4.1962e-04 Hz  54.0 s
+  k=109 f=4.1580e-04 Hz  54.1 s
+  k=112 f=4.2725e-04 Hz  54.1 s
+  k=111 f=4.2343e-04 Hz  54.4 s
+  k=114 f=4.3488e-04 Hz  54.0 s
+  k=113 f=4.3106e-04 Hz  54.2 s
+  k=115 f=4.3869e-04 Hz  54.3 s
+  k=117 f=4.4632e-04 Hz  54.4 s
+  k=116 f=4.4250e-04 Hz  54.5 s
+  k=118 f=4.5013e-04 Hz  54.4 s
+  k=119 f=4.5395e-04 Hz  54.4 s
+  k=120 f=4.5776e-04 Hz  54.8 s
+  k=121 f=4.6158e-04 Hz  50.5 s
+  k=124 f=4.7302e-04 Hz  50.2 s
+  k=123 f=4.6921e-04 Hz  50.4 s
+  k=125 f=4.7684e-04 Hz  50.1 s
+  k=126 f=4.8065e-04 Hz  50.4 s
+  k=127 f=4.8447e-04 Hz  50.1 s
+  k=129 f=4.9210e-04 Hz  49.9 s
+  k=122 f=4.6539e-04 Hz  51.2 s
+  k=128 f=4.8828e-04 Hz  50.2 s
+  k=131 f=4.9973e-04 Hz  50.5 s
+  k=133 f=5.0735e-04 Hz  50.2 s
+  k=130 f=4.9591e-04 Hz  50.9 s
+  k=132 f=5.0354e-04 Hz  50.4 s
+  k=134 f=5.1117e-04 Hz  50.3 s
+  k=137 f=5.2261e-04 Hz  50.4 s
+  k=138 f=5.2643e-04 Hz  50.3 s
+  k=135 f=5.1498e-04 Hz  51.0 s
+  k=136 f=5.1880e-04 Hz  50.7 s
+gprem_s4: 138 harmonics in 321.3 s (24 procs)
+wrote bem_gprem_s4.npz
+== BEM leg: gprem_s8 18:33:18 ==
+gprem_s8: 9 layers, system size 31872, geometry built in 27.1 s, solver block-elimination
+source at r0 = 1200.0 km -> layer 0 (outer radius 3480.0 km)
+  k=  2 f=7.6294e-06 Hz  204.3 s
+  k=  3 f=1.1444e-05 Hz  204.3 s
+  k= 13 f=4.9591e-05 Hz  204.6 s
+  k= 10 f=3.8147e-05 Hz  204.7 s
+  k=  7 f=2.6703e-05 Hz  204.9 s
+  k= 15 f=5.7220e-05 Hz  205.2 s
+  k= 11 f=4.1962e-05 Hz  205.4 s
+  k= 14 f=5.3406e-05 Hz  205.6 s
+  k= 19 f=7.2479e-05 Hz  205.9 s
+  k=  5 f=1.9073e-05 Hz  205.9 s
+  k= 23 f=8.7738e-05 Hz  205.9 s
+  k= 24 f=9.1553e-05 Hz  206.0 s
+  k= 16 f=6.1035e-05 Hz  206.1 s
+  k=  9 f=3.4332e-05 Hz  206.2 s
+  k= 18 f=6.8665e-05 Hz  206.5 s
+  k=  1 f=3.8147e-06 Hz  206.5 s
+  k=  4 f=1.5259e-05 Hz  206.5 s
+  k=  6 f=2.2888e-05 Hz  206.6 s
+  k= 12 f=4.5776e-05 Hz  206.9 s
+  k= 17 f=6.4850e-05 Hz  207.1 s
+  k= 20 f=7.6294e-05 Hz  207.1 s
+  k= 22 f=8.3923e-05 Hz  207.5 s
+  k=  8 f=3.0518e-05 Hz  207.5 s
+  k= 21 f=8.0109e-05 Hz  210.5 s
+  k= 26 f=9.9182e-05 Hz  204.1 s
+  k= 25 f=9.5367e-05 Hz  204.9 s
+  k= 29 f=1.1063e-04 Hz  204.5 s
+  k= 31 f=1.1826e-04 Hz  204.4 s
+  k= 28 f=1.0681e-04 Hz  205.3 s
+  k= 30 f=1.1444e-04 Hz  205.0 s
+  k= 27 f=1.0300e-04 Hz  205.6 s
+  k= 32 f=1.2207e-04 Hz  205.4 s
+  k= 36 f=1.3733e-04 Hz  205.5 s
+  k= 35 f=1.3351e-04 Hz  205.6 s
+  k= 38 f=1.4496e-04 Hz  206.4 s
+  k= 42 f=1.6022e-04 Hz  206.4 s
+  k= 33 f=1.2589e-04 Hz  207.3 s
+  k= 41 f=1.5640e-04 Hz  207.4 s
+  k= 34 f=1.2970e-04 Hz  208.0 s
+  k= 39 f=1.4877e-04 Hz  207.9 s
+  k= 40 f=1.5259e-04 Hz  208.1 s
+  k= 37 f=1.4114e-04 Hz  208.5 s
+  k= 45 f=1.7166e-04 Hz  207.7 s
+  k= 43 f=1.6403e-04 Hz  207.9 s
+  k= 44 f=1.6785e-04 Hz  207.9 s
+  k= 47 f=1.7929e-04 Hz  207.6 s
+  k= 46 f=1.7548e-04 Hz  207.7 s
+  k= 48 f=1.8311e-04 Hz  210.9 s
+  k= 49 f=1.8692e-04 Hz  205.1 s
+  k= 51 f=1.9455e-04 Hz  204.9 s
+  k= 50 f=1.9073e-04 Hz  205.9 s
+  k= 52 f=1.9836e-04 Hz  206.0 s
+  k= 56 f=2.1362e-04 Hz  205.2 s
+  k= 53 f=2.0218e-04 Hz  206.2 s
+  k= 55 f=2.0981e-04 Hz  206.0 s
+  k= 54 f=2.0599e-04 Hz  206.1 s
+  k= 58 f=2.2125e-04 Hz  205.8 s
+  k= 57 f=2.1744e-04 Hz  206.3 s
+  k= 59 f=2.2507e-04 Hz  206.5 s
+  k= 61 f=2.3270e-04 Hz  206.8 s
+  k= 60 f=2.2888e-04 Hz  207.5 s
+  k= 67 f=2.5558e-04 Hz  206.8 s
+  k= 66 f=2.5177e-04 Hz  207.1 s
+  k= 62 f=2.3651e-04 Hz  207.9 s
+  k= 63 f=2.4033e-04 Hz  208.7 s
+  k= 65 f=2.4796e-04 Hz  208.2 s
+  k= 68 f=2.5940e-04 Hz  208.3 s
+  k= 69 f=2.6321e-04 Hz  208.3 s
+  k= 64 f=2.4414e-04 Hz  209.2 s
+  k= 70 f=2.6703e-04 Hz  208.5 s
+  k= 71 f=2.7084e-04 Hz  208.7 s
+  k= 72 f=2.7466e-04 Hz  211.7 s
+  k= 74 f=2.8229e-04 Hz  204.3 s
+  k= 73 f=2.7847e-04 Hz  205.4 s
+  k= 75 f=2.8610e-04 Hz  205.4 s
+  k= 77 f=2.9373e-04 Hz  205.3 s
+  k= 78 f=2.9755e-04 Hz  206.1 s
+  k= 79 f=3.0136e-04 Hz  206.0 s
+  k= 76 f=2.8992e-04 Hz  207.4 s
+  k= 81 f=3.0899e-04 Hz  206.4 s
+  k= 82 f=3.1281e-04 Hz  206.6 s
+  k= 80 f=3.0518e-04 Hz  208.9 s
+  k= 83 f=3.1662e-04 Hz  207.9 s
+  k= 84 f=3.2043e-04 Hz  209.1 s
+  k= 85 f=3.2425e-04 Hz  208.7 s
+  k= 86 f=3.2806e-04 Hz  208.2 s
+  k= 87 f=3.3188e-04 Hz  208.1 s
+  k= 88 f=3.3569e-04 Hz  208.8 s
+  k= 91 f=3.4714e-04 Hz  208.0 s
+  k= 92 f=3.5095e-04 Hz  207.9 s
+  k= 90 f=3.4332e-04 Hz  208.5 s
+  k= 89 f=3.3951e-04 Hz  208.9 s
+  k= 93 f=3.5477e-04 Hz  208.5 s
+  k= 94 f=3.5858e-04 Hz  208.8 s
+  k= 95 f=3.6240e-04 Hz  209.8 s
+  k= 96 f=3.6621e-04 Hz  212.7 s
+  k= 98 f=3.7384e-04 Hz  204.0 s
+  k= 97 f=3.7003e-04 Hz  205.9 s
+  k=100 f=3.8147e-04 Hz  205.1 s
+  k= 99 f=3.7766e-04 Hz  206.4 s
+  k=101 f=3.8528e-04 Hz  204.9 s
+  k=102 f=3.8910e-04 Hz  206.7 s
+  k=104 f=3.9673e-04 Hz  206.4 s
+  k=105 f=4.0054e-04 Hz  206.8 s
+  k=103 f=3.9291e-04 Hz  208.4 s
+  k=107 f=4.0817e-04 Hz  207.4 s
+  k=106 f=4.0436e-04 Hz  209.2 s
+  k=109 f=4.1580e-04 Hz  206.6 s
+  k=111 f=4.2343e-04 Hz  206.1 s
+  k=110 f=4.1962e-04 Hz  206.5 s
+  k=108 f=4.1199e-04 Hz  208.4 s
+  k=117 f=4.4632e-04 Hz  206.8 s
+  k=118 f=4.5013e-04 Hz  206.5 s
+  k=113 f=4.3106e-04 Hz  208.2 s
+  k=115 f=4.3869e-04 Hz  208.1 s
+  k=114 f=4.3488e-04 Hz  208.2 s
+  k=112 f=4.2725e-04 Hz  208.8 s
+  k=116 f=4.4250e-04 Hz  208.7 s
+  k=119 f=4.5395e-04 Hz  209.3 s
+  k=120 f=4.5776e-04 Hz  211.7 s
+  k=129 f=4.9210e-04 Hz  190.3 s
+  k=130 f=4.9591e-04 Hz  188.0 s
+  k=121 f=4.6158e-04 Hz  200.6 s
+  k=134 f=5.1117e-04 Hz  188.2 s
+  k=122 f=4.6539e-04 Hz  201.2 s
+  k=126 f=4.8065e-04 Hz  197.0 s
+  k=131 f=4.9973e-04 Hz  191.8 s
+  k=132 f=5.0354e-04 Hz  190.3 s
+  k=124 f=4.7302e-04 Hz  201.0 s
+  k=125 f=4.7684e-04 Hz  200.9 s
+  k=138 f=5.2643e-04 Hz  189.3 s
+  k=123 f=4.6921e-04 Hz  202.1 s
+  k=135 f=5.1498e-04 Hz  191.5 s
+  k=128 f=4.8828e-04 Hz  200.8 s
+  k=127 f=4.8447e-04 Hz  202.4 s
+  k=133 f=5.0735e-04 Hz  199.9 s
+  k=136 f=5.1880e-04 Hz  200.8 s
+  k=137 f=5.2261e-04 Hz  201.5 s
+gprem_s8: 138 harmonics in 1240.7 s (24 procs)
+wrote bem_gprem_s8.npz
+== BEM leg: gprem_s2c 18:54:27 ==
+gprem_s2c: BEM leg aliased to gprem_s2 (control model, DSM side only) — skipping
+== BEM leg: gprem_s4c 18:54:28 ==
+gprem_s4c: BEM leg aliased to gprem_s4 (control model, DSM side only) — skipping
+== BEM leg: gprem_s8c 18:54:29 ==
+gprem_s8c: BEM leg aliased to gprem_s8 (control model, DSM side only) — skipping
+== synthesis + comparison 18:54:29 ==
+conjugation=False: homog_q50 median rel RMS 1.121e+00
+conjugation=True: homog_q50 median rel RMS 1.265e-01
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 1.265e-01, max 1.433e-01, min corr 0.990036
+gprem_s2   (layered): median rel RMS 3.454e-01, max 6.890e-01, min corr 0.850162, median amp ratio 1.1458
+gprem_s4   (layered): median rel RMS 4.573e-01, max 1.037e+00, min corr 0.741660, median amp ratio 1.2031
+gprem_s8   (layered): median rel RMS 5.756e-01, max 1.398e+00, min corr 0.601837, median amp ratio 1.3007
+gprem_s2c  (layered): median rel RMS 3.073e-01, max 5.190e-01, min corr 0.915250, median amp ratio 1.1096
+  gate: e <= 2.5*e0 [True], min corr > 0.9 [True], amp ratio in [0.9,1.1] [False]
+gprem_s4c  (layered): median rel RMS 5.031e-01, max 1.066e+00, min corr 0.712040, median amp ratio 1.1988
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+gprem_s8c  (layered): median rel RMS 5.929e-01, max 1.410e+00, min corr 0.590423, median amp ratio 1.2987
+  gate: e <= 2.5*e0 [False], min corr > 0.9 [False], amp ratio in [0.9,1.1] [False]
+ladder gprem_s2->gprem_s4->gprem_s8 medians: 3.454e-01, 4.573e-01, 5.756e-01
+  gate: monotone decrease along the ladder [False]
+  control gprem_s8c (DSM runs the same staircase): e <= 2.5*e0 [False], min corr > 0.9 [False], amp in [0.9,1.1] [False]
+  gate: finest leg within 1.5x of its control (5.756e-01 vs 5.929e-01) [True]
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION FAILED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_homog_q50_mrr_Z.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_homog_q50_mrt_T.png (error magnification x2)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s2_mrr_Z.png (error magnification x3)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s2_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s4_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s4_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s8_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s8_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s2c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s2c_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s4c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s4c_mrt_T.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s8c_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_gprem/waveforms_gprem_s8c_mrt_T.png (error magnification x1)

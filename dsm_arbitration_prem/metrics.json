@@ -1,0 +1,2665 @@
+{
+  "conjugate": true,
+  "rows": {
+    "homog_q50": [
+      {
+        "rel_rms": 0.2021311415091568,
+        "corr": 0.9810233743264198,
+        "amp_ratio": 1.0381535707429357,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.07706197875747195,
+        "corr": 0.9972719659307642,
+        "amp_ratio": 1.0194061612273673,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.09441922441601774,
+        "corr": 0.9958505411056906,
+        "amp_ratio": 1.0210157981045556,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.21719017038387683,
+        "corr": 0.9780103484898781,
+        "amp_ratio": 1.0386388225319467,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.0846339323608995,
+        "corr": 0.9967057132321298,
+        "amp_ratio": 1.0208962340292835,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.12734812234370826,
+        "corr": 0.9923924682428644,
+        "amp_ratio": 1.0249555652950804,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.26071318207783484,
+        "corr": 0.9680044906856932,
+        "amp_ratio": 1.0387438524075692,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.2622854349133385,
+        "corr": 0.9678890205376814,
+        "amp_ratio": 1.0427409105944583,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.13611439945536905,
+        "corr": 0.9912936172036807,
+        "amp_ratio": 1.02579238888984,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.23196731393593778,
+        "corr": 0.9747515754600831,
+        "amp_ratio": 1.0375963731490638,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.36079716474007323,
+        "corr": 0.9389385547290918,
+        "amp_ratio": 1.0474752012648638,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.36092129796068184,
+        "corr": 0.9388792959973975,
+        "amp_ratio": 1.047315986163559,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.14523063339202824,
+        "corr": 0.9895066046202861,
+        "amp_ratio": 1.004178259694515,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.33540067993061845,
+        "corr": 0.9467272295030947,
+        "amp_ratio": 1.0404612317676292,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.659955378048221,
+        "corr": 0.7937315401243203,
+        "amp_ratio": 1.0497605595789439,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.051765887623100526,
+        "corr": 0.9988124470411146,
+        "amp_ratio": 1.0163056310184957,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.30234016912353207,
+        "corr": 0.9555965398475736,
+        "amp_ratio": 1.023230294987306,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.7487810722966919,
+        "corr": -0.7615336729244757,
+        "amp_ratio": 0.8627103893460345,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.04757404519637619,
+        "corr": 0.9990796627645673,
+        "amp_ratio": 1.0196578630286361,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2759811127217741,
+        "corr": 0.9626508876271825,
+        "amp_ratio": 1.0161514112559367,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6402499368928557,
+        "corr": 0.7902864350878434,
+        "amp_ratio": 0.975954502280773,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.055498361051829974,
+        "corr": 0.9987239579004192,
+        "amp_ratio": 1.0217372619595342,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.292294592419942,
+        "corr": 0.9578948380983052,
+        "amp_ratio": 1.0126547651738518,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.3522245452213452,
+        "corr": 0.9388438514641995,
+        "amp_ratio": 1.0129377627424911,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.3514847035066007,
+        "corr": 0.938891658345612,
+        "amp_ratio": 1.0100186075990145,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.13408200140461138,
+        "corr": 0.9914004509203956,
+        "amp_ratio": 1.0206038271949074,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.3218284175306501,
+        "corr": 0.9489386712888265,
+        "amp_ratio": 1.0126421421337168,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.2553789547215442,
+        "corr": 0.9681887727732549,
+        "amp_ratio": 1.019256475275427,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.2550813176643527,
+        "corr": 0.9682501056537424,
+        "amp_ratio": 1.0189920579207339,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.13858018658284477,
+        "corr": 0.9904511261879854,
+        "amp_ratio": 1.004518872289773,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.2273976665087782,
+        "corr": 0.9746310838231826,
+        "amp_ratio": 1.0148237235472464,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.21099955346831425,
+        "corr": 0.978567861267844,
+        "amp_ratio": 1.0245664554871337,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.08906209643951976,
+        "corr": 0.9962136899720522,
+        "amp_ratio": 1.0155469025849289,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.12601141313754902,
+        "corr": 0.9923478079096409,
+        "amp_ratio": 1.017508255123309,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.19617182796645669,
+        "corr": 0.9815922019654845,
+        "amp_ratio": 1.0263877044981013,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.1952826577270221,
+        "corr": 0.98166674079365,
+        "amp_ratio": 1.0241509306688932,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.08277777375593527,
+        "corr": 0.9967808083957173,
+        "amp_ratio": 1.017375463382121,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.0966101724089807,
+        "corr": 0.9955740330813417,
+        "amp_ratio": 1.0179610998553046,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.1875784724786859,
+        "corr": 0.9831541945451241,
+        "amp_ratio": 1.0253187956829204,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.08042174944866484,
+        "corr": 0.9969829882453533,
+        "amp_ratio": 1.0180242960711041,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.08350130060433142,
+        "corr": 0.9967377554519504,
+        "amp_ratio": 1.0181531785392408,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ],
+    "prem_s2": [
+      {
+        "rel_rms": 1.0049345380770518,
+        "corr": -0.08868847958226664,
+        "amp_ratio": 0.04457468948837861,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0043083316590833,
+        "corr": 0.037248719408213206,
+        "amp_ratio": 0.13736211580151528,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0044266875651395,
+        "corr": 0.02717585747300497,
+        "amp_ratio": 0.12521410471596453,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0046758834098068,
+        "corr": -0.09229647177667606,
+        "amp_ratio": 0.04146551612608575,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.004582471383396,
+        "corr": -0.07965654601042797,
+        "amp_ratio": 0.04496731660457207,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.004684277153261,
+        "corr": 0.016225758102295675,
+        "amp_ratio": 0.11447936864646088,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.004680525892148,
+        "corr": -0.0024152395620225618,
+        "amp_ratio": 0.09448054202347926,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0039467565578981,
+        "corr": -0.10197773876537536,
+        "amp_ratio": 0.0333313489073412,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.003907828549062,
+        "corr": -0.09872451901496583,
+        "amp_ratio": 0.033855490325919314,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.003630928121582,
+        "corr": -0.03675819351943198,
+        "amp_ratio": 0.056119170100560806,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.003808522415171,
+        "corr": -0.06656141271800342,
+        "amp_ratio": 0.04326559368909642,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0030408357363447,
+        "corr": -0.11156124319620832,
+        "amp_ratio": 0.02458878118185847,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0029836022069998,
+        "corr": -0.11040724500478512,
+        "amp_ratio": 0.024373562403671504,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.997577945100902,
+        "corr": 0.07916128014588104,
+        "amp_ratio": 0.041368889032418046,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0021173189884376,
+        "corr": -0.06200268374670672,
+        "amp_ratio": 0.027905345974604156,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0020898726745937,
+        "corr": -0.13579370883326985,
+        "amp_ratio": 0.01461920376294973,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0019269335202374,
+        "corr": -0.13452207336308458,
+        "amp_ratio": 0.013645967506630507,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9662486414523014,
+        "corr": 0.2585453354132054,
+        "amp_ratio": 0.2365879318247862,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0004552284106591,
+        "corr": 0.01612858103270583,
+        "amp_ratio": 0.050345465466459745,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.000736105655628,
+        "corr": -0.1580672807838087,
+        "amp_ratio": 0.004591928660907236,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0008286388718155,
+        "corr": -0.14016622757946354,
+        "amp_ratio": 0.005794505975383761,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9997236011959906,
+        "corr": 0.03454136065975003,
+        "amp_ratio": 0.05984717786659343,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9997367771362765,
+        "corr": 0.026809986149352694,
+        "amp_ratio": 0.012939192511000602,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9995264407450883,
+        "corr": 0.044154560485809395,
+        "amp_ratio": 0.01248863305204604,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0003605564446354,
+        "corr": 0.12135896121501692,
+        "amp_ratio": 0.24565393439337455,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9997574969258659,
+        "corr": 0.030093676525940947,
+        "amp_ratio": 0.050604211046554305,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9986959264773382,
+        "corr": 0.06720820578929826,
+        "amp_ratio": 0.02349897921359785,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9987655361869905,
+        "corr": 0.06453810597503704,
+        "amp_ratio": 0.023334181432200875,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0026386509805187,
+        "corr": -0.04468449383366305,
+        "amp_ratio": 0.04064409709109852,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9993697063414967,
+        "corr": 0.036878761711866374,
+        "amp_ratio": 0.026886113489792023,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9979563553116132,
+        "corr": 0.07970802700421076,
+        "amp_ratio": 0.03206081642748902,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9978554902656552,
+        "corr": 0.08208085991039697,
+        "amp_ratio": 0.03255463436330467,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9948247436994737,
+        "corr": 0.12206304629627344,
+        "amp_ratio": 0.05441943648832772,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.996768850706433,
+        "corr": 0.0981015897740354,
+        "amp_ratio": 0.04178051330335548,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9972563950020772,
+        "corr": 0.0881646276190833,
+        "amp_ratio": 0.04027601795300088,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9870445489285008,
+        "corr": 0.1705182478284983,
+        "amp_ratio": 0.1127825187522232,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9907549588959775,
+        "corr": 0.14529473530969636,
+        "amp_ratio": 0.09327600132198234,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9969738598124065,
+        "corr": 0.09182216945030333,
+        "amp_ratio": 0.042953079507805275,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9970322560082724,
+        "corr": 0.09006949823815628,
+        "amp_ratio": 0.043316594223341026,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9831753573857269,
+        "corr": 0.19034740879859288,
+        "amp_ratio": 0.13681312626029452,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9857202271441662,
+        "corr": 0.17590232916859455,
+        "amp_ratio": 0.12504964381095887,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9969471833876593,
+        "corr": 0.09011276669166929,
+        "amp_ratio": 0.04512391045576648,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9807173188356951,
+        "corr": 0.20194787275928902,
+        "amp_ratio": 0.15106169805262865,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9815296935443139,
+        "corr": 0.19777994137237898,
+        "amp_ratio": 0.14760579944193294,
+        "model": "prem_s2",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ],
+    "prem_s4": [
+      {
+        "rel_rms": 1.0049570800025331,
+        "corr": -0.08026464769587627,
+        "amp_ratio": 0.04772420461931871,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0071153088376967,
+        "corr": 0.022967935022120287,
+        "amp_ratio": 0.14465923025078178,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0067083817377969,
+        "corr": 0.014937176036117288,
+        "amp_ratio": 0.13191958962494454,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0047987110202223,
+        "corr": -0.0856020108693356,
+        "amp_ratio": 0.044583064822059454,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0045303472099347,
+        "corr": -0.06662846903662271,
+        "amp_ratio": 0.04964952265516709,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.006257437618225,
+        "corr": 0.004990075752991266,
+        "amp_ratio": 0.11714591206130223,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0057201021806355,
+        "corr": -0.01059208591912326,
+        "amp_ratio": 0.09704209180498997,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0037994870335414,
+        "corr": -0.09492078798435322,
+        "amp_ratio": 0.034010845683927156,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0041808153224872,
+        "corr": -0.08841698569211984,
+        "amp_ratio": 0.038849165426769694,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.004619699389164,
+        "corr": -0.04582366868402805,
+        "amp_ratio": 0.060762207549354644,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0043288537920834,
+        "corr": -0.06670828238836303,
+        "amp_ratio": 0.0478624010281446,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0031656133897098,
+        "corr": -0.10298318584143593,
+        "amp_ratio": 0.027196630004202332,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0030592167295382,
+        "corr": -0.0992647414420833,
+        "amp_ratio": 0.027152350597080686,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9968063013107682,
+        "corr": 0.09430264295538147,
+        "amp_ratio": 0.04414498350815385,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0020668174250236,
+        "corr": -0.0523565928110318,
+        "amp_ratio": 0.03058386411498063,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0019737531599833,
+        "corr": -0.1266288695495223,
+        "amp_ratio": 0.01474394475681058,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.001940194243773,
+        "corr": -0.12110584709471041,
+        "amp_ratio": 0.015095397546360969,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9678883568278243,
+        "corr": 0.2515140043008544,
+        "amp_ratio": 0.24331853956019825,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0005313721296967,
+        "corr": 0.015815690949402342,
+        "amp_ratio": 0.05205327773357187,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0005604271022839,
+        "corr": -0.11976866061628838,
+        "amp_ratio": 0.004592508359098206,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0007351685581924,
+        "corr": -0.13458198953283596,
+        "amp_ratio": 0.005357960073453683,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.999835830097966,
+        "corr": 0.033693809682741147,
+        "amp_ratio": 0.0621008503351083,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9995339962727599,
+        "corr": 0.04040434867224156,
+        "amp_ratio": 0.013933211624093398,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9997845665911984,
+        "corr": 0.026448153804897415,
+        "amp_ratio": 0.010056557371413819,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0038666277768997,
+        "corr": 0.10738668369540227,
+        "amp_ratio": 0.24623950577425108,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9997115672035921,
+        "corr": 0.031136807352196386,
+        "amp_ratio": 0.050953930573046285,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9984503384255596,
+        "corr": 0.07237219037294405,
+        "amp_ratio": 0.02610327811543998,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9984343241087608,
+        "corr": 0.07224964873976819,
+        "amp_ratio": 0.026520978285247278,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0029446144432315,
+        "corr": -0.04471810632106503,
+        "amp_ratio": 0.044150384572076526,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9991588598441983,
+        "corr": 0.04304458074143514,
+        "amp_ratio": 0.029957826508083894,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9976595310075558,
+        "corr": 0.08342577415278501,
+        "amp_ratio": 0.03563038103579691,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9976203227140152,
+        "corr": 0.08437197962187061,
+        "amp_ratio": 0.03574133869118306,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9940580722636317,
+        "corr": 0.1311577574879865,
+        "amp_ratio": 0.057988034365882894,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9963349628254424,
+        "corr": 0.10369068592392061,
+        "amp_ratio": 0.045080819043431516,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9968921743843397,
+        "corr": 0.09232824841081455,
+        "amp_ratio": 0.04417731069049603,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9874789492312696,
+        "corr": 0.16518450765341872,
+        "amp_ratio": 0.11618862268748857,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9908974641244155,
+        "corr": 0.14213273444439814,
+        "amp_ratio": 0.09653121463596542,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9966864942185821,
+        "corr": 0.0931871299910095,
+        "amp_ratio": 0.04771396258770589,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9967224412414206,
+        "corr": 0.0951043947877233,
+        "amp_ratio": 0.04509968718737749,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9840332163001397,
+        "corr": 0.18367655714342637,
+        "amp_ratio": 0.13830643012068317,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9863633859664017,
+        "corr": 0.1702961792359555,
+        "amp_ratio": 0.12655240439347623,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9961226238143674,
+        "corr": 0.10031093262332141,
+        "amp_ratio": 0.05211793646640428,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.981756394794525,
+        "corr": 0.19420290758716538,
+        "amp_ratio": 0.15470116034412665,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9824749965181052,
+        "corr": 0.1904754913637018,
+        "amp_ratio": 0.1512577454634717,
+        "model": "prem_s4",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ],
+    "prem_s8": [
+      {
+        "rel_rms": 1.0059015945096186,
+        "corr": -0.07281496479613986,
+        "amp_ratio": 0.05810499905680495,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.009270762990649,
+        "corr": 0.018187943718404122,
+        "amp_ratio": 0.1558769931175128,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0086389361941706,
+        "corr": 0.010514321682284859,
+        "amp_ratio": 0.14266217284660287,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0057879659523064,
+        "corr": -0.0786312566778638,
+        "amp_ratio": 0.05475655004080817,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0039080507319293,
+        "corr": -0.05296160484836044,
+        "amp_ratio": 0.050170862941833476,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.007442845917984,
+        "corr": -0.00017611351429643504,
+        "amp_ratio": 0.12205775579898713,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.006822033317425,
+        "corr": -0.01542878446915721,
+        "amp_ratio": 0.10259093491548386,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.005437730608628,
+        "corr": -0.0971297077051825,
+        "amp_ratio": 0.04548589540444224,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.004689538498334,
+        "corr": -0.08417964406458028,
+        "amp_ratio": 0.04422316448272408,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0053541979518057,
+        "corr": -0.04967391469480628,
+        "amp_ratio": 0.06523718633736295,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0049527375465075,
+        "corr": -0.06751121772513798,
+        "amp_ratio": 0.05285393180308337,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0037519900459448,
+        "corr": -0.09875108558267269,
+        "amp_ratio": 0.03266365645546621,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0035269376612248,
+        "corr": -0.09508425970384561,
+        "amp_ratio": 0.03183040081709027,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9967233161262318,
+        "corr": 0.08586696670273793,
+        "amp_ratio": 0.0570484851257781,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.00247267820372,
+        "corr": -0.04772954671244946,
+        "amp_ratio": 0.037297391220860794,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0021294887631524,
+        "corr": -0.1513585998929758,
+        "amp_ratio": 0.013483561007258948,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0020926478301038,
+        "corr": -0.11567373116035401,
+        "amp_ratio": 0.01687847333171133,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9695383573387383,
+        "corr": 0.2450753058610934,
+        "amp_ratio": 0.2532320143888641,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0007449172585399,
+        "corr": 0.01356790986037763,
+        "amp_ratio": 0.05448829105094802,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.000529861603458,
+        "corr": -0.11275102232471292,
+        "amp_ratio": 0.004606538128384623,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0007424546348906,
+        "corr": -0.13336411420058883,
+        "amp_ratio": 0.005457524837329691,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0000372817391374,
+        "corr": 0.03295651741258436,
+        "amp_ratio": 0.06702551957244449,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9992659908645967,
+        "corr": 0.054623160682804935,
+        "amp_ratio": 0.01568461703279548,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9993535966363127,
+        "corr": 0.04951745474241524,
+        "amp_ratio": 0.015464709858906408,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.011546116899674,
+        "corr": 0.09945537702123253,
+        "amp_ratio": 0.28143592167709625,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9997590176485713,
+        "corr": 0.03323736783586772,
+        "amp_ratio": 0.05819364941573563,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.998167034561094,
+        "corr": 0.07461342897289013,
+        "amp_ratio": 0.030971789824236977,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9982442937610413,
+        "corr": 0.07225969876045024,
+        "amp_ratio": 0.03086967470354865,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0027700100631975,
+        "corr": -0.057194044278066986,
+        "amp_ratio": 0.036714697503662116,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9989513374622706,
+        "corr": 0.04880854189069454,
+        "amp_ratio": 0.031895577066178175,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9968726993598066,
+        "corr": 0.09401336630601012,
+        "amp_ratio": 0.043085065989825734,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9973026121364307,
+        "corr": 0.08529947402280359,
+        "amp_ratio": 0.0418425937537939,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9936557163682085,
+        "corr": 0.12919193092182935,
+        "amp_ratio": 0.06561333635944169,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.995937122923187,
+        "corr": 0.10413191960313602,
+        "amp_ratio": 0.051842250482463374,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9964470670979985,
+        "corr": 0.094212997730323,
+        "amp_ratio": 0.051989231087156716,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9876810640905858,
+        "corr": 0.16136571143017422,
+        "amp_ratio": 0.12196041751580293,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9908663179623913,
+        "corr": 0.14001749534524066,
+        "amp_ratio": 0.10232188452512554,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9961571454182164,
+        "corr": 0.09937327473141327,
+        "amp_ratio": 0.05242536637955781,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9960651231696769,
+        "corr": 0.09847987997955883,
+        "amp_ratio": 0.05553786843128868,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9841612209456665,
+        "corr": 0.1787034314537774,
+        "amp_ratio": 0.15615958026060592,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9863527501116497,
+        "corr": 0.1662693348415736,
+        "amp_ratio": 0.14309091035945148,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9957796895731146,
+        "corr": 0.10373623644851161,
+        "amp_ratio": 0.05537926260988322,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9819551450462689,
+        "corr": 0.1902669854855952,
+        "amp_ratio": 0.1693520948902587,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9826474656561399,
+        "corr": 0.1866815576366987,
+        "amp_ratio": 0.16556176308043172,
+        "model": "prem_s8",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ],
+    "prem_s2c": [
+      {
+        "rel_rms": 1.004625197256873,
+        "corr": -0.08446329310064021,
+        "amp_ratio": 0.043621970863703605,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0043167835845848,
+        "corr": 0.03620996851291883,
+        "amp_ratio": 0.1360266184736946,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0043761608720376,
+        "corr": 0.026408797512805584,
+        "amp_ratio": 0.12371705571387194,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0044110796835526,
+        "corr": -0.08864158890909153,
+        "amp_ratio": 0.04058282161542526,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.00429148672132,
+        "corr": -0.075715650825765,
+        "amp_ratio": 0.044010077741192366,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.004676399709279,
+        "corr": 0.015422752642954417,
+        "amp_ratio": 0.1134662604947459,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0045765470029526,
+        "corr": -0.002609018349345912,
+        "amp_ratio": 0.09320771174056086,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0037893892102911,
+        "corr": -0.1000465939133084,
+        "amp_ratio": 0.03262766449737118,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0037386486037967,
+        "corr": -0.0964517684544539,
+        "amp_ratio": 0.03314074035283938,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0036222743528762,
+        "corr": -0.037237499709664446,
+        "amp_ratio": 0.05573723321207243,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0036987149653744,
+        "corr": -0.06575191557467112,
+        "amp_ratio": 0.042573634619559195,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0029724397076605,
+        "corr": -0.11161452790706801,
+        "amp_ratio": 0.024074519746212223,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.002917587736434,
+        "corr": -0.1105064210501847,
+        "amp_ratio": 0.0238638021556616,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9976081683392414,
+        "corr": 0.07857205352895623,
+        "amp_ratio": 0.041213987024733716,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0020913038060395,
+        "corr": -0.0627107991128282,
+        "amp_ratio": 0.027398165419328536,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0021155477084762,
+        "corr": -0.14076955118422316,
+        "amp_ratio": 0.014316352429442012,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.00195032555515,
+        "corr": -0.1394073281972316,
+        "amp_ratio": 0.013363277729307631,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9661617599497074,
+        "corr": 0.25885907342777914,
+        "amp_ratio": 0.23702867524075252,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0005375623352104,
+        "corr": 0.01377835908905706,
+        "amp_ratio": 0.04934880781930412,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0008347501756065,
+        "corr": -0.1834288155280643,
+        "amp_ratio": 0.0044975730529367985,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0009139930890432,
+        "corr": -0.15827945158999635,
+        "amp_ratio": 0.005675439636472555,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9998590129831207,
+        "corr": 0.031713970892651495,
+        "amp_ratio": 0.05861790728419991,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9998469789750305,
+        "corr": 0.018409270094195906,
+        "amp_ratio": 0.012674935704179777,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9996383804477142,
+        "corr": 0.035671034512199225,
+        "amp_ratio": 0.012233578009848861,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0005262094752176,
+        "corr": 0.11910803494887795,
+        "amp_ratio": 0.24255608003761148,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9998695277535805,
+        "corr": 0.027424179716071785,
+        "amp_ratio": 0.049586268139029346,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9987966325165681,
+        "corr": 0.06375174313003643,
+        "amp_ratio": 0.023020945463474576,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9988641917367673,
+        "corr": 0.061088020232831754,
+        "amp_ratio": 0.02285950012137878,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0026303645175223,
+        "corr": -0.04500506321774992,
+        "amp_ratio": 0.04039460638215751,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9994371958537487,
+        "corr": 0.03451264044541202,
+        "amp_ratio": 0.026399021861907734,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.998024765031124,
+        "corr": 0.07852852793759053,
+        "amp_ratio": 0.031409940145986644,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9979176468935346,
+        "corr": 0.08116924145446644,
+        "amp_ratio": 0.031893732935295814,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9948322676991765,
+        "corr": 0.12216037191552472,
+        "amp_ratio": 0.05423101653786072,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9968362189859231,
+        "corr": 0.0972922839060225,
+        "amp_ratio": 0.04118314035702861,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9972751370075339,
+        "corr": 0.0886909468736983,
+        "amp_ratio": 0.03945901667846003,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9870331032495266,
+        "corr": 0.17073457329968783,
+        "amp_ratio": 0.11255690206563827,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9908424947983532,
+        "corr": 0.14481899885062247,
+        "amp_ratio": 0.09246069553280259,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9969736120354793,
+        "corr": 0.0928487571014385,
+        "amp_ratio": 0.042081890048678815,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9970270728263392,
+        "corr": 0.09116825478441062,
+        "amp_ratio": 0.04243803183095716,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9831462725740103,
+        "corr": 0.19063508839478155,
+        "amp_ratio": 0.13661351674551692,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9857759606715631,
+        "corr": 0.17571692806450226,
+        "amp_ratio": 0.12442673946698349,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9969271034215734,
+        "corr": 0.09150641588525221,
+        "amp_ratio": 0.04420870257167366,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9806743022871631,
+        "corr": 0.2022866379769947,
+        "amp_ratio": 0.15088653028790647,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.981518232287863,
+        "corr": 0.1979640461448152,
+        "amp_ratio": 0.1472905434089868,
+        "model": "prem_s2c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ],
+    "prem_s8c": [
+      {
+        "rel_rms": 1.0058788585361733,
+        "corr": -0.07261488363077294,
+        "amp_ratio": 0.05801895338991033,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0094541219767446,
+        "corr": 0.016907212386915206,
+        "amp_ratio": 0.15577217631423657,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.008782562210944,
+        "corr": 0.00938884834945224,
+        "amp_ratio": 0.1425444276325087,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0057654977270614,
+        "corr": -0.07841555673236354,
+        "amp_ratio": 0.054675524696143674,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.003890430349535,
+        "corr": -0.052761285602871695,
+        "amp_ratio": 0.05009662321235914,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0075570512021323,
+        "corr": -0.0011966515590401106,
+        "amp_ratio": 0.12198063288127346,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0068854195258752,
+        "corr": -0.016162866632265505,
+        "amp_ratio": 0.10249414458733949,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0054186118860482,
+        "corr": -0.09691747747225099,
+        "amp_ratio": 0.045418682959497296,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0046717195716846,
+        "corr": -0.08396419449005649,
+        "amp_ratio": 0.044157817917999845,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0053813816119586,
+        "corr": -0.050155439580790696,
+        "amp_ratio": 0.06520179084501931,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.004950922007094,
+        "corr": -0.06761384061841265,
+        "amp_ratio": 0.052793746709299684,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0037386100719699,
+        "corr": -0.0985334954333132,
+        "amp_ratio": 0.03261545451107939,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.003514036359406,
+        "corr": -0.09486444862120862,
+        "amp_ratio": 0.03178342851280807,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9967506169664999,
+        "corr": 0.08540199999001935,
+        "amp_ratio": 0.057024297028123665,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0024681399164865,
+        "corr": -0.0477184329307578,
+        "amp_ratio": 0.03724873948887527,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0021250854027008,
+        "corr": -0.1512742152032394,
+        "amp_ratio": 0.013463682618502058,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.002086380238406,
+        "corr": -0.11549675712252153,
+        "amp_ratio": 0.016853589930781128,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9701400444859791,
+        "corr": 0.24276827294057107,
+        "amp_ratio": 0.2531673239455915,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 1.0007665843525142,
+        "corr": 0.013111135293788774,
+        "amp_ratio": 0.05441075061027639,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.00053111310741,
+        "corr": -0.11319644061817284,
+        "amp_ratio": 0.004599749747119142,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0007431006150185,
+        "corr": -0.13368761114156927,
+        "amp_ratio": 0.00544948240756376,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0000776106960736,
+        "corr": 0.032303673714104496,
+        "amp_ratio": 0.06692671157901262,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.999272252720615,
+        "corr": 0.05428111670348973,
+        "amp_ratio": 0.015661501377723087,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9993591782958988,
+        "corr": 0.049206502945984186,
+        "amp_ratio": 0.015441918298350885,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0122079422953787,
+        "corr": 0.09693767338687401,
+        "amp_ratio": 0.281225033147398,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9997909364745058,
+        "corr": 0.0326521514170084,
+        "amp_ratio": 0.05810955994042527,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9981802662021884,
+        "corr": 0.07425084066588557,
+        "amp_ratio": 0.030926122835736716,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9982575339510953,
+        "corr": 0.07189206276494545,
+        "amp_ratio": 0.030824158280775085,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0027781801188795,
+        "corr": -0.057464809278002155,
+        "amp_ratio": 0.036696131816963684,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9989625815830467,
+        "corr": 0.04847829843129942,
+        "amp_ratio": 0.031853472962746,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9968892360514431,
+        "corr": 0.0937054806422341,
+        "amp_ratio": 0.04302149838331594,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9973199641509257,
+        "corr": 0.08494953705851106,
+        "amp_ratio": 0.04178085928794167,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9936908739215109,
+        "corr": 0.12868664497563545,
+        "amp_ratio": 0.06558509578719561,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9959625453759733,
+        "corr": 0.10370044798800353,
+        "amp_ratio": 0.0517853759501068,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9964674465547065,
+        "corr": 0.09388429930913478,
+        "amp_ratio": 0.05191247900045405,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9878247623627036,
+        "corr": 0.16021729261881323,
+        "amp_ratio": 0.12191139240703897,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9909694255333731,
+        "corr": 0.1390480694233482,
+        "amp_ratio": 0.10224089685734737,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9961759795331575,
+        "corr": 0.09908435756142883,
+        "amp_ratio": 0.05234794657163356,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9960861664510104,
+        "corr": 0.09816547863250799,
+        "amp_ratio": 0.055455852197480365,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9843845933469156,
+        "corr": 0.17730388516121795,
+        "amp_ratio": 0.15609786450588037,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.9865424688196144,
+        "corr": 0.16497444846886206,
+        "amp_ratio": 0.1430060294928599,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9957990198993768,
+        "corr": 0.10345973038395835,
+        "amp_ratio": 0.05529746461830693,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9822171757367292,
+        "corr": 0.18875508128169702,
+        "amp_ratio": 0.16928559176869684,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.982898686218621,
+        "corr": 0.18519910179932572,
+        "amp_ratio": 0.1654878187977422,
+        "model": "prem_s8c",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ]
+  },
+  "summary": {
+    "homog_q50": {
+      "median": 0.22968249022235798,
+      "max": 0.33540067993061845,
+      "corr_min": 0.9467272295030947,
+      "amp_med": 1.0180571391972726
+    },
+    "prem_s2": {
+      "median": 0.9997405490609282,
+      "max": 1.004680525892148,
+      "corr_min": -0.06656141271800342,
+      "amp_med": 0.05522569445657387
+    },
+    "prem_s4": {
+      "median": 0.999773698650779,
+      "max": 1.0067083817377969,
+      "corr_min": -0.06670828238836303,
+      "amp_med": 0.05707706403434008
+    },
+    "prem_s8": {
+      "median": 0.9998981496938544,
+      "max": 1.0086389361941706,
+      "corr_min": -0.06751121772513798,
+      "amp_med": 0.06260958449409006
+    },
+    "prem_s2c": {
+      "median": 0.9998642703683507,
+      "max": 1.0045765470029526,
+      "corr_min": -0.06575191557467112,
+      "amp_med": 0.05410208771161463
+    },
+    "prem_s8c": {
+      "median": 0.9999342735852896,
+      "max": 1.008782562210944,
+      "corr_min": -0.06761384061841265,
+      "amp_med": 0.06251813575971894
+    }
+  }
+}
