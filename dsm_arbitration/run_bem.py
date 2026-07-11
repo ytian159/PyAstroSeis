@@ -36,6 +36,15 @@ from pyastroseis.source import u0eM                           # noqa: E402
 Q_ELASTIC = 1.0e8
 
 
+class _Pts:
+    """Minimal stand-in for Faces so u0eM can evaluate the incident
+    field at arbitrary points (moment-fit quadrature grids)."""
+
+    def __init__(self, ic):
+        self.ic = np.asarray(ic, dtype=float)
+        self.n = len(self.ic)
+
+
 def load_faces(path):
     z = np.load(path)
     return Faces(**{k: z[k] for k in
@@ -91,6 +100,7 @@ def _worker(k):
     m = _W["mat_src"]
     xs, ys, zs = _W["src_xyz"]
     B = np.empty((model.size, len(_W["mts"])), dtype=complex)
+    mfd = None
     for col, M in enumerate(_W["mts"]):
         def field(faces):
             return u0eM(faces, w, m.rho, m.mu, m.lamda, xs, ys, zs,
@@ -98,6 +108,18 @@ def _worker(k):
                         disp_ref_hz=m.disp_ref_hz)
         B[:, col] = model.assemble_rhs(incident_solid_layer_source(
             model, ifaces, _W["src_layer"], field))
+        if _W["mfit"] is not None:
+            # moment-fitted RHS (docs/moment_fitted_rhs.md): pin the
+            # low-(l,m) moments of the sampled incident trace to their
+            # exact quadrature values; "u" rows are unscaled so the
+            # block can be corrected in place
+            sl = model.block_slice("u", ifaces[-1])
+            bc, dg = _W["mfit"].correct(B[sl, col],
+                                        lambda pts: field(_Pts(pts)))
+            B[sl, col] = bc
+            if mfd is None:
+                mfd = np.zeros((len(_W["mts"]), 3))
+            mfd[col] = (dg["dbnorm"], dg["deficit"], dg["griddiff"])
 
     surf = ifaces[-1]
     if _W["elim"] is not None:
@@ -116,7 +138,7 @@ def _worker(k):
         us = US[:, col]
         for i, j in enumerate(st):
             out[col, i] = (us[j], us[n1 + j], us[2 * n1 + j])
-    return k, out, time.time() - t0
+    return k, out, time.time() - t0, mfd
 
 
 def main():
@@ -186,34 +208,65 @@ def main():
                           src["lat"], src["lon"]) * scale
            for s in src_names]
 
+    # ARB_MFIT_LMAX=<L>: moment-fitted RHS falsification rig
+    # (docs/moment_fitted_rhs.md); strict no-op when unset
+    mfit = None
+    ml = os.environ.get("ARB_MFIT_LMAX")
+    if ml:
+        from pyastroseis.momentfit import MomentFit
+        if len(ifaces) != 1:
+            raise ValueError("ARB_MFIT_LMAX supports single-layer "
+                             "(homog) models only")
+        R = layers[-1]["r_km"] * 1e3
+        t0m = time.time()
+        mfit = MomentFit(int(ml), ifaces[-1].faces.ic,
+                         ifaces[-1].faces.area, R, src_xyz, R - r0)
+        print("moment-fit RHS: lmax %s, %d moments, grids %d/%d pts, "
+              "gram cond %.2e, built in %.1f s"
+              % (ml, len(mfit.labels), len(mfit.pts1), len(mfit.pts2),
+                 mfit.gram_cond, time.time() - t0m), flush=True)
+
     st_faces = [st["face"] for st in man["stations"]]
     _W.update(dict(model=model, ifaces=ifaces, mat_src=mats[src_layer],
                    src_layer=src_layer, df=df, omegai=omegai, mts=mts,
-                   src_xyz=src_xyz, st_faces=st_faces, elim=elim))
+                   src_xyz=src_xyz, st_faces=st_faces, elim=elim,
+                   mfit=mfit))
 
     ks = list(range(1, imax + 1))
     u = np.zeros((len(mts), len(st_faces), 3, imax + 1), dtype=complex)
+    mf_diag = (np.zeros((len(mts), 3, imax + 1))
+               if mfit is not None else None)
+
+    def took(k, out, dt, mfd):
+        u[:, :, :, k] = out
+        line = "  k=%3d f=%.4e Hz  %.1f s" % (k, k * df, dt)
+        if mfd is not None:
+            mf_diag[:, :, k] = mfd
+            line += ("  mfit |db|/|b|=%.3g deficit=%.2g grid=%.1g"
+                     % (mfd[:, 0].max(), mfd[:, 1].max(),
+                        mfd[:, 2].max()))
+        print(line, flush=True)
+
     t0 = time.time()
     if nprocs <= 1:
-        results = map(_worker, ks)
-        for k, out, dt in results:
-            u[:, :, :, k] = out
-            print("  k=%3d f=%.4e Hz  %.1f s" % (k, k * df, dt),
-                  flush=True)
+        for k, out, dt, mfd in map(_worker, ks):
+            took(k, out, dt, mfd)
     else:
         ctx = mp.get_context("fork")
         with ctx.Pool(processes=min(nprocs, len(ks))) as pool:
-            for k, out, dt in pool.imap_unordered(_worker, ks):
-                u[:, :, :, k] = out
-                print("  k=%3d f=%.4e Hz  %.1f s" % (k, k * df, dt),
-                      flush=True)
+            for k, out, dt, mfd in pool.imap_unordered(_worker, ks):
+                took(k, out, dt, mfd)
     wall = time.time() - t0
     print("%s: %d harmonics in %.1f s (%d procs)" %
           (model_name, len(ks), wall, nprocs), flush=True)
 
+    extra = {}
+    if mfit is not None:
+        extra = dict(mfit_lmax=int(os.environ["ARB_MFIT_LMAX"]),
+                     mfit_diag=mf_diag)
     np.savez(os.path.join(ROOT, "bem_%s.npz" % model_name),
              sources=np.array(src_names), u=u, imax=imax, df=df,
-             omegai=omegai, wall_seconds=wall, nprocs=nprocs)
+             omegai=omegai, wall_seconds=wall, nprocs=nprocs, **extra)
     print("wrote bem_%s.npz" % model_name)
 
 

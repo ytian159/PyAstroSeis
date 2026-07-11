@@ -1,0 +1,607 @@
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/13.2
+
+########## battery + momentfit self-tests ##########
+=== test_oracle ===
+kernel green_traction_tensor:
+  [ok ] T11                      max rel err = 7.824e-14 (tol 1e-13)
+  [ok ] T12                      max rel err = 4.221e-14 (tol 1e-13)
+  [ok ] T13                      max rel err = 5.624e-14 (tol 1e-13)
+  [ok ] T21                      max rel err = 3.992e-14 (tol 1e-13)
+  [ok ] T22                      max rel err = 3.838e-14 (tol 1e-13)
+  [ok ] T23                      max rel err = 1.229e-14 (tol 1e-13)
+  [ok ] T31                      max rel err = 5.478e-14 (tol 1e-13)
+  [ok ] T32                      max rel err = 2.951e-14 (tol 1e-13)
+  [ok ] T33                      max rel err = 9.267e-14 (tol 1e-13)
+sub-grid quadrature (face 3):
+  [ok ] subgrid x                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid y                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid z                max rel err = 0.000e+00 (tol 1e-13)
+  [ok ] subgrid w                max rel err = 0.000e+00 (tol 1e-13)
+self integral (face 5):
+  [ok ] ST5                      max rel err = 1.290e-15 (tol 1e-12)
+60-face system:
+  [ok ] TRAC(60)                 max rel err = 4.535e-14 (tol 1e-12)
+  [ok ] u0                       max rel err = 1.289e-14 (tol 1e-13)
+  [ok ] solve                    max rel err = 2.643e-14 (tol 1e-09)
+mesh rebuild from V/Tri:
+  [ok ] faces.ic                 max rel err = 1.520e-16 (tol 1e-12)
+  [ok ] faces.nvec               max rel err = 3.331e-16 (tol 1e-12)
+  [ok ] faces.area               max rel err = 1.224e-15 (tol 1e-12)
+  [ok ] faces.r                  max rel err = 1.011e-15 (tol 1e-12)
+
+all oracle checks passed
+=== test_oracle2 ===
+kernels:
+  [ok ] B11            max rel err = 4.062e-16 (tol 1e-13)
+  [ok ] B12            max rel err = 9.766e-16 (tol 1e-13)
+  [ok ] B13            max rel err = 1.176e-15 (tol 1e-13)
+  [ok ] B21            max rel err = 9.766e-16 (tol 1e-13)
+  [ok ] B22            max rel err = 3.529e-16 (tol 1e-13)
+  [ok ] B23            max rel err = 1.161e-15 (tol 1e-13)
+  [ok ] B31            max rel err = 1.176e-15 (tol 1e-13)
+  [ok ] B32            max rel err = 1.161e-15 (tol 1e-13)
+  [ok ] B33            max rel err = 4.839e-16 (tol 1e-13)
+  [ok ] greens_func_p  max rel err = 1.552e-16 (tol 1e-13)
+  [ok ] greens_deri_p  max rel err = 2.204e-16 (tol 1e-13)
+  [ok ] G_singular     max rel err = 1.868e-16 (tol 1e-13)
+  [ok ] gd1            max rel err = 6.193e-16 (tol 1e-13)
+  [ok ] gd2            max rel err = 7.283e-16 (tol 1e-13)
+  [ok ] gd3            max rel err = 9.179e-16 (tol 1e-13)
+liquid-core matrices (subsets):
+  [ok ] T11            max rel err = 4.004e-14 (tol 1e-12)
+  [ok ] T22            max rel err = 6.650e-14 (tol 1e-12)
+  [ok ] T12            max rel err = 6.750e-16 (tol 1e-12)
+  [ok ] T21            max rel err = 5.935e-16 (tol 1e-12)
+  [ok ] G12            max rel err = 4.794e-16 (tol 1e-12)
+  [ok ] G22            max rel err = 1.166e-14 (tol 1e-12)
+  [ok ] A22            max rel err = 2.220e-16 (tol 1e-12)
+  [ok ] B22            max rel err = 4.449e-16 (tol 1e-12)
+sources + coupled system:
+  [ok ] u0eM(f1)       max rel err = 1.293e-15 (tol 1e-13)
+  [ok ] u0eM(f2)       max rel err = 1.116e-14 (tol 1e-13)
+  [ok ] u0p_exp        max rel err = 1.483e-16 (tol 1e-13)
+  [ok ] A_lc           max rel err = 6.650e-14 (tol 1e-12)
+  [ok ] b_lc           max rel err = 1.116e-14 (tol 1e-13)
+  [ok ] solve_lc       max rel err = 1.046e-14 (tol 1e-08)
+spherical harmonics + topography:
+  [ok ] ylm(45,17)     max rel err = 1.359e-14 (tol 1e-11)
+  [ok ] ylm(5,3)       max rel err = 9.039e-16 (tol 1e-13)
+  [ok ] ylm(7,-4)      max rel err = 1.130e-15 (tol 1e-13)
+  [ok ] phobos_topo    max rel err = 9.762e-16 (tol 1e-10)
+  [ok ] mars_topo      max rel err = 1.265e-15 (tol 1e-12)
+spherical subdivision (fixed icosahedron):
+  [ok ] subdiv V       max rel err = 0.000e+00 (tol 1e-15)
+  [ok ] subdiv F      exact face match: True
+
+all oracle2 checks passed
+=== test_kernel_equiv ===
+canonical kernel == reference on 6x4000 random points, worst rel err = 2.342e-15
+kernel equivalence PASSED
+=== test_meshgen ===
+particle_sample_sphere (N=50, seed 0):
+  [ok ] unit sphere 
+  [ok ] energy decreased (E0=2301.3 -> 1925.6)
+  [ok ] closed surface (chi=2)
+  [ok ] deterministic w/ seed 
+  [ok ] subdivision x4 faces 
+  [ok ] subdivided closed 
+gen_mesh_ph_topo (Phobos, n=50, nfold=1, matlab radius mode):
+  [ok ] areas positive 
+  [ok ] normals outward 
+  [ok ] Phobos double-radius quirk (mean r = 21708 m; my_mesh.mat has 21918)
+  [ok ] element-size spread ~ MATLAB mesh (norm-size q10/q90: [0.9  1.12] vs [0.9  1.11])
+gen_mesh_topo_layers (sphere, nfold=0):
+  [ok ] exact sphere at nfold=0 (max dev 1.82e-12 m)
+gen_mesh_topo_layers (Mars-like topo):
+  [ok ] topo present (max |h| = 934 m at nfold=1e-3)
+  [ok ] topo linear in nfold 
+
+all meshgen checks passed
+=== test_adaptive_quad ===
+f=0.12 Hz (resolved): cap median tier 2, assembly full 21.2 s / adaptive 8.6 s (2.46x), solution rel err 1.656e-06
+f=0.88 Hz (band-top): cap median tier 0, assembly full 21.5 s / adaptive 22.8 s (0.94x), solution rel err 0.000e+00
+adaptive quadrature gate PASSED
+=== test_rung0 ===
+[homog/synthetic production] n=184 f=0.05 Hz (1.9 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[homog/synthetic matlab-exact] n=184 f=0.05 Hz (2.8 s)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic production] n1=184 n2=80 f=0.05 Hz (4.4 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[lc/synthetic matlab-exact] n1=184 n2=80 f=0.05 Hz (6.0 s)
+    block layout: OK (bitwise)
+    matrix: OK (bitwise)
+    rhs: OK (bitwise)
+    solution: OK (bitwise)
+[validation]
+    unknown condition rejected: OK
+    fluid-side sign convention enforced: OK
+    missing w0 rejected for fluid regions: OK
+rung-0 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+=== test_rung1 ===
+[transparent/synthetic] n1=184 n2=80 f=0.05 Hz (3.3 s)
+    surface field vs single-region: OK  (rel err 1.272e-02, gate 0.025)
+[transparent-refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (15.3 s)
+    transparent err: 1.272e-02  7.400e-03  5.156e-03
+    transparent error converges: OK
+[swap/synthetic] n1=184 n2=80 f=0.05 Hz (4.8 s)
+    u_surf A/B-swap: OK  (rel 2.330e-16)
+    u_core A/B-swap: OK  (rel 6.178e-16)
+    t_core A/B-swap (physical): OK  (rel 1.828e-15)
+[refine/synthetic] cores n=[80, 184, 304] f=0.05 Hz (14.4 s)
+    surface-field err vs finest core: 1.966e-02  5.801e-03
+    interface refinement converges: OK
+[validation]
+    one-sided welded rejected: OK
+    same-sign welded rejected: OK
+    missing w0 rejected for welded: OK
+rung-1 gate PASSED (synthetic only; run with --full on a compute node for the real meshes)
+=== test_rung2 ===
+[bitwise special cases]
+    welded_two_layer matrix: OK
+    welded_two_layer rhs: OK
+    welded_two_layer solution: OK
+    liquid_core matrix: OK
+    liquid_core rhs: OK
+    liquid_core solution: OK
+[transparent-3shell] n=[80, 128, 184] f=0.05 Hz (6.0 s)
+    surface field vs single-region: OK  (rel err 3.982e-02, gate 0.05)
+[lc-transparent] n=[80, 128, 184] f=0.05 Hz (7.0 s)
+    fluid-core + artificial weld vs 2-region LC: OK  (rel err 3.653e-02, gate 0.08)
+[validation]
+    fluid outermost rejected: OK
+    material/mesh count mismatch rejected: OK
+rung-2 gate PASSED
+=== test_rung2b ===
+[validation]
+    solid/fluid/solid builds: 2 p blocks, no t blocks: OK
+    fluid outermost rejected: OK
+    adjacent fluid layers build: 2 p + 1 un blocks, no u on the split: OK
+[auto_nmesh]
+    Earth campaign surface ~200: OK  (n=199)
+    CMB reflector: max(wavelength, curvature h/R<=0.09): OK  (n_cmb=196)
+    welded boundary uses h/R<=0.2 tier: OK  (n_welded=42)
+    explicit nmesh override kept: OK
+[perturbation]
+    amp=0 relief BITWISE == unperturbed sphere: OK
+    perturbed mesh outward-closed (amp=100): OK
+    perturbed mesh outward-closed (amp=200): OK
+    solution change ~linear in amp: OK  (err 9.592e-03 -> 1.919e-02, ratio 2.00)
+[tiny-core limit] inner n=32 (5.1 s)
+    solid(tiny)/fluid/solid vs liquid core: OK  (rel err 4.663e-05, gate 0.08)
+[annulus refinement] internal meshes x1/x2/x4, surface fixed
+    x1: internal n=(80,128) size=1384 (4.8 s)
+    x2: internal n=(176,272) size=2344 (8.8 s)
+    x4: internal n=(368,560) size=4264 (20.1 s)
+    surface field converges under internal refinement: OK  (err x1 1.259e-01 -> x2 4.337e-02, need ratio < 0.75)
+rung-2b gate PASSED
+=== test_rung2c ===
+[l=0 radial arbiter] analytic root 0.140674 Hz
+    x1: peak 0.143308 (+1.873%) (94.3 s)
+    x2: peak 0.141960 (+0.915%) (297.8 s)
+    x2 offset below gate: OK  (0.915% < 1.4%)
+    convergence order >= 1.4: OK  (order 2.07)
+rung-2c gate PASSED
+=== test_self_convergence ===
+ face  grid300 err polar8x 6 polar16x12 polar32x24   (rel to nxi=1501 reference, traction self block)
+    0    4.503e-05 9.911e-06 9.817e-06 9.817e-06
+  100    1.623e-04 4.144e-05 4.094e-05 4.094e-05
+  777    4.307e-05 1.101e-05 1.089e-05 1.089e-05
+polar self-convergence (16x12 vs 96x64): 7.488e-13
+grid(nxi= 300) vs converged polar: 3.866e-05
+grid(nxi= 600) vs converged polar: 1.994e-05
+grid(nxi=1200) vs converged polar: 7.602e-06
+grid(nxi=2400) vs converged polar: 5.333e-06
+G self block polar16x12: vs grid1501 1.021e-03, self-convergence vs 96x64 4.658e-12
+G self block polar32x24: vs grid1501 1.021e-03, self-convergence vs 96x64 9.411e-16
+G self block: grid300 err 4.247e-03 (production = polar32x24)
+per-face timing: grid300 5.6 ms, polar16x12 0.49 ms (11x)
+
+self-quadrature study PASSED: polar16x12 worst err 4.094e-05 vs grid300 1.623e-04 (errors rel to nxi=1501 grid, which itself carries ~1e-5 stair-step error; grid marches to the polar limit)
+=== test_elim ===
+[dense vs eliminated]
+    welded3 full solution: OK  (rel err 1.164e-15; dense 3.6 s, elim 3.4 s, size 1800)
+    welded3 multi-RHS: OK  (rel err 1.189e-15)
+    welded3 surface-only == full surface block: OK
+    fluid_core3 full solution: OK  (rel err 1.013e-14; dense 3.3 s, elim 3.1 s, size 1640)
+    fluid_core3 multi-RHS: OK  (rel err 9.930e-15)
+    fluid_core3 surface-only == full surface block: OK
+    annulus full solution: OK  (rel err 2.343e-14; dense 2.3 s, elim 2.2 s, size 1384)
+    annulus multi-RHS: OK  (rel err 2.316e-14)
+    annulus surface-only == full surface block: OK
+    mixed5 full solution: OK  (rel err 3.191e-14; dense 6.4 s, elim 5.4 s, size 2792)
+    mixed5 multi-RHS: OK  (rel err 3.160e-14)
+    mixed5 surface-only == full surface block: OK
+[rung-3 block cache]
+    cached blocks bitwise == fresh: OK  (recomputed 11/16 blocks, expected 11; fresh 2.2 s, cached 1.4 s)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+[thin-shell probe]
+    t =   5000 m  t/h =  1.56  surface rel err 6.282e-02
+    t =   4000 m  t/h =  1.19  surface rel err 5.884e-02
+    t =   2000 m  t/h =  0.54  surface rel err 5.378e-02
+    t =   1000 m  t/h =  0.26  surface rel err 5.371e-02
+    t =    500 m  t/h =  0.13  surface rel err 1.124e-01
+    t/h >= 1 stays in the transparent-interface class: OK  (max 6.282e-02, gate 0.15)
+[source-layer placement]
+    outermost layer == incident_outer_source (bitwise): OK
+    middle-shell source vs single-region: OK  (rel err 3.950e-02, gate 8e-2)
+elimination gate PASSED
+=== test_ff ===
+[G1 transparent fluid-fluid split]
+    split fluid core vs unsplit (surface): OK  (rel err 7.019e-04, gate 0.08, size 1032 vs 872)
+[G2 A/B swap + self-operator identity]
+    registration swap (surface): OK  (rel err 1.541e-16, gate 1e-08)
+    A_(+) + A_(-) == I: OK  (max abs 1.359e-21)
+[G3 dense vs eliminated, fluid-fluid]
+    ff_annulus4 full solution: OK  (rel err 1.745e-14; 1 ff ifaces; cond 3.69e+08; dense 0.2 s, elim 2.1 s, size 1512)
+    ff_annulus4 multi-RHS: OK  (rel err 1.712e-14)
+    ff_annulus4 surface-only == full surface block: OK
+    ff_core4 full solution: OK  (rel err 1.881e-14; 1 ff ifaces; cond 3.99e+09; dense 0.4 s, elim 3.4 s, size 1864)
+    ff_core4 multi-RHS: OK  (rel err 1.686e-14)
+    ff_core4 surface-only == full surface block: OK
+    ff_contrast4 full solution: OK  (rel err 2.058e-14; 1 ff ifaces; cond 3.90e+09; dense 0.4 s, elim 3.4 s, size 1864)
+    ff_contrast4 multi-RHS: OK  (rel err 1.876e-14)
+    ff_contrast4 surface-only == full surface block: OK
+    ff_stack5 full solution: OK  (rel err 5.273e-14; 2 ff ifaces; cond 4.45e+09; dense 0.5 s, elim 3.5 s, size 2024)
+    ff_stack5 multi-RHS: OK  (rel err 5.189e-14)
+    ff_stack5 surface-only == full surface block: OK
+    incident helpers agree bitwise (with un blocks): OK
+[G4 block cache across a fluid-fluid boundary]
+    cached blocks bitwise == fresh: OK  (recomputed 12/24 blocks, expected 12)
+    only perturbed-boundary blocks recomputed: OK
+    cached solution bitwise == fresh: OK
+fluid-fluid gate PASSED
+=== test_near_quad ===
+[N1 near-singular panel integrals]
+    d/h 0.28 kern B: deg10 1.252e-05  near(10,2) 3.615e-10
+    near rule converged (d/h 0.28, B): OK  (3.615e-10)
+    d/h 0.28 kern A: deg10 1.337e-04  near(10,2) 6.614e-09
+    near rule converged (d/h 0.28, A): OK  (6.614e-09)
+    d/h 0.50 kern B: deg10 8.302e-06  near(10,2) 5.502e-13
+    near rule converged (d/h 0.5, B): OK  (5.502e-13)
+    d/h 0.50 kern A: deg10 5.637e-05  near(10,2) 1.178e-11
+    near rule converged (d/h 0.5, A): OK  (1.178e-11)
+    d/h 1.00 kern B: deg10 7.374e-08  near(10,2) 0.000e+00
+    near rule converged (d/h 1.0, B): OK  (0.000e+00)
+    d/h 1.00 kern A: deg10 7.295e-07  near(10,2) 1.417e-15
+    near rule converged (d/h 1.0, A): OK  (1.417e-15)
+    near rule >= 10x better than deg10 at d/h 0.28: OK  (gain 20215.9x)
+[N2 refine_toward sanity]
+    h <= max(grade*dist, hmin) everywhere: OK
+    vertices stay on the sphere: OK  (max dev 7.28e-12 m)
+    log-count growth (< 4x base faces added): OK  (184 -> 280 faces)
+    cap faces reach hmin size: OK  (cap n=52, h 500-1019 m)
+[N3 end-to-end transparency]
+    near tier alone is a small quadrature correction: OK  (rel change 3.735e-04)
+    refined-vs-uniform far-side agreement: OK  (rel diff 1.820e-02 on 162 matched far faces; 184 -> 325 faces)
+near-quadrature gate PASSED
+=== test_momentfit ===
+M1 vector-basis Gram vs identity: 1.832e-14
+M1 scalar Y_lm Gram vs identity:  1.743e-14
+M2 dP/dtheta vs central FD: 4.028e-10 (rel)
+M3 tier-1 exact moments vs coeffs: 1.322e-14
+M3 tier-2 exact moments vs coeffs: 1.931e-14
+M4 gram cond (grid-as-mesh): 1.00e+00
+M4 corrected-moment residual: 1.203e-15   |db|/|b| = 6.318e-15   grid diff = 3.256e-15
+test_momentfit: ALL PASS
+########## gate 4: 637-km propagating preservation ##########
+near-singular quadrature tier: dist/h < 1.5 -> deg 10 x 4^2 composite
+homog_q50: 1 layers, system size 5112, geometry built in 4.3 s, solver dense
+source at r0 = 5733.9 km -> layer 0 (outer radius 6371.0 km)
+moment-fit RHS: lmax 16, 865 moments, grids 13824/30720 pts, gram cond 1.10e+00, built in 2.1 s
+  k= 21 f=8.0109e-05 Hz  23.7 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=4e-14
+  k=  7 f=2.6703e-05 Hz  24.7 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-13
+  k=  8 f=3.0518e-05 Hz  25.2 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=4e-13
+  k= 14 f=5.3406e-05 Hz  25.4 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=4e-14
+  k= 18 f=6.8665e-05 Hz  25.4 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=7e-14
+  k= 17 f=6.4850e-05 Hz  25.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=1e-13
+  k=  3 f=1.1444e-05 Hz  25.6 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=9e-13
+  k= 12 f=4.5776e-05 Hz  25.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-13
+  k= 16 f=6.1035e-05 Hz  25.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=9e-14
+  k= 22 f=8.3923e-05 Hz  25.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-14
+  k= 15 f=5.7220e-05 Hz  26.1 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=1e-13
+  k= 11 f=4.1962e-05 Hz  26.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-13
+  k=  9 f=3.4332e-05 Hz  26.6 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-13
+  k=  4 f=1.5259e-05 Hz  26.7 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=1e-12
+  k=  2 f=7.6294e-06 Hz  26.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-12
+  k= 23 f=8.7738e-05 Hz  26.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 19 f=7.2479e-05 Hz  27.1 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k=  1 f=3.8147e-06 Hz  27.4 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=9e-12
+  k= 10 f=3.8147e-05 Hz  27.4 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=9e-14
+  k=  6 f=2.2888e-05 Hz  28.0 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-13
+  k=  5 f=1.9073e-05 Hz  28.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=6e-13
+  k= 24 f=9.1553e-05 Hz  28.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 20 f=7.6294e-05 Hz  28.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-14
+  k= 13 f=4.9591e-05 Hz  29.0 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=1e-13
+  k= 25 f=9.5367e-05 Hz  21.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=4e-14
+  k= 26 f=9.9182e-05 Hz  22.6 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-14
+  k= 28 f=1.0681e-04 Hz  22.5 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 34 f=1.2970e-04 Hz  22.6 s  mfit |db|/|b|=0.0263 deficit=0.051 grid=2e-14
+  k= 38 f=1.4496e-04 Hz  22.2 s  mfit |db|/|b|=0.0263 deficit=0.05 grid=2e-14
+  k= 32 f=1.2207e-04 Hz  23.3 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 29 f=1.1063e-04 Hz  23.7 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 27 f=1.0300e-04 Hz  24.1 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 35 f=1.3351e-04 Hz  23.4 s  mfit |db|/|b|=0.0263 deficit=0.051 grid=2e-14
+  k= 30 f=1.1444e-04 Hz  24.4 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=3e-14
+  k= 33 f=1.2589e-04 Hz  24.2 s  mfit |db|/|b|=0.0263 deficit=0.051 grid=3e-14
+  k= 37 f=1.4114e-04 Hz  23.4 s  mfit |db|/|b|=0.0263 deficit=0.05 grid=2e-14
+  k= 36 f=1.3733e-04 Hz  23.8 s  mfit |db|/|b|=0.0263 deficit=0.051 grid=2e-14
+  k= 31 f=1.1826e-04 Hz  24.8 s  mfit |db|/|b|=0.0262 deficit=0.051 grid=2e-14
+  k= 40 f=1.5259e-04 Hz  23.7 s  mfit |db|/|b|=0.0263 deficit=0.046 grid=1e-14
+  k= 41 f=1.5640e-04 Hz  23.6 s  mfit |db|/|b|=0.0263 deficit=0.045 grid=2e-14
+  k= 43 f=1.6403e-04 Hz  23.3 s  mfit |db|/|b|=0.0263 deficit=0.042 grid=2e-14
+  k= 39 f=1.4877e-04 Hz  24.2 s  mfit |db|/|b|=0.0263 deficit=0.048 grid=1e-14
+  k= 44 f=1.6785e-04 Hz  23.3 s  mfit |db|/|b|=0.0263 deficit=0.041 grid=2e-14
+  k= 42 f=1.6022e-04 Hz  24.2 s  mfit |db|/|b|=0.0263 deficit=0.043 grid=1e-14
+  k= 47 f=1.7929e-04 Hz  23.1 s  mfit |db|/|b|=0.0263 deficit=0.038 grid=2e-14
+  k= 48 f=1.8311e-04 Hz  23.2 s  mfit |db|/|b|=0.0263 deficit=0.037 grid=1e-14
+  k= 45 f=1.7166e-04 Hz  23.8 s  mfit |db|/|b|=0.0263 deficit=0.04 grid=1e-14
+  k= 46 f=1.7548e-04 Hz  24.2 s  mfit |db|/|b|=0.0263 deficit=0.039 grid=1e-14
+  k= 49 f=1.8692e-04 Hz  22.9 s  mfit |db|/|b|=0.0263 deficit=0.036 grid=1e-14
+  k= 53 f=2.0218e-04 Hz  21.6 s  mfit |db|/|b|=0.0264 deficit=0.033 grid=2e-14
+  k= 50 f=1.9073e-04 Hz  24.0 s  mfit |db|/|b|=0.0264 deficit=0.035 grid=9e-15
+  k= 56 f=2.1362e-04 Hz  22.1 s  mfit |db|/|b|=0.0264 deficit=0.032 grid=1e-14
+  k= 52 f=1.9836e-04 Hz  22.9 s  mfit |db|/|b|=0.0264 deficit=0.034 grid=1e-14
+  k= 51 f=1.9455e-04 Hz  24.1 s  mfit |db|/|b|=0.0264 deficit=0.035 grid=1e-14
+  k= 55 f=2.0981e-04 Hz  23.4 s  mfit |db|/|b|=0.0264 deficit=0.032 grid=2e-14
+  k= 62 f=2.3651e-04 Hz  22.4 s  mfit |db|/|b|=0.0265 deficit=0.03 grid=2e-14
+  k= 58 f=2.2125e-04 Hz  23.3 s  mfit |db|/|b|=0.0264 deficit=0.031 grid=2e-14
+  k= 68 f=2.5940e-04 Hz  21.9 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=9e-15
+  k= 69 f=2.6321e-04 Hz  21.8 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=9e-15
+  k= 54 f=2.0599e-04 Hz  24.7 s  mfit |db|/|b|=0.0264 deficit=0.033 grid=2e-14
+  k= 63 f=2.4033e-04 Hz  23.3 s  mfit |db|/|b|=0.0265 deficit=0.03 grid=1e-14
+  k= 66 f=2.5177e-04 Hz  22.9 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=1e-14
+  k= 57 f=2.1744e-04 Hz  24.4 s  mfit |db|/|b|=0.0264 deficit=0.031 grid=1e-14
+  k= 64 f=2.4414e-04 Hz  23.3 s  mfit |db|/|b|=0.0265 deficit=0.03 grid=1e-14
+  k= 65 f=2.4796e-04 Hz  23.4 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=1e-14
+  k= 61 f=2.3270e-04 Hz  24.1 s  mfit |db|/|b|=0.0264 deficit=0.03 grid=1e-14
+  k= 59 f=2.2507e-04 Hz  25.0 s  mfit |db|/|b|=0.0264 deficit=0.031 grid=1e-14
+  k= 60 f=2.2888e-04 Hz  25.2 s  mfit |db|/|b|=0.0264 deficit=0.03 grid=1e-14
+  k= 71 f=2.7084e-04 Hz  23.1 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=8e-15
+  k= 67 f=2.5558e-04 Hz  24.6 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=1e-14
+  k= 70 f=2.6703e-04 Hz  24.0 s  mfit |db|/|b|=0.0265 deficit=0.029 grid=1e-14
+  k= 72 f=2.7466e-04 Hz  23.9 s  mfit |db|/|b|=0.0265 deficit=0.03 grid=2e-14
+  k= 73 f=2.7847e-04 Hz  21.3 s  mfit |db|/|b|=0.0265 deficit=0.03 grid=2e-14
+  k= 76 f=2.8992e-04 Hz  21.0 s  mfit |db|/|b|=0.0266 deficit=0.031 grid=1e-14
+  k= 74 f=2.8229e-04 Hz  22.4 s  mfit |db|/|b|=0.0266 deficit=0.03 grid=1e-14
+  k= 78 f=2.9755e-04 Hz  22.2 s  mfit |db|/|b|=0.0266 deficit=0.031 grid=1e-14
+  k= 81 f=3.0899e-04 Hz  21.3 s  mfit |db|/|b|=0.0266 deficit=0.029 grid=1e-14
+  k= 89 f=3.3951e-04 Hz  20.8 s  mfit |db|/|b|=0.0267 deficit=0.025 grid=1e-14
+  k= 77 f=2.9373e-04 Hz  23.6 s  mfit |db|/|b|=0.0266 deficit=0.031 grid=1e-14
+  k= 80 f=3.0518e-04 Hz  22.3 s  mfit |db|/|b|=0.0266 deficit=0.029 grid=9e-15
+  k= 79 f=3.0136e-04 Hz  23.0 s  mfit |db|/|b|=0.0266 deficit=0.03 grid=9e-15
+  k= 91 f=3.4714e-04 Hz  20.9 s  mfit |db|/|b|=0.0267 deficit=0.025 grid=1e-14
+  k= 75 f=2.8610e-04 Hz  24.7 s  mfit |db|/|b|=0.0266 deficit=0.03 grid=1e-14
+  k= 87 f=3.3188e-04 Hz  22.3 s  mfit |db|/|b|=0.0267 deficit=0.026 grid=9e-15
+  k= 83 f=3.1662e-04 Hz  22.6 s  mfit |db|/|b|=0.0266 deficit=0.028 grid=8e-15
+  k= 82 f=3.1281e-04 Hz  23.2 s  mfit |db|/|b|=0.0266 deficit=0.028 grid=1e-14
+  k= 92 f=3.5095e-04 Hz  21.7 s  mfit |db|/|b|=0.0267 deficit=0.024 grid=8e-15
+  k= 88 f=3.3569e-04 Hz  23.0 s  mfit |db|/|b|=0.0267 deficit=0.025 grid=1e-14
+  k= 85 f=3.2425e-04 Hz  23.4 s  mfit |db|/|b|=0.0267 deficit=0.027 grid=9e-15
+  k= 86 f=3.2806e-04 Hz  23.4 s  mfit |db|/|b|=0.0267 deficit=0.026 grid=1e-14
+  k= 95 f=3.6240e-04 Hz  21.8 s  mfit |db|/|b|=0.0268 deficit=0.024 grid=8e-15
+  k= 93 f=3.5477e-04 Hz  22.6 s  mfit |db|/|b|=0.0267 deficit=0.024 grid=9e-15
+  k= 90 f=3.4332e-04 Hz  23.8 s  mfit |db|/|b|=0.0267 deficit=0.025 grid=8e-15
+  k= 84 f=3.2043e-04 Hz  25.1 s  mfit |db|/|b|=0.0266 deficit=0.027 grid=1e-14
+  k= 94 f=3.5858e-04 Hz  23.3 s  mfit |db|/|b|=0.0268 deficit=0.024 grid=1e-14
+  k= 96 f=3.6621e-04 Hz  22.9 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=9e-15
+  k= 97 f=3.7003e-04 Hz  20.8 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=8e-15
+  k= 98 f=3.7384e-04 Hz  20.5 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=9e-15
+  k= 99 f=3.7766e-04 Hz  21.8 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=1e-14
+  k=100 f=3.8147e-04 Hz  21.4 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=1e-14
+  k=107 f=4.0817e-04 Hz  20.3 s  mfit |db|/|b|=0.0269 deficit=0.026 grid=7e-15
+  k=101 f=3.8528e-04 Hz  22.0 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=1e-14
+  k=102 f=3.8910e-04 Hz  21.4 s  mfit |db|/|b|=0.0268 deficit=0.025 grid=9e-15
+  k=105 f=4.0054e-04 Hz  20.8 s  mfit |db|/|b|=0.0269 deficit=0.026 grid=9e-15
+  k=106 f=4.0436e-04 Hz  21.1 s  mfit |db|/|b|=0.0269 deficit=0.026 grid=1e-14
+  k=109 f=4.1580e-04 Hz  21.2 s  mfit |db|/|b|=0.0269 deficit=0.027 grid=1e-14
+  k=108 f=4.1199e-04 Hz  21.5 s  mfit |db|/|b|=0.0269 deficit=0.026 grid=1e-14
+  k=103 f=3.9291e-04 Hz  23.2 s  mfit |db|/|b|=0.0269 deficit=0.025 grid=1e-14
+  k=110 f=4.1962e-04 Hz  21.6 s  mfit |db|/|b|=0.027 deficit=0.027 grid=8e-15
+  k=104 f=3.9673e-04 Hz  23.2 s  mfit |db|/|b|=0.0269 deficit=0.026 grid=9e-15
+  k=112 f=4.2725e-04 Hz  22.2 s  mfit |db|/|b|=0.027 deficit=0.026 grid=9e-15
+  k=111 f=4.2343e-04 Hz  22.5 s  mfit |db|/|b|=0.027 deficit=0.026 grid=9e-15
+  k=114 f=4.3488e-04 Hz  22.5 s  mfit |db|/|b|=0.027 deficit=0.025 grid=2e-14
+  k=113 f=4.3106e-04 Hz  22.7 s  mfit |db|/|b|=0.027 deficit=0.025 grid=1e-14
+  k=117 f=4.4632e-04 Hz  21.8 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=7e-15
+  k=115 f=4.3869e-04 Hz  22.4 s  mfit |db|/|b|=0.027 deficit=0.024 grid=7e-15
+  k=116 f=4.4250e-04 Hz  22.5 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=1e-14
+  k=118 f=4.5013e-04 Hz  22.1 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=1e-14
+  k=119 f=4.5395e-04 Hz  22.1 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=1e-14
+  k=120 f=4.5776e-04 Hz  22.3 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=1e-14
+  k=121 f=4.6158e-04 Hz  21.9 s  mfit |db|/|b|=0.0271 deficit=0.024 grid=8e-15
+  k=122 f=4.6539e-04 Hz  21.6 s  mfit |db|/|b|=0.0272 deficit=0.025 grid=8e-15
+  k=123 f=4.6921e-04 Hz  21.7 s  mfit |db|/|b|=0.0272 deficit=0.025 grid=7e-15
+  k=129 f=4.9210e-04 Hz  20.8 s  mfit |db|/|b|=0.0273 deficit=0.025 grid=7e-15
+  k=124 f=4.7302e-04 Hz  22.4 s  mfit |db|/|b|=0.0272 deficit=0.025 grid=1e-14
+  k=125 f=4.7684e-04 Hz  22.4 s  mfit |db|/|b|=0.0272 deficit=0.025 grid=9e-15
+  k=127 f=4.8447e-04 Hz  22.4 s  mfit |db|/|b|=0.0273 deficit=0.025 grid=1e-14
+  k=128 f=4.8828e-04 Hz  22.6 s  mfit |db|/|b|=0.0273 deficit=0.025 grid=1e-14
+  k=126 f=4.8065e-04 Hz  22.7 s  mfit |db|/|b|=0.0272 deficit=0.025 grid=8e-15
+  k=130 f=4.9591e-04 Hz  21.7 s  mfit |db|/|b|=0.0273 deficit=0.025 grid=1e-14
+  k=131 f=4.9973e-04 Hz  21.6 s  mfit |db|/|b|=0.0273 deficit=0.026 grid=1e-14
+  k=134 f=5.1117e-04 Hz  21.1 s  mfit |db|/|b|=0.0274 deficit=0.026 grid=9e-15
+  k=133 f=5.0735e-04 Hz  21.4 s  mfit |db|/|b|=0.0274 deficit=0.026 grid=1e-14
+  k=135 f=5.1498e-04 Hz  20.5 s  mfit |db|/|b|=0.0274 deficit=0.026 grid=9e-15
+  k=132 f=5.0354e-04 Hz  21.7 s  mfit |db|/|b|=0.0274 deficit=0.026 grid=1e-14
+  k=136 f=5.1880e-04 Hz  20.7 s  mfit |db|/|b|=0.0274 deficit=0.026 grid=9e-15
+  k=137 f=5.2261e-04 Hz  20.2 s  mfit |db|/|b|=0.0275 deficit=0.027 grid=9e-15
+  k=138 f=5.2643e-04 Hz  20.7 s  mfit |db|/|b|=0.0275 deficit=0.027 grid=7e-15
+homog_q50: 138 harmonics in 140.9 s (24 procs)
+wrote bem_homog_q50.npz
+conjugation=False: homog_q50 median rel RMS 1.157e+00
+conjugation=True: homog_q50 median rel RMS 9.093e-02
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 9.093e-02, max 1.948e-01, min corr 0.989025
+baseline floor sane e0 < 20%: True
+DSM ARBITRATION PASSED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ref637_mfit/waveforms_homog_q50_mrr_Z.png (error magnification x8)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_ref637_mfit/waveforms_homog_q50_mrt_T.png (error magnification x3)
+########## gate 5: 50-km quasi-static acceptance ##########
+near-singular quadrature tier: dist/h < 1.5 -> deg 10 x 4^2 composite
+homog_q50: 1 layers, system size 6453, geometry built in 5.4 s, solver dense
+source at r0 = 6321.0 km -> layer 0 (outer radius 6371.0 km)
+moment-fit RHS: lmax 16, 865 moments, grids 19968/43008 pts, gram cond 1.10e+00, built in 2.8 s
+  k=  9 f=3.4332e-05 Hz  36.6 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=7e-12
+  k= 18 f=6.8665e-05 Hz  37.6 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-11
+  k=  5 f=1.9073e-05 Hz  38.5 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-10
+  k=  8 f=3.0518e-05 Hz  38.5 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=3e-11
+  k=  1 f=3.8147e-06 Hz  38.5 s  mfit |db|/|b|=0.000303 deficit=0.018 grid=5e-10
+  k= 20 f=7.6294e-05 Hz  38.5 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=1e-11
+  k= 22 f=8.3923e-05 Hz  38.9 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=3e-12
+  k=  4 f=1.5259e-05 Hz  39.2 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=8e-11
+  k=  7 f=2.6703e-05 Hz  39.8 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=4e-12
+  k=  2 f=7.6294e-06 Hz  39.8 s  mfit |db|/|b|=0.000303 deficit=0.018 grid=2e-10
+  k= 16 f=6.1035e-05 Hz  39.8 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=2e-11
+  k= 19 f=7.2479e-05 Hz  39.9 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=7e-13
+  k= 10 f=3.8147e-05 Hz  40.0 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-11
+  k= 24 f=9.1553e-05 Hz  40.2 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=2e-12
+  k=  6 f=2.2888e-05 Hz  40.2 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-11
+  k= 23 f=8.7738e-05 Hz  40.2 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=1e-12
+  k= 15 f=5.7220e-05 Hz  40.6 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=7e-13
+  k= 13 f=4.9591e-05 Hz  41.3 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=3e-12
+  k=  3 f=1.1444e-05 Hz  41.8 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-10
+  k= 17 f=6.4850e-05 Hz  42.2 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=3e-12
+  k= 11 f=4.1962e-05 Hz  42.4 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=2e-11
+  k= 14 f=5.3406e-05 Hz  42.4 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=7e-12
+  k= 21 f=8.0109e-05 Hz  42.6 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=8e-13
+  k= 12 f=4.5776e-05 Hz  43.8 s  mfit |db|/|b|=0.000304 deficit=0.018 grid=1e-11
+  k= 26 f=9.9182e-05 Hz  36.1 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=9e-13
+  k= 25 f=9.5367e-05 Hz  38.1 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=5e-12
+  k= 29 f=1.1063e-04 Hz  36.6 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=3e-13
+  k= 28 f=1.0681e-04 Hz  36.7 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=9e-13
+  k= 30 f=1.1444e-04 Hz  36.8 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=3e-12
+  k= 32 f=1.2207e-04 Hz  36.4 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=5e-13
+  k= 31 f=1.1826e-04 Hz  37.0 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-12
+  k= 27 f=1.0300e-04 Hz  38.2 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=3e-12
+  k= 43 f=1.6403e-04 Hz  35.0 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=9e-13
+  k= 33 f=1.2589e-04 Hz  37.2 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=5e-13
+  k= 42 f=1.6022e-04 Hz  35.8 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=5e-13
+  k= 38 f=1.4496e-04 Hz  36.9 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=1e-12
+  k= 35 f=1.3351e-04 Hz  37.8 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-13
+  k= 41 f=1.5640e-04 Hz  37.3 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=2e-13
+  k= 37 f=1.4114e-04 Hz  37.9 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=1e-12
+  k= 36 f=1.3733e-04 Hz  38.5 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=1e-12
+  k= 44 f=1.6785e-04 Hz  36.5 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=2e-12
+  k= 34 f=1.2970e-04 Hz  39.1 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-12
+  k= 45 f=1.7166e-04 Hz  37.2 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=4e-13
+  k= 48 f=1.8311e-04 Hz  35.9 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-13
+  k= 40 f=1.5259e-04 Hz  39.8 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=7e-13
+  k= 39 f=1.4877e-04 Hz  39.8 s  mfit |db|/|b|=0.000304 deficit=0.021 grid=6e-13
+  k= 47 f=1.7929e-04 Hz  37.5 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-13
+  k= 46 f=1.7548e-04 Hz  37.8 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=9e-13
+  k= 49 f=1.8692e-04 Hz  33.6 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=9e-13
+  k= 53 f=2.0218e-04 Hz  35.6 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=3e-13
+  k= 50 f=1.9073e-04 Hz  36.5 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=2e-13
+  k= 59 f=2.2507e-04 Hz  34.8 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=5e-13
+  k= 51 f=1.9455e-04 Hz  36.9 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=1e-12
+  k= 52 f=1.9836e-04 Hz  37.9 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=1e-13
+  k= 58 f=2.2125e-04 Hz  36.2 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=6e-13
+  k= 56 f=2.1362e-04 Hz  36.9 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=6e-13
+  k= 63 f=2.4033e-04 Hz  35.8 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=6e-13
+  k= 57 f=2.1744e-04 Hz  36.9 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=4e-13
+  k= 54 f=2.0599e-04 Hz  38.3 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=8e-13
+  k= 65 f=2.4796e-04 Hz  35.5 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=1e-13
+  k= 66 f=2.5177e-04 Hz  35.7 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=1e-13
+  k= 68 f=2.5940e-04 Hz  35.0 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=2e-13
+  k= 55 f=2.0981e-04 Hz  38.7 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=8e-13
+  k= 61 f=2.3270e-04 Hz  37.5 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=5e-13
+  k= 60 f=2.2888e-04 Hz  38.1 s  mfit |db|/|b|=0.000304 deficit=0.02 grid=3e-13
+  k= 62 f=2.3651e-04 Hz  38.3 s  mfit |db|/|b|=0.000304 deficit=0.019 grid=4e-13
+  k= 72 f=2.7466e-04 Hz  36.1 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=6e-14
+  k= 71 f=2.7084e-04 Hz  36.3 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=5e-13
+  k= 69 f=2.6321e-04 Hz  37.2 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=8e-14
+  k= 70 f=2.6703e-04 Hz  37.3 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=1e-13
+  k= 67 f=2.5558e-04 Hz  37.9 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=9e-14
+  k= 64 f=2.4414e-04 Hz  39.6 s  mfit |db|/|b|=0.000305 deficit=0.019 grid=3e-13
+  k= 73 f=2.7847e-04 Hz  37.7 s  mfit |db|/|b|=0.000305 deficit=0.02 grid=5e-14
+  k= 76 f=2.8992e-04 Hz  33.9 s  mfit |db|/|b|=0.000305 deficit=0.021 grid=1e-13
+  k= 75 f=2.8610e-04 Hz  35.8 s  mfit |db|/|b|=0.000305 deficit=0.02 grid=8e-14
+  k= 74 f=2.8229e-04 Hz  36.2 s  mfit |db|/|b|=0.000305 deficit=0.02 grid=2e-13
+  k= 79 f=3.0136e-04 Hz  34.2 s  mfit |db|/|b|=0.000305 deficit=0.023 grid=2e-13
+  k= 85 f=3.2425e-04 Hz  34.7 s  mfit |db|/|b|=0.000306 deficit=0.022 grid=1e-13
+  k= 80 f=3.0518e-04 Hz  36.3 s  mfit |db|/|b|=0.000306 deficit=0.023 grid=2e-13
+  k= 82 f=3.1281e-04 Hz  36.3 s  mfit |db|/|b|=0.000306 deficit=0.023 grid=4e-14
+  k= 92 f=3.5095e-04 Hz  33.6 s  mfit |db|/|b|=0.000307 deficit=0.02 grid=1e-13
+  k= 78 f=2.9755e-04 Hz  37.2 s  mfit |db|/|b|=0.000305 deficit=0.022 grid=2e-13
+  k= 77 f=2.9373e-04 Hz  38.9 s  mfit |db|/|b|=0.000305 deficit=0.022 grid=4e-13
+  k= 81 f=3.0899e-04 Hz  37.3 s  mfit |db|/|b|=0.000306 deficit=0.023 grid=4e-14
+  k= 89 f=3.3951e-04 Hz  35.9 s  mfit |db|/|b|=0.000306 deficit=0.021 grid=3e-14
+  k= 87 f=3.3188e-04 Hz  37.0 s  mfit |db|/|b|=0.000306 deficit=0.021 grid=2e-14
+  k= 86 f=3.2806e-04 Hz  37.2 s  mfit |db|/|b|=0.000306 deficit=0.022 grid=8e-14
+  k= 84 f=3.2043e-04 Hz  37.7 s  mfit |db|/|b|=0.000306 deficit=0.022 grid=1e-13
+  k= 90 f=3.4332e-04 Hz  36.1 s  mfit |db|/|b|=0.000306 deficit=0.021 grid=4e-13
+  k= 83 f=3.1662e-04 Hz  38.9 s  mfit |db|/|b|=0.000306 deficit=0.022 grid=1e-13
+  k= 88 f=3.3569e-04 Hz  37.8 s  mfit |db|/|b|=0.000306 deficit=0.021 grid=7e-14
+  k= 95 f=3.6240e-04 Hz  35.7 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=2e-13
+  k= 96 f=3.6621e-04 Hz  35.3 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=9e-14
+  k= 91 f=3.4714e-04 Hz  37.1 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=5e-14
+  k= 93 f=3.5477e-04 Hz  37.1 s  mfit |db|/|b|=0.000307 deficit=0.02 grid=8e-14
+  k= 94 f=3.5858e-04 Hz  37.3 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=2e-13
+  k= 98 f=3.7384e-04 Hz  31.3 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=4e-14
+  k= 99 f=3.7766e-04 Hz  31.0 s  mfit |db|/|b|=0.000308 deficit=0.021 grid=8e-14
+  k= 97 f=3.7003e-04 Hz  36.5 s  mfit |db|/|b|=0.000307 deficit=0.021 grid=1e-14
+  k=105 f=4.0054e-04 Hz  32.9 s  mfit |db|/|b|=0.000309 deficit=0.022 grid=5e-14
+  k=102 f=3.8910e-04 Hz  33.8 s  mfit |db|/|b|=0.000308 deficit=0.022 grid=5e-14
+  k=100 f=3.8147e-04 Hz  36.1 s  mfit |db|/|b|=0.000308 deficit=0.021 grid=2e-14
+  k=101 f=3.8528e-04 Hz  36.2 s  mfit |db|/|b|=0.000308 deficit=0.021 grid=4e-14
+  k=104 f=3.9673e-04 Hz  34.6 s  mfit |db|/|b|=0.000309 deficit=0.022 grid=8e-14
+  k=107 f=4.0817e-04 Hz  33.9 s  mfit |db|/|b|=0.000309 deficit=0.023 grid=1e-14
+  k=106 f=4.0436e-04 Hz  34.5 s  mfit |db|/|b|=0.000309 deficit=0.023 grid=3e-14
+  k=108 f=4.1199e-04 Hz  34.8 s  mfit |db|/|b|=0.000309 deficit=0.023 grid=1e-13
+  k=103 f=3.9291e-04 Hz  36.0 s  mfit |db|/|b|=0.000308 deficit=0.022 grid=3e-14
+  k=109 f=4.1580e-04 Hz  36.2 s  mfit |db|/|b|=0.00031 deficit=0.023 grid=9e-14
+  k=116 f=4.4250e-04 Hz  34.2 s  mfit |db|/|b|=0.000312 deficit=0.022 grid=2e-14
+  k=115 f=4.3869e-04 Hz  34.8 s  mfit |db|/|b|=0.000311 deficit=0.022 grid=4e-14
+  k=110 f=4.1962e-04 Hz  36.3 s  mfit |db|/|b|=0.00031 deficit=0.023 grid=1e-13
+  k=111 f=4.2343e-04 Hz  36.1 s  mfit |db|/|b|=0.00031 deficit=0.023 grid=3e-14
+  k=112 f=4.2725e-04 Hz  37.1 s  mfit |db|/|b|=0.00031 deficit=0.023 grid=4e-14
+  k=114 f=4.3488e-04 Hz  36.9 s  mfit |db|/|b|=0.000311 deficit=0.022 grid=3e-14
+  k=118 f=4.5013e-04 Hz  36.3 s  mfit |db|/|b|=0.000312 deficit=0.021 grid=4e-14
+  k=113 f=4.3106e-04 Hz  37.6 s  mfit |db|/|b|=0.000311 deficit=0.022 grid=7e-14
+  k=117 f=4.4632e-04 Hz  36.8 s  mfit |db|/|b|=0.000312 deficit=0.021 grid=7e-14
+  k=119 f=4.5395e-04 Hz  35.9 s  mfit |db|/|b|=0.000312 deficit=0.021 grid=7e-14
+  k=120 f=4.5776e-04 Hz  37.7 s  mfit |db|/|b|=0.000313 deficit=0.021 grid=7e-14
+  k=121 f=4.6158e-04 Hz  31.8 s  mfit |db|/|b|=0.000313 deficit=0.021 grid=7e-14
+  k=122 f=4.6539e-04 Hz  31.9 s  mfit |db|/|b|=0.000313 deficit=0.02 grid=4e-14
+  k=123 f=4.6921e-04 Hz  34.7 s  mfit |db|/|b|=0.000314 deficit=0.021 grid=6e-14
+  k=126 f=4.8065e-04 Hz  33.3 s  mfit |db|/|b|=0.000315 deficit=0.022 grid=5e-14
+  k=129 f=4.9210e-04 Hz  32.7 s  mfit |db|/|b|=0.000316 deficit=0.023 grid=6e-14
+  k=127 f=4.8447e-04 Hz  34.0 s  mfit |db|/|b|=0.000315 deficit=0.022 grid=5e-14
+  k=125 f=4.7684e-04 Hz  34.7 s  mfit |db|/|b|=0.000315 deficit=0.021 grid=1e-14
+  k=124 f=4.7302e-04 Hz  35.2 s  mfit |db|/|b|=0.000314 deficit=0.021 grid=6e-14
+  k=131 f=4.9973e-04 Hz  32.6 s  mfit |db|/|b|=0.000317 deficit=0.025 grid=8e-14
+  k=132 f=5.0354e-04 Hz  32.7 s  mfit |db|/|b|=0.000317 deficit=0.025 grid=2e-14
+  k=130 f=4.9591e-04 Hz  34.1 s  mfit |db|/|b|=0.000316 deficit=0.024 grid=7e-14
+  k=128 f=4.8828e-04 Hz  34.3 s  mfit |db|/|b|=0.000316 deficit=0.023 grid=4e-14
+  k=135 f=5.1498e-04 Hz  31.3 s  mfit |db|/|b|=0.000318 deficit=0.024 grid=2e-14
+  k=138 f=5.2643e-04 Hz  29.9 s  mfit |db|/|b|=0.00032 deficit=0.023 grid=4e-14
+  k=134 f=5.1117e-04 Hz  32.0 s  mfit |db|/|b|=0.000318 deficit=0.024 grid=8e-14
+  k=133 f=5.0735e-04 Hz  32.5 s  mfit |db|/|b|=0.000318 deficit=0.025 grid=3e-14
+  k=137 f=5.2261e-04 Hz  32.1 s  mfit |db|/|b|=0.000319 deficit=0.024 grid=2e-14
+  k=136 f=5.1880e-04 Hz  32.4 s  mfit |db|/|b|=0.000319 deficit=0.024 grid=3e-14
+homog_q50: 138 harmonics in 220.4 s (24 procs)
+wrote bem_homog_q50.npz
+conjugation=False: homog_q50 median rel RMS 1.003e+00
+conjugation=True: homog_q50 median rel RMS 8.388e-01
+WARNING: conjugation calibration not decisive (8.388e-01 vs 1.003e+00)
+frozen BEM spectral convention: conjugate=True
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 8.388e-01, max 1.003e+00, min corr -0.243076
+baseline floor sane e0 < 20%: False
+DSM ARBITRATION FAILED
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_src50_mfit/waveforms_homog_q50_mrr_Z.png (error magnification x1)
+wrote /pscratch/sd/y/ytian159/astroseis_qtest/dsm_arbitration_src50_mfit/waveforms_homog_q50_mrt_T.png (error magnification x1)
+CAMPAIGN-FAILED dsm_arbitration_src50_mfit compare
+########## MFIT CAMPAIGNS DONE 03:13:01 ##########

@@ -144,6 +144,8 @@ PVFMM (LGPLv3); Bempp-cl (MIT, no elastic kernels); h2tools; H2Lib;
 HLIBpro (binary, academic-free); H2Opus (GPU H²).
 
 ## 6. 50-km-source rung: measured closure (2026-07-11)
+## (SUPERSEDED by section 8 — the "dominant quasi-static channel"
+## below was an artifact of the DSM reference, not Earth physics)
 
 The graded mesh + near tier RECOVERED THE PROPAGATING FIELD (nearest
 station corr 0.99 vs acausal garbage on the uniform mesh; 637-km
@@ -209,3 +211,56 @@ For asteroid relief: C -> B' -> A. For ensembles: reciprocity first.
   shallow-source ULP runs without the full C rung. For fixed
   receivers x many sources, RECIPROCITY (adjoint receiver fields,
   evaluate M : eps_adj(x_src)) avoids source-trace sampling entirely.
+
+## 8. Moment-fit outcome: the DSM shallow-source SH artifact
+## (2026-07-11; supersedes the INTERPRETATION in section 6)
+
+The moment-fitted-RHS falsification test (docs/moment_fitted_rhs.md)
+was built, machine-precision-gated, and run. Outcome:
+
+* 637-km leg (healthy DSM): moment fit IMPROVED the benchmark,
+  median rel RMS 11.10% -> 9.09% (max 31.9 -> 19.5%, min corr
+  0.9728 -> 0.9890). The sampled-low-moment corruption of section 6
+  is real and is now repaired at zero solver cost (ARB_MFIT_LMAX).
+* 50-km leg: the fit's ON-OFF field change is 20-600x smaller than
+  the "missing" field -> mandated reference audit (validation/
+  dsm_audit/): DSM tish (SH) in its shallow-event path (source depth
+  < 100 km) at this ULP band emits an mrt T field that is UNCONVERGED
+  HIGH-l ROUNDOFF NOISE: l-band increments stay flat (~1e-6..4e-5 m)
+  out to l > 16384 while the physical excitation bound
+  (2l+1)(r0/R)^l falls ~50 orders of magnitude between l=512 and
+  l=16384; the T amplitude is 14-700x the analytic full-space
+  incident field (a free surface amplifies O(1)); the radial-grid
+  knob re is INERT here (whole zone is in the evanescent branch,
+  kz=0 -> minimal grid), so no configuration rescues it. tipsv (PSV)
+  is CONVERGED (increments track the physical bound, sum ends by
+  l <= 4096, rebuild matches campaign spc to 1e-14); tish for mrr is
+  identically zero. Rebuilt binaries reproduce campaign spc to 1e-13,
+  so this is the shipped code's behavior, not a build artifact.
+
+Consequences:
+
+* The "quasi-static channel, 10-100x, group delay ~0" of section 6
+  was the artifact: zero group delay because noise has no moveout.
+  The BEM mrt-T response (0.16-0.48x incident) is in the physical
+  class. The projection-cancellation mechanism in the BEM RHS remains
+  true as measured, but its claimed physical consequence is void.
+* NEVER use DSM SH legs as references for sources shallower than
+  100 km (the shallowDepth branch) at ULP. Deep-source legs (637 km:
+  all prior rungs) never enter that path and stand.
+* Valid-channel re-verdict at 50 km (mrr: tipsv-only by physics;
+  mrt Z: SH-free): mrr VEC median rel 0.596 with a mid-distance hump
+  (0.15 at 20deg -> 0.70-0.72 at 75-135deg -> 0.36 at 170deg), amp
+  1.10-1.20; mrt Z amp 0.21-0.32 of reference at corr 0.81-0.90
+  (uniform factor ~4 deficit; tipsv-mrt convergence certificate in
+  validation/dsm_audit/). These are the REAL remaining shallow-source
+  problems; the moment fit does not move them (correct: their l<=16
+  moments were already fine on this leg).
+* A trustworthy shallow SH/T reference needs a semi-analytic route:
+  homogeneous-sphere toroidal solution with closed-form per-l radial
+  solutions (two-region A r^l + B r^-(l+1) static / spherical-Bessel
+  dynamic, (r0/R)^l factored analytically, sum to l ~ a few thousand
+  in stable arithmetic). That same reference is the right acceptance
+  anchor for the rung-C scattered-field prototype, whose priority is
+  now driven by the mrr hump / mrt-Z deficit and interior sources,
+  NOT by the void quasi-static channel.

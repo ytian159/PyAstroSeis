@@ -476,3 +476,33 @@ moment-fitted RHS (0.5-2 wk falsification test), scattered-field
 formulation C (RHS = G t_inc integral; cancellation moves into a
 controlled weak integral, ~1% modal accuracy), spectral SH route A
 (production Earth path; also cures this channel).
+
+## Rung 4c — moment-fitted RHS + the DSM shallow-source audit
+(DONE 2026-07-11; full detail: docs/moment_fitted_rhs.md,
+docs/fast_methods_notes.md section 8)
+
+pyastroseis/momentfit.py (vector-SH basis, graded source-frame exact
+moments, minimal-W-norm fit; ARB_MFIT_LMAX hook in run_bem.py, strict
+no-op off; tests/test_momentfit.py all at machine precision; Codex-
+reviewed design). 637-km leg IMPROVED: median rel RMS 11.10% -> 9.09%
+(min corr 0.9728 -> 0.9890) — the sampled-low-moment corruption was
+real and is repaired.
+
+The 50-km leg then EXPOSED THE REFERENCE: DSM tish (SH) in its
+shallow-event branch (depth < 100 km) at ULP emits unconverged
+high-l roundoff noise (band increments flat to l > 16384 vs a
+physical bound falling 50 orders; T = 14-700x the analytic incident
+field; the zero-group-delay "quasi-static pulse" is the Ricker STF
+replayed by frequency-flat noise; re knob bit-inert). tipsv is
+CERTIFIED converged for both sources. Rung 4b's "quasi-static
+channel" interpretation is VOID; deep-source (>=100 km) references
+all stand. Evidence: validation/dsm_audit/.
+
+True remaining shallow-source deficits (valid channels only):
+mrr VEC hump 0.15 (20 deg) -> ~0.71 (75-135 deg) -> 0.36 (170 deg),
+amp +10-20%; mrt Z amplitude 0.21-0.32 of reference uniformly
+(NOT an MT convention: 637-km mrt-Z amp = 1.03). Neither is a low-l
+moment problem (fit does not move them). Rung C (scattered field)
+re-scoped to target these, with a semi-analytic homogeneous-sphere
+toroidal solution as the T-channel acceptance reference (to be
+built BEFORE rung C so T is judgeable).
