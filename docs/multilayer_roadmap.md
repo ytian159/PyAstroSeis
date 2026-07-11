@@ -425,3 +425,54 @@ interface would also reuse the LU factors.
 - The fluid row scaling (`scale_fac` in `liq_core`) and the
   `mu2 = rho1*vs2^2` driver quirk are preserved verbatim where needed
   for exact reproduction and documented at their definitions.
+
+## Rung 4a — fluid-fluid interfaces (DONE 2026-07-11)
+
+Adjacent fluid layers are legal: condition FLUID_FLUID with shared
+pressure p plus a shared SCALAR normal displacement q = u.n_canonical
+(new block kind "un"; 2n unknowns/interface vs 6n welded). Derivation
++ Codex second opinion + the complete implementation delta list:
+docs/fluid_fluid_derivation.md. Gates (tests/test_ff.py,
+validation/ff_gate.txt): existing battery bitwise-unchanged;
+transparent identical-fluid split 7.0e-4; registration swap 1.5e-16
+with the analytic identity A(+) + A(-) = I holding to 1.4e-21;
+dense == eliminated to 2e-14..5e-14 on 4/5-layer fluid stacks
+including a middle fluid bounded by fluid-fluid on both sides (the
+own-modulus _scale fallback) and a rho 9-vs-4 contrast; rung-3 cache
+bitwise with exactly the touching blocks recomputed. DSM arbitration
+(dsm_arbitration_ff/): outer core split at 2350 km — identical-fluid
+split 27.79% / staircase with ~30% impedance jump vs its own-model
+DSM 27.66% vs fluid-solid control 27.83% (min corr all >= 0.905):
+the per-fluid-fluid-interface error increment is ~ZERO. Graded
+(staircase) outer cores are now free; open: fluid outermost (ocean),
+sources in fluids.
+
+## Rung 4b — graded epicentral meshes + the shallow-source verdict
+(DONE 2026-07-11)
+
+meshgen.refine_toward (graded quadrisection toward a surface point,
+h <= max(grade*dist, hmin): log face count — 45-km epicentral panels
+cost +120 faces on the 1584-face Earth surface) plus the
+near-singular composite quadrature tier (Geometry near_tier,
+subdivided deg-10; 2e4x accuracy at dist/h 0.28; strict no-op off;
+knobs ARB_REFINE_HMIN_KM / ARB_REFINE_GRADE / ARB_NEAR_TIER). Gates:
+tests/test_near_quad.py + 637-km transparency campaign
+(dsm_arbitration_ref637: 11.1% vs 12.9% uniform baseline — refined
+is BETTER).
+
+50-km source verdict (dsm_arbitration_src50_ref, _ref2): the
+PROPAGATING field is recovered (nearest-station corr 0.99; the
+uniform-mesh acausal-burst failure is gone), but at this band the
+DSM reference at 50-km depth is DOMINATED by the quasi-static
+response (group delay ~0 s at all distances on mrt T, 10-100x the
+propagating part) and the BEM delivers ~2% of it: the quasi-static
+channel is driven by a near-perfectly-cancelling projection of the
+incident trace, which pointwise collocation cannot deliver at ANY
+refinement (l=2,m=1 projection wanders sign across hmin 45->5 km at
+~1e-4 of gross; solved mrt amplitude FALLS with refinement, 0.022 ->
+0.0075). Unified with the interior-source radiation deficit. Fixes,
+in cost order (Codex round 2, docs/fast_methods_notes.md section 7):
+moment-fitted RHS (0.5-2 wk falsification test), scattered-field
+formulation C (RHS = G t_inc integral; cancellation moves into a
+controlled weak integral, ~1% modal accuracy), spectral SH route A
+(production Earth path; also cures this channel).

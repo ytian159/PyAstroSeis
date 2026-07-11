@@ -1,0 +1,795 @@
+{
+  "conjugate": true,
+  "rows": {
+    "homog_q50": [
+      {
+        "rel_rms": 0.0975807867310561,
+        "corr": 0.9953226275855164,
+        "amp_ratio": 1.0090755517396242,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2984690656794716,
+        "corr": 0.965176208608035,
+        "amp_ratio": 1.1088734487713632,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.14724356141237185,
+        "corr": 0.9897293340796913,
+        "amp_ratio": 1.025011356629825,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.24699375040137614,
+        "corr": 0.9697914102708208,
+        "amp_ratio": 1.00853792201581,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.25208831284459615,
+        "corr": 0.9682270342960135,
+        "amp_ratio": 1.000040669965153,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.3129014450893936,
+        "corr": 0.95779136784421,
+        "amp_ratio": 1.0813697585762203,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.26050092779851336,
+        "corr": 0.967050042508912,
+        "amp_ratio": 1.0222453149547952,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.4968005738431479,
+        "corr": 0.8879130573073473,
+        "amp_ratio": 1.0755307737089768,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.48115945211068806,
+        "corr": 0.8948954715986329,
+        "amp_ratio": 1.074762987963309,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.8592379424423772,
+        "corr": 0.8004960077144686,
+        "amp_ratio": 1.4161937420772102,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.5329040315546674,
+        "corr": 0.8784829739494092,
+        "amp_ratio": 1.1145317874736804,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6305973073570236,
+        "corr": 0.8217655955722633,
+        "amp_ratio": 1.0918612418018259,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6314146457605337,
+        "corr": 0.8209720584515203,
+        "amp_ratio": 1.0905635561643134,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.8306931816566163,
+        "corr": 0.8562228320109846,
+        "amp_ratio": 1.5067370133381124,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.6596722578054713,
+        "corr": 0.8210505905354605,
+        "amp_ratio": 1.1516433308320322,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.7198186648813527,
+        "corr": 0.7662609609110115,
+        "amp_ratio": 1.0907525178548545,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.7141976559651868,
+        "corr": 0.7670400425649422,
+        "amp_ratio": 1.0807735579632756,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.5187884666391357,
+        "corr": 0.9348520914856154,
+        "amp_ratio": 1.3131243559629568,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.6888584182140549,
+        "corr": 0.7941526453642738,
+        "amp_ratio": 1.1185048374078048,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.7471938057367624,
+        "corr": 0.7460756554083385,
+        "amp_ratio": 1.0850851935106884,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.7479177902292334,
+        "corr": 0.7437967708645034,
+        "amp_ratio": 1.0793778449581453,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.39333972240215764,
+        "corr": 0.9577688989224613,
+        "amp_ratio": 1.2261667397531033,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.7027516709015028,
+        "corr": 0.7813833148793049,
+        "amp_ratio": 1.104523834973312,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.7483025986077448,
+        "corr": 0.7485655309410492,
+        "amp_ratio": 1.0954187177451467,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.76726279119279,
+        "corr": 0.7346274509675875,
+        "amp_ratio": 1.0929146018174132,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.4829050968116539,
+        "corr": 0.938335969582979,
+        "amp_ratio": 1.2754883451343053,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.7058864181660454,
+        "corr": 0.7875606239800017,
+        "amp_ratio": 1.1318386682916575,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.7228865450409476,
+        "corr": 0.7784987556287376,
+        "amp_ratio": 1.1371424081819805,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.7247114247891349,
+        "corr": 0.7770355732794683,
+        "amp_ratio": 1.1361886483904156,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.7267530196965055,
+        "corr": 0.8805572633453107,
+        "amp_ratio": 1.431511930870846,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.7246441325427866,
+        "corr": 0.7938835825384198,
+        "amp_ratio": 1.1880412431930425,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6758954055743662,
+        "corr": 0.8185592226723293,
+        "amp_ratio": 1.1747527098369108,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6927242833656636,
+        "corr": 0.8087443787273014,
+        "amp_ratio": 1.1747148732859212,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.8576943001091292,
+        "corr": 0.8045610946656587,
+        "amp_ratio": 1.4233971533187506,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.7101039737700335,
+        "corr": 0.8079479140789112,
+        "amp_ratio": 1.2042148511660924,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6658923438347195,
+        "corr": 0.8380697718250305,
+        "amp_ratio": 1.219872804846712,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.2208692179649955,
+        "corr": 0.9788609000216413,
+        "amp_ratio": 1.0622387929888186,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.4537565480452357,
+        "corr": 0.9158970802413886,
+        "amp_ratio": 1.127468501961406,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6710286271748798,
+        "corr": 0.8486071856208406,
+        "amp_ratio": 1.261418975636009,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.6575200686713619,
+        "corr": 0.8504648172721945,
+        "amp_ratio": 1.2449556867779665,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.27725512815464515,
+        "corr": 0.9694546463362871,
+        "amp_ratio": 1.0987323218687037,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.34770763805149313,
+        "corr": 0.9521923378819243,
+        "amp_ratio": 1.1182370604129128,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.6588941263774083,
+        "corr": 0.8574249989339027,
+        "amp_ratio": 1.2689090187590364,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.3338302356025993,
+        "corr": 0.9576804199974517,
+        "amp_ratio": 1.1267792462765918,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.3447999090517492,
+        "corr": 0.9549121200787691,
+        "amp_ratio": 1.1302521735617785,
+        "model": "homog_q50",
+        "source": "mrr",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9995776876247962,
+        "corr": 0.31793172779857276,
+        "amp_ratio": 0.0013308163369659435,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9995815140821325,
+        "corr": 0.31227446740557474,
+        "amp_ratio": 0.0013427284528527118,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST00",
+        "dist_deg": 20.07371974970174,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0011844137140364,
+        "corr": -0.4447376071893883,
+        "amp_ratio": 0.002656815565815402,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0009982161272357,
+        "corr": -0.009411107110451563,
+        "amp_ratio": 0.036261615897405924,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST01",
+        "dist_deg": 29.9490469392809,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0020669989857693,
+        "corr": -0.6487910571137446,
+        "amp_ratio": 0.003181416421079341,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0028320828089548,
+        "corr": -0.4661416763648809,
+        "amp_ratio": 0.006044990913227301,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0021015750125752,
+        "corr": -0.6004639699036979,
+        "amp_ratio": 0.0034934340538933626,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST02",
+        "dist_deg": 45.05091523627153,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9965793264691768,
+        "corr": 0.5404125022698566,
+        "amp_ratio": 0.0063563005875561145,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.997684454625566,
+        "corr": 0.13242930729502014,
+        "amp_ratio": 0.018799238949744928,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9968395898224681,
+        "corr": 0.24095635293923381,
+        "amp_ratio": 0.013471997742654347,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST03",
+        "dist_deg": 59.82151357866852,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0232951542116209,
+        "corr": -0.3511787948891564,
+        "amp_ratio": 0.061688639783021436,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.00517523956675,
+        "corr": 0.0017549727137242158,
+        "amp_ratio": 0.10363893694411355,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0227531049665806,
+        "corr": -0.32978168419130544,
+        "amp_ratio": 0.06363904854508079,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST04",
+        "dist_deg": 74.99223908457715,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.005040465021066,
+        "corr": -0.15131377889056588,
+        "amp_ratio": 0.030351286578565697,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0356153507917816,
+        "corr": -0.694510178889558,
+        "amp_ratio": 0.05036802818646518,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0053880574654512,
+        "corr": -0.1578879359171786,
+        "amp_ratio": 0.031145781716318304,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST05",
+        "dist_deg": 90.00425643600127,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.107967369592056,
+        "corr": 0.31648971053306235,
+        "amp_ratio": 0.8889907401863206,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0359582137386507,
+        "corr": -0.6778948283725432,
+        "amp_ratio": 0.05200298567187228,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.7978066865004152,
+        "corr": 0.6418456922525605,
+        "amp_ratio": 0.4217061871928368,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "Z"
+      },
+      {
+        "rel_rms": 0.972247293648379,
+        "corr": 0.2552651451322018,
+        "amp_ratio": 0.35736849633068773,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST06",
+        "dist_deg": 104.99468722153479,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.006590382745812,
+        "corr": -0.34316126185432316,
+        "amp_ratio": 0.018755648877700946,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9922206873874716,
+        "corr": 0.2746786992386827,
+        "amp_ratio": 0.029831235916879865,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.002863594161317,
+        "corr": -0.10342598026353607,
+        "amp_ratio": 0.024762638137740926,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST07",
+        "dist_deg": 120.01683747343111,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9936960646038202,
+        "corr": 0.3607545333060443,
+        "amp_ratio": 0.01786139818960362,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.0047936763812357,
+        "corr": -0.15738686532313428,
+        "amp_ratio": 0.028034162265330103,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 0.9954280422308183,
+        "corr": 0.21067586933707583,
+        "amp_ratio": 0.022895920512894682,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST08",
+        "dist_deg": 134.8147677718824,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.002403097370165,
+        "corr": -0.2621016686096196,
+        "amp_ratio": 0.009024232597268216,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 1.002372714134733,
+        "corr": -0.25206604516444286,
+        "amp_ratio": 0.009254350454947111,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST09",
+        "dist_deg": 150.06787497392898,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 1.0039348116363596,
+        "corr": -0.16968177689848457,
+        "amp_ratio": 0.02183065462166464,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.999797481915856,
+        "corr": 0.05253952280218656,
+        "amp_ratio": 0.004006994518899528,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "E"
+      },
+      {
+        "rel_rms": 1.0027539644385504,
+        "corr": -0.12697328925497478,
+        "amp_ratio": 0.020124397271554975,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST10",
+        "dist_deg": 160.06633949468187,
+        "comp": "VEC"
+      },
+      {
+        "rel_rms": 0.9985095579449436,
+        "corr": 0.1393317571635911,
+        "amp_ratio": 0.011133957409849394,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "N"
+      },
+      {
+        "rel_rms": 0.9985103823341095,
+        "corr": 0.1392334564732779,
+        "amp_ratio": 0.011136075428597106,
+        "model": "homog_q50",
+        "source": "mrt",
+        "station": "ST11",
+        "dist_deg": 170.03613275961996,
+        "comp": "VEC"
+      }
+    ]
+  },
+  "summary": {
+    "homog_q50": {
+      "median": 0.8484457130955828,
+      "max": 1.0227531049665806,
+      "corr_min": -0.6004639699036979,
+      "amp_med": 0.6898069056427415
+    }
+  }
+}

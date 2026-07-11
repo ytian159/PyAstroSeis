@@ -1,0 +1,5 @@
+metric window 0-24000 s (P, S, R1 at all distances); gates on per-station 3-component VECTOR metrics
+homog_q50 (baseline):  median rel RMS 8.484e-01, max 1.023e+00, min corr -0.600464
+baseline floor sane e0 < 20%: False
+DSM ARBITRATION FAILED
+conjugate=True

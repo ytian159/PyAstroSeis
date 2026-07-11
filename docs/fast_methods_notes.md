@@ -79,13 +79,19 @@ mesh loaded via faces_from_vertices).
 
 1. NOW (this band, 50-km goal): graded epicentral mesh + near-
    singular quadrature promotion (§3). No new solver machinery.
-2. NOW/CHEAP (memory, pure numpy, keeps the direct sweep): compress
-   the INTERFACE-COUPLING blocks — adjacent closed surfaces are
-   separated by the layer thickness, so those blocks are globally
-   low-rank; ACA or scipy.linalg.interpolative ID over the existing
-   kernel entries, Woodbury updates inside the Thomas sweep, cached
-   dense LU of unperturbed diagonal blocks. Order-of-magnitude sweep
-   memory/flops cut in a few hundred lines.
+2. MEMORY (pure numpy, keeps the direct sweep) — CORRECTED after the
+   Codex round-2 review (2026-07-11): the original claim that
+   interface-coupling blocks are GLOBALLY low-rank is wrong for THIN
+   layers — quasi-static transfer between concentric surfaces decays
+   as (1-d/R)^l, so l_max ~ (R/d) log(1/eps) and rank ~ l_max²: a
+   thin PREM staircase shell has near-full-rank coupling. Compression
+   must be hierarchical (admissible, well-separated PATCH pairs, ACA
+   per pair; near pairs stay dense — standard H-matrix clustering),
+   and diagonal self-blocks need their own treatment. First step
+   before writing any code: a RANK AUDIT of the actual campaign
+   blocks (SVD spectra of coupling blocks vs layer thickness,
+   2-3 person-days). Woodbury-in-Thomas only pays when model CHANGES
+   are genuinely low-rank; cached factors already serve many-RHS.
 3. BEFORE any fast method (accuracy-per-dof): the measured
    ~6%/interface error at h/R 0.09-0.2 is GEOMETRY-dominated (flat
    panels on curved interfaces, order 2). Curved (quadratic) panels
@@ -136,3 +142,70 @@ Libraries: FMM3D github.com/flatironinstitute/FMM3D (Apache-2.0);
 fmm3dbie github.com/fastalgorithms/fmm3dbie; exafmm-t (BSD-3);
 PVFMM (LGPLv3); Bempp-cl (MIT, no elastic kernels); h2tools; H2Lib;
 HLIBpro (binary, academic-free); H2Opus (GPU H²).
+
+## 6. 50-km-source rung: measured closure (2026-07-11)
+
+The graded mesh + near tier RECOVERED THE PROPAGATING FIELD (nearest
+station corr 0.99 vs acausal garbage on the uniform mesh; 637-km
+transparency leg improved to 11.1% vs the 12.9% uniform baseline).
+What remains is NOT a mesh problem: at this ULP band a 50-km-deep
+source's reference (DSM) field is dominated by the QUASI-STATIC
+response — measured group delay ~0-3 s at ALL distances on mrt's T
+component (vs 1600-6200 s propagating moveout for the 637-km source),
+amplitude 10-100x the propagating part. The BEM delivers ~2% of it.
+
+Root cause (proven): the quasi-static channel is driven by a
+near-perfectly-cancelling projection of the incident trace. The
+l=2,m=1 toroidal projection of the SAMPLED trace wanders
+2.2e6 -> 2.1e5 -> 1.3e4 -> -2.0e5 (sign flip) as the epicentral cap
+refines hmin 45 -> 5 km — always ~1e-4 of the gross integral — and
+the solved mrt amplitude ratio FALLS with refinement (0.022 at
+hmin 45, 0.0075 at hmin 20; mrr metrics bit-stable). Pointwise
+incident-trace collocation cannot deliver delicately-cancelling
+quasi-static projections at any practical refinement. The same
+mechanism at partial severity explains the mrr misfit pattern
+(station-wise error tracks the DSM static-content fraction).
+This UNIFIES with the interior-source radiation deficit
+(w*R_region/vs <~ 1): both are incident-source-representation
+failures of the same class. Campaign dirs: dsm_arbitration_src50_ref
+(hmin 45), dsm_arbitration_src50_ref2 (hmin 20, grade 0.5).
+
+## 7. Roadmap after Codex round 2 (2026-07-11)
+
+Priority for full-PREM ULP Earth with shallow sources: C -> A -> B'.
+For asteroid relief: C -> B' -> A. For ensembles: reciprocity first.
+
+* C = scattered-field source formulation (1-2 wk prototype): solve
+  u_scat with RHS = +G t_inc (weakly-singular INTEGRAL of the
+  analytic incident traction; free surface t_scat = -t_inc).
+  Codex verdict: the physical cancellation remains but moves inside
+  a CONTROLLED weak integral — with cancellation condition ~1e4 and
+  panel-integral accuracy ~1e-6 the modal residue lands at ~1%,
+  adequate. Conditions: (i) evaluate analytic t_inc at QUADRATURE
+  NODES (centroid sampling recreates the disease); (ii) quadrature
+  promotion must key on distance to the SOURCE too, not only panel
+  separation; (iii) acceptance test = convergence of the modal
+  forcing f_z against the reciprocal-work reference
+  f_z = M : eps_z(x_src) (local, cancellation-free). Interior
+  sources additionally need the full Cauchy-data jumps (u_inc AND
+  t_inc) on every source-region boundary.
+* A = spectral spherical-harmonic route (8-12 wk MVP, 16-24 wk
+  production + 8-16 wk relief): the production Earth destination;
+  also cures the quasi-static channel (per-(l,m) source vectors by
+  smooth quadrature, as in DSM). Risks: relief couples |l-l'| <=
+  p*L_h and shallow sources need l ~ R/d; complex Bessel stability at
+  low ka / high l (use scaled/impedance recurrences + static limits);
+  fluid-solid in SH basis is signs-and-limits work, not feasibility.
+  Anti-circularity anchors (BEM-spectral vs DSM share structure):
+  homogeneous/static closed forms, reciprocity, passivity,
+  manufactured modal traces, triangular-BEM cross-checks, source
+  coefficients via M : eps_lm(x_src).
+* B' = hierarchical (patch-pair) compression -- see corrected item 2
+  above; start with the rank audit.
+* Cheapest falsification experiment first (0.5-2 wk): MOMENT-FITTED
+  RHS — compute the exact low-(l,m) source coefficients by
+  reciprocal work and minimally correct the discrete RHS so those
+  moments are exact. Directly tests the diagnosis and may rescue
+  shallow-source ULP runs without the full C rung. For fixed
+  receivers x many sources, RECIPROCITY (adjoint receiver fields,
+  evaluate M : eps_adj(x_src)) avoids source-trace sampling entirely.
