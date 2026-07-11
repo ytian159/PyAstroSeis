@@ -1,0 +1,218 @@
+diff --git a/setup/constants.h.in b/setup/constants.h.in
+index 65cfb31..e12e448 100644
+--- a/setup/constants.h.in
++++ b/setup/constants.h.in
+@@ -704,7 +704,9 @@
+ ! flag to turn off the conversion of geographic to geocentric coordinates for
+ ! the seismic source and the stations; i.e. assume a perfect sphere, which
+ ! can be useful for benchmarks of a spherical Earth with fictitious sources and stations
+-  logical, parameter :: ASSUME_PERFECT_SPHERE = .false.
++! FORK (uniform3 ULP benchmark): .true. — manifest lats are geocentric,
++! all reference codes are purely spherical (same patch as the aniso build)
++  logical, parameter :: ASSUME_PERFECT_SPHERE = .true.
+ 
+ ! flags to do benchmark runs to measure scaling of the code
+ ! for a limited number of time steps only, setting the initial field to 1
+@@ -888,6 +890,8 @@
+   integer, parameter :: REFERENCE_MODEL_JP1D       = 7
+   integer, parameter :: REFERENCE_MODEL_SEA1D      = 8
+   integer, parameter :: REFERENCE_MODEL_CCREM      = 9
++  ! constant-property 3-region benchmark model (pyastroseis corefluid_q50 arbitration)
++  integer, parameter :: REFERENCE_MODEL_UNIFORM3   = 10
+   ! Mars
+   integer, parameter :: REFERENCE_MODEL_SOHL       = 101
+   integer, parameter :: REFERENCE_MODEL_SOHL_B     = 102
+diff --git a/src/meshfem3D/meshfem3D_models.F90 b/src/meshfem3D/meshfem3D_models.F90
+index 1b702d5..52ce7ab 100644
+--- a/src/meshfem3D/meshfem3D_models.F90
++++ b/src/meshfem3D/meshfem3D_models.F90
+@@ -467,6 +467,15 @@
+         eta_aniso = 1.d0
+       endif
+ 
++    case (REFERENCE_MODEL_UNIFORM3)
++      ! constant-property 3-region benchmark model (isotropic)
++      call model_uniform3(r_prem,rho,drhodr,vp,vs,Qkappa,Qmu,idoubling,CRUSTAL,check_doubling_flag)
++      vpv = vp
++      vph = vp
++      vsv = vs
++      vsh = vs
++      eta_aniso = 1.d0
++
+     case (REFERENCE_MODEL_1DREF)
+       ! 1D-REF also known as STW105 (by Kustowski et al.) - used also as background for 3D models
+       call model_1dref(r_prem,rho,vpv,vph,vsv,vsh,eta_aniso,Qkappa,Qmu,iregion_code,CRUSTAL)
+diff --git a/src/meshfem3D/meshfem3D_par.f90 b/src/meshfem3D/meshfem3D_par.f90
+index 1ffd0a0..2cec0e0 100644
+--- a/src/meshfem3D/meshfem3D_par.f90
++++ b/src/meshfem3D/meshfem3D_par.f90
+@@ -50,7 +50,7 @@
+     REFERENCE_MODEL_PREM,REFERENCE_MODEL_PREM2, &
+     REFERENCE_MODEL_1066A,REFERENCE_MODEL_AK135F_NO_MUD, &
+     REFERENCE_MODEL_1DREF,REFERENCE_MODEL_SEA1D,REFERENCE_MODEL_IASP91,REFERENCE_MODEL_JP1D, &
+-    REFERENCE_MODEL_CCREM, &
++    REFERENCE_MODEL_CCREM,REFERENCE_MODEL_UNIFORM3, &
+     REFERENCE_MODEL_SOHL,REFERENCE_MODEL_CASE65TAY,REFERENCE_MODEL_MARS_1D, &
+     REFERENCE_MODEL_VPREMOON
+ 
+diff --git a/src/meshfem3D/model_attenuation.f90 b/src/meshfem3D/model_attenuation.f90
+index 110a392..b76c94c 100644
+--- a/src/meshfem3D/model_attenuation.f90
++++ b/src/meshfem3D/model_attenuation.f90
+@@ -256,6 +256,11 @@
+     if (myrank == 0) write(IMAIN,*) '  model: PREM attenuation'
+     Qn = 12
+ 
++  case (REFERENCE_MODEL_UNIFORM3)
++    ! constant-property benchmark model: Qmu = 50 solids, fluid outer core
++    if (myrank == 0) write(IMAIN,*) '  model: uniform3 attenuation'
++    Qn = 2
++
+   case (REFERENCE_MODEL_AK135F_NO_MUD)
+     ! redefines "pure" 1D model without crustal modification
+     if (myrank == 0) write(IMAIN,*) '  model: AK135 attenuation'
+@@ -333,6 +338,10 @@
+     ! radius = (/   0.0d0,    RICB,  RICB,  RCMB,    RCMB,    R670,    R670,   R220,    R220,    R80,     R80, R_PLANET /)
+     Qmu(:) = (/  84.6d0,  84.6d0, 0.0d0, 0.0d0, 312.0d0, 312.0d0, 143.0d0, 143.0d0, 80.0d0, 80.0d0, 600.0d0, 600.0d0 /)
+ 
++  case (REFERENCE_MODEL_UNIFORM3)
++    ! all distinct Qmu values of the uniform3 benchmark model
++    Qmu(:) = (/ 50.0d0, 0.0d0 /)
++
+   case (REFERENCE_MODEL_AK135F_NO_MUD)
+     ! radius = Mak135_V_radius_ak135(:)
+     Qmu(:) = Mak135_V_Qmu_ak135(:)
+diff --git a/src/shared/auto_ner.f90 b/src/shared/auto_ner.f90
+index 732cb58..900e234 100644
+--- a/src/shared/auto_ner.f90
++++ b/src/shared/auto_ner.f90
+@@ -298,6 +298,12 @@
+   ! The Minimum attenuation period (integer)
+   MIN_ATTENUATION_PERIOD = T_min_period
+ 
++  ! FORK (uniform3 ULP benchmark): force the SLS band to cover the
++  ! ultra-long-period source band (Ricker F0 = 1.75e-4 Hz, energy
++  ! ~2900-20000 s) instead of the per-NEX mesh-resolution band; with
++  ! N_SLS = 3 this gives [2000 s, 2000*10^1.75 ~ 112468 s]
++  MIN_ATTENUATION_PERIOD = 2000.d0
++
+   ! THETA defines the width of the Attenuation Range in Decades
+   !   The number defined here were determined by minimizing
+   !   the "flatness" of the absorption spectrum.  Each THETA
+diff --git a/src/shared/get_model_parameters.F90 b/src/shared/get_model_parameters.F90
+index 4f4925b..d6864d9 100644
+--- a/src/shared/get_model_parameters.F90
++++ b/src/shared/get_model_parameters.F90
+@@ -308,6 +308,12 @@
+   case ('1d_isotropic_prem')
+     HONOR_1D_SPHERICAL_MOHO = .true.
+ 
++  case ('uniform3_q50')
++    ! constant-property 3-region benchmark model at PREM radii
++    ! (pyastroseis corefluid_q50 arbitration model)
++    REFERENCE_1D_MODEL = REFERENCE_MODEL_UNIFORM3
++    HONOR_1D_SPHERICAL_MOHO = .true.
++
+   case ('1d_transversely_isotropic_prem')
+     HONOR_1D_SPHERICAL_MOHO = .true.
+     TRANSVERSE_ISOTROPY = .true.
+diff --git a/src/shared/model_prem.f90 b/src/shared/model_prem.f90
+index eebc7b1..d11c056 100644
+--- a/src/shared/model_prem.f90
++++ b/src/shared/model_prem.f90
+@@ -368,6 +368,95 @@
+ 
+   end subroutine model_prem_iso
+ 
++!
++!=====================================================================
++!
++
++  subroutine model_uniform3(x,rho,drhodr,vp,vs,Qkappa,Qmu,idoubling,CRUSTAL,check_doubling_flag)
++
++! constant-property 3-region benchmark model at PREM radii
++! (pyastroseis corefluid_q50 arbitration model):
++!   inner core   r <= RICB : rho 6.0 g/cc, vp 7.0 km/s, vs 3.5 km/s, Qmu 50
++!   outer core   RICB-RCMB : rho 5.0,      vp 5.5,      fluid, elastic
++!   mantle+crust RCMB-R    : rho 3.0,      vp 6.0,      vs 3.0,      Qmu 50
++! same interface as model_prem_iso; doubling-flag checks kept identical
++
++  use constants
++  use shared_parameters, only: R_PLANET,RHOAV
++
++  use model_prem_par
++
++  implicit none
++
++  double precision,intent(in) :: x
++  double precision,intent(inout) :: rho,drhodr,vp,vs,Qkappa,Qmu
++
++  logical,intent(in) :: CRUSTAL,check_doubling_flag
++  integer,intent(in) :: idoubling
++
++  ! local parameters
++  double precision :: r,scaleval
++
++! compute real physical radius in meters
++  r = x * R_PLANET
++
++  if (check_doubling_flag) then
++    if (r >= 0.d0 .and. r < PREM_RICB) then
++      if (idoubling /= IFLAG_INNER_CORE_NORMAL .and. &
++         idoubling /= IFLAG_MIDDLE_CENTRAL_CUBE .and. &
++         idoubling /= IFLAG_BOTTOM_CENTRAL_CUBE .and. &
++         idoubling /= IFLAG_TOP_CENTRAL_CUBE .and. &
++         idoubling /= IFLAG_IN_FICTITIOUS_CUBE) &
++           stop 'wrong doubling flag for inner core point in model_uniform3()'
++    else if (r > PREM_RICB .and. r < PREM_RCMB) then
++      if (idoubling /= IFLAG_OUTER_CORE_NORMAL) &
++        stop 'wrong doubling flag for outer core point in model_uniform3()'
++    else if (r > PREM_RCMB .and. r < PREM_RTOPDDOUBLEPRIME) then
++      if (idoubling /= IFLAG_MANTLE_NORMAL) &
++        stop 'wrong doubling flag for D" point in model_uniform3()'
++    else if (r > PREM_RTOPDDOUBLEPRIME .and. r < PREM_R670) then
++      if (idoubling /= IFLAG_MANTLE_NORMAL) &
++        stop 'wrong doubling flag for top D" to d670 point in model_uniform3()'
++    else if (r > PREM_R670 .and. r < PREM_R220) then
++      if (idoubling /= IFLAG_670_220) &
++        stop 'wrong doubling flag for d670 to d220 point in model_uniform3()'
++    else if (r > PREM_R220) then
++      if (idoubling /= IFLAG_220_80 .and. idoubling /= IFLAG_80_MOHO .and. idoubling /= IFLAG_CRUST) &
++        stop 'wrong doubling flag for d220 to Moho to surface point in model_uniform3()'
++    endif
++  endif
++
++! constant properties per region (rho in g/cm3, vp/vs in km/s)
++  drhodr = 0.d0
++  if (r >= 0.d0 .and. r <= PREM_RICB) then
++    rho = 6.0d0
++    vp = 7.0d0
++    vs = 3.5d0
++    Qmu = 50.0d0
++    Qkappa = 1.0d8
++  else if (r > PREM_RICB .and. r <= PREM_RCMB) then
++    rho = 5.0d0
++    vp = 5.5d0
++    vs = 0.0d0
++    Qmu = 0.0d0
++    Qkappa = 1.0d8
++  else
++    rho = 3.0d0
++    vp = 6.0d0
++    vs = 3.0d0
++    Qmu = 50.0d0
++    Qkappa = 1.0d8
++  endif
++
++! non-dimensionalize
++  scaleval = dsqrt(PI*GRAV*RHOAV)
++  drhodr = drhodr * 1000.0d0/RHOAV
++  rho = rho * 1000.0d0/RHOAV
++  vp = vp * 1000.0d0/(R_PLANET*scaleval)
++  vs = vs * 1000.0d0/(R_PLANET*scaleval)
++
++  end subroutine model_uniform3
++
+ !
+ !=====================================================================
+ !
