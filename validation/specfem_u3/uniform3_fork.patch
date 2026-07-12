@@ -1,8 +1,21 @@
 diff --git a/setup/constants.h.in b/setup/constants.h.in
-index 65cfb31..e12e448 100644
+index 65cfb31..326fe01 100644
 --- a/setup/constants.h.in
 +++ b/setup/constants.h.in
-@@ -704,7 +704,9 @@
+@@ -268,7 +268,11 @@
+ ! use this t0 as earliest starting time rather than the automatically calculated one
+ ! (must be positive and bigger than the automatically one to be effective;
+ !  simulation will start at t = - t0)
+-  double precision, parameter :: USER_T0 = 0.0d0
++! FORK (uniform3 ULP benchmark): 5*hdur so the erf STF starts at true
++! numerical zero — the default 1.5*hdur truncation injects a ~3e-4*M0
++! step at t0 whose undamped grid-period ringing swamps the tiny ULP
++! signals over a 24000-s record
++  double precision, parameter :: USER_T0 = 6000.0d0
+ 
+ ! distance threshold (in km) above which we consider that a receiver
+ ! is located outside the mesh and therefore excluded from the station list
+@@ -704,7 +708,9 @@
  ! flag to turn off the conversion of geographic to geocentric coordinates for
  ! the seismic source and the stations; i.e. assume a perfect sphere, which
  ! can be useful for benchmarks of a spherical Earth with fictitious sources and stations
@@ -13,7 +26,7 @@ index 65cfb31..e12e448 100644
  
  ! flags to do benchmark runs to measure scaling of the code
  ! for a limited number of time steps only, setting the initial field to 1
-@@ -888,6 +890,8 @@
+@@ -888,6 +894,8 @@
    integer, parameter :: REFERENCE_MODEL_JP1D       = 7
    integer, parameter :: REFERENCE_MODEL_SEA1D      = 8
    integer, parameter :: REFERENCE_MODEL_CCREM      = 9
@@ -216,3 +229,80 @@ index eebc7b1..d11c056 100644
  !
  !=====================================================================
  !
+diff --git a/src/specfem3D/get_attenuation.f90 b/src/specfem3D/get_attenuation.f90
+index 4a61c72..5b8ac33 100644
+--- a/src/specfem3D/get_attenuation.f90
++++ b/src/specfem3D/get_attenuation.f90
+@@ -287,6 +287,8 @@
+   double precision :: a_val, b_val, denom
+   double precision :: big_omega
+   integer :: i
++  ! FORK uniform3: one-shot diagnostic of the realized scaling chain
++  logical, save :: fork_dbg_done = .false.
+ 
+   ! compute central angular frequency of source (non dimensionalized)
+   if (T_c_source > 0.d0) then
+@@ -376,6 +378,19 @@
+   ! factor to get relaxed modulus from shifted value
+   scale_factor_relaxed = factor_scale_mu
+ 
++  ! FORK uniform3: print the full chain once (first GLL point)
++  if (.not. fork_dbg_done) then
++    fork_dbg_done = .true.
++    print *,'FORKDBG Q_mu = ',Q_mu
++    print *,'FORKDBG T_c_source(nondim,dim s) = ',T_c_source, T_c_source*scale_t
++    print *,'FORKDBG f_0_model(nondim) scale_t = ',f_0_model, scale_t
++    print *,'FORKDBG tau_sigma(dim s) = ',tau_sigma(:)*scale_t
++    print *,'FORKDBG tau_mu(dim s)    = ',tau_mu(:)*scale_t
++    print *,'FORKDBG factor_scale_mu0, factor_scale_mu, total = ', &
++            factor_scale_mu0, factor_scale_mu, scale_factor
++    print *,'FORKDBG approx Q = A/B at w_c = ',a_val/b_val
++  endif
++
+   ! note:
+   !  * if reference frequency and center frequency are the same, i.e., f_0_model == f_c_source, then factor_scale_mu0 == 1
+   !  * for f_c_source == 0, i.e. at zero frequency, the scaling to relaxed factor_scale_mu should be 1
+diff --git a/src/specfem3D/prepare_attenuation.f90 b/src/specfem3D/prepare_attenuation.f90
+index ddfe179..7243c4b 100644
+--- a/src/specfem3D/prepare_attenuation.f90
++++ b/src/specfem3D/prepare_attenuation.f90
+@@ -146,6 +146,11 @@
+                                     NSPEC_INNER_CORE)
+   endif
+ 
++  ! FORK uniform3: trace shear modulus through the scaling chain
++  if (myrank == 0) print *,'FORKDBG muv pre-scale  = ', &
++      muvstore_crust_mantle(1,1,1,1000), &
++      ' kappav = ',kappavstore_crust_mantle(1,1,1,1000)
++
+   ! debug
+   !if (myrank == 0) print *,'debug: original moduli muv',muvstore_crust_mantle(1,1,1,1000),muvstore_crust_mantle(3,3,3,3000)
+   !if (myrank == 0) print *,'debug: original moduli c11',c11store_crust_mantle(1,1,1,1000),c11store_crust_mantle(3,3,3,3000)
+@@ -349,6 +354,11 @@
+     enddo
+   enddo ! enddo CRUST MANTLE
+ 
++  ! FORK uniform3: after scale_factor application (expect x0.83902)
++  if (myrank == 0) print *,'FORKDBG muv post-scale = ', &
++      muvstore_crust_mantle(1,1,1,1000), &
++      ' kappav = ',kappavstore_crust_mantle(1,1,1,1000)
++
+   ! note: no scaling for outer core arrays.
+   !       we only implement shear attenuation so far, can be neglected in the outer core where vs == 0.
+ 
+diff --git a/src/specfem3D/prepare_elastic_elements.F90 b/src/specfem3D/prepare_elastic_elements.F90
+index 07800c2..ab492a1 100644
+--- a/src/specfem3D/prepare_elastic_elements.F90
++++ b/src/specfem3D/prepare_elastic_elements.F90
+@@ -501,6 +501,11 @@
+     if (icount_iso > NSPECMAX_ISO_MANTLE) stop 'Error invalid number of iso elements in prepare_timerun_aniso'
+   endif ! ANISOTROPIC_3D_MANTLE_VAL
+ 
++  ! FORK uniform3: after unrelaxed shift (expect x1.09199 on top of
++  ! the post-scale value, i.e. net x0.91621 of the input modulus)
++  if (myrank == 0) print *,'FORKDBG muv post-unrelaxed = ', &
++      muvstore_crust_mantle(1,1,1,1000)
++
+   ! since we scale muv and c11,.. stores we must divide with this factor to use the relaxed moduli for the modulus defect
+   ! calculation in updating the memory variables
+   if (ATTENUATION_VAL) then

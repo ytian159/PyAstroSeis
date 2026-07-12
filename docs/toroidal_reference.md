@@ -112,3 +112,96 @@ accumulated inside the l-recurrence), bessel log-derivative ratios
 -> T spectra per station. Driver dsm_arbitration/run_minitish.py
 writing spectra in the campaign's npz layout for the existing
 synthesize/compare pipeline.
+
+## Appendix: SPECFEM3D_GLOBE as a ULP reference — protocol findings
+(2026-07-11, uniform3 campaign debugging)
+
+Two contamination mechanisms make STOCK SPECFEM output unusable as a
+ULP (f <= 5.3e-4 Hz) reference, both invisible in normal-period
+benchmarks because ULP signals are ~1e-4 of local field scales:
+
+1. STF truncation step: the CMT erf quasi-Heaviside starts at
+   t0 = 1.5*hdur where erf(-2.44) = -0.9994, injecting a ~3e-4*M0
+   step at simulation start whose broadband ringing (grid periods,
+   essentially undamped in a closed sphere: 20-s spectral peak
+   dominating every trace) persists for the whole record. FIX:
+   USER_T0 >= 5*hdur (constants.h). Verified: ringing peak moved off
+   grid scale and in-band correlation with the BEM appeared
+   (ST00 Z: -0.26 -> 0.60).
+2. Single-precision solver (default CUSTOM_REAL): ~1e-7 relative
+   roundoff of the ~0.1-m near-source field is injected continuously
+   into barely-damped modes (T ~ 154 s sits below the forced SLS band
+   -> high effective Q), producing a ~1e-7 m broadband floor above the
+   ~1e-8..1e-6 m ULP signals. FIX: --enable-double-precision
+   (2x cost). [check run pending at this writing]
+
+Plus the band fix from the fork itself: the per-NEX auto SLS band
+(~70-3900 s at NEX64) must be forced to cover the source band, else
+Q and physical dispersion are wrong in-band.
+
+3. (2026-07-11, double-precision NEX32 check) tipsv R-channel
+   pathology on the FLUID-CORE model at 50-km source: the tipsv R
+   spectra are a flat-in-k plateau spanning the ENTIRE band (1.1e-5 m
+   at ST00, 3e-6 m at ST05 — physical-static order at k -> 0 but
+   persisting far beyond the physical near-field corner), the same
+   flat-band fingerprint as the shallow-tish noise. SEM and BEM agree
+   with each other on R (corr 0.983 at ST00) against tipsv's 15x.
+   The gravity-free fluid-core near-DC (spheroidal undertone
+   degeneracy) is the suspected mechanism. CONSEQUENCE: on
+   corefluid_q50 at 50 km, tipsv is a valid reference for Z ONLY;
+   R and T verdicts need the SEM leg.
+   Verified-clean SEM chain for the record (NEX32 DP check): input
+   moduli exact (mu_nd 0.104338 = rho vs^2), scale factors exact and
+   applied once (0.87757 x 0.95607 = 0.83902; muv trace 0.104338 ->
+   0.087542 -> 0.095594 incl. x1.09199 unrelaxed), realized model
+   table exact in all three regions (xwrite_profile CARDS), SLS fit
+   tau_e = {18478.86, 2447.16, 329.27} s == independent scipy refit,
+   in-band Q 48.9-51.1, amplitudes vs tipsv Z 0.98-1.06 (Q_eff ~ 50
+   confirmed).
+4. SETTLED (2026-07-11 evening, exact-eigenmode arbitration): the
+   ~3.8 s/deg SEM Z lateness vs tipsv+BEM is a STRUCTURAL SPECFEM
+   defect on the fluid-core spheroidal branch at ULP, NOT a material
+   or attenuation issue on either side. Chain of evidence:
+   (a) elastic A/B: SEM viscous-minus-elastic lag = +1.73 s/deg =
+       exactly its designed causal dispersion (attenuation module
+       exonerated); the residual +2.07 s/deg survives with
+       ATTENUATION=.false. -> structural.
+   (b) tipsv Q self-test (Q50 vs elastic input, same binary):
+       +1.30 s/deg slower + amp 1.15->0.96 with distance = the full
+       CAUSAL fingerprint; tipsv's Q machinery correct.
+   (c) ABSOLUTE arbitration via exact_modes.py (analytic uniform-
+       layer Bessel matching; machinery triple-validated: full-ball
+       toroidal det == mini-tish surface-factor poles to 5 digits;
+       uniform-ball 0S2 omega*R/vs = 2.650 = Lamb; tipsv homog-Q50
+       peaks = ball-exact x causal shift to ~1%): tipsv-ELASTIC
+       corefluid Z peaks sit ON the exact 3-layer spheroidal
+       eigenfrequencies to <1%, sub-bin (118.26/117.08,
+       194.55/195.17, 282.29/283.62, 324.25/326.46, 377.66/376.63,
+       438.69/440.28, 469.21/470.40 uHz). TIPSV Z = ABSOLUTELY
+       VALIDATED on the fluid-core model.
+   (d) BEM == tipsv per-harmonic phase < 0.1 rad across k=30..105
+       (independent methods agree); waveform overlays show SEM as the
+       same waveform bodily shifted late, growing with distance.
+   => SPECFEM3D_GLOBE (NEX32 AND NEX64, elastic and viscous, model
+   table verified exact via xwrite_profile, moduli traced exact) runs
+   the fluid-core spheroidal branch ~5-8% slow at ULP. Suspected
+   locus: fluid-solid coupling / outer-core potential formulation in
+   the gravity-free ULP regime (deficit grows toward low frequency).
+   VERDICT FOR THE PROTOCOL: SPECFEM is NOT usable as a ULP reference
+   for fluid-core models until this is resolved; it remains fine at
+   normal periods (DFDM-era benchmarks) and its solid-shell
+   (toroidal) health at ULP is still to be pinned (long-record
+   elastic run queued for absolute mode fitting).
+   Also: tish (SH) resonances on the 3-zone model sit 4-7% BELOW the
+   exact annulus toroidal modes (167.85/180.57, 267.03/283.51,
+   362.40/377.29, 446.32/466.55 uHz) - a separate multi-zone tish
+   anomaly (peak positions may be biased by its shallow-source noise
+   floor; unresolved).
+   CAMPAIGN CONSEQUENCES: Z reference at 50 km on corefluid =
+   tipsv (absolutely validated). BEM VERDICT (deliverable): BEM Z
+   timing/phase correct, amplitude 1.2-1.5x HIGH growing with
+   distance = real BEM deficit on the fluid-core model at 50 km.
+   R channel: no valid reference (tipsv R = flat-plateau noise; SEM
+   structurally suspect); T channel: still open (tish dead at 50 km,
+   SEM pending toroidal health check) -> annulus reciprocity
+   mini-tish remains the path.

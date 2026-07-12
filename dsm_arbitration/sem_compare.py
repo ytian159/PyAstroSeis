@@ -26,12 +26,21 @@ SEM = os.path.abspath(sys.argv[2])
 LEG = sys.argv[3]
 SOURCE = sys.argv[4] if len(sys.argv) > 4 else "mrt"
 HDUR = float(sys.argv[5]) if len(sys.argv) > 5 else 2000.0
+T_WIN = float(sys.argv[6]) if len(sys.argv) > 6 else None
 
 os.environ.setdefault("ARB_ROOT", ROOT)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import synthesize_compare as sc                     # noqa: E402
 
 SOURCE_DECAY_MIMIC_TRIANGLE = 1.628
+F_BAND = 5.3e-4     # spectral legs end at k = imax (5.26e-4 Hz):
+                    # band-limit BOTH sides for a like-for-like score
+
+
+def _lp(x, dt):
+    X = np.fft.rfft(x)
+    X[np.fft.rfftfreq(len(x), dt) > F_BAND] = 0.0
+    return np.fft.irfft(X, len(x))
 
 
 def leg_velocity(man, u_spec3, syn, nout):
@@ -75,7 +84,7 @@ def sem_velocity(case, st, comp, tgrid, nout, dt):
 def main():
     man = json.load(open(os.path.join(ROOT, "manifest.json")))
     syn = sc.Synth(man["tlen"], man["omegai_1_per_s"], man["imax"])
-    nout = int(sc.METRICS_T / syn.dt) + 1
+    nout = int((T_WIN or sc.METRICS_T) / syn.dt) + 1
     z = np.load(os.path.join(ROOT, LEG))
     isrc = [str(s) for s in z["sources"]].index(SOURCE)
     sts = man["stations"]
@@ -106,6 +115,10 @@ def main():
                 continue
             snez["T"] = (snez["N"] * (t_hat @ north)
                          + snez["E"] * (t_hat @ east))
+            for c in list(snez):
+                snez[c] = _lp(snez[c], syn.dt)
+            for c in list(b):
+                b[c] = _lp(b[c], syn.dt)
             peak = max(np.max(np.abs(snez[c])) for c in "NEZ")
             for c in ("N", "E", "Z", "T"):
                 nd = np.linalg.norm(snez[c])

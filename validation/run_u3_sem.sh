@@ -15,7 +15,7 @@ run_case () {  # name nex nproc src dt SRUNPREFIX
   local name=$1 nex=$2 nproc=$3 src=$4 dt=$5; shift 5
   local CASE=$V/$name
   python3 $V/gen_case.py "$TMPL" "$CASE" "$ROOT/manifest.json" \
-    "$src" "$nex" "$nproc" 450 2000
+    "$src" "$nex" "$nproc" 350 2000
   sed -i "s|^DT  *=.*|DT                              = ${dt}d0|" \
     "$CASE/DATA/Par_file" 2>/dev/null || true
   cd "$CASE"
@@ -43,7 +43,7 @@ cd "$Q"
 for pair in "sem64_mrt mrt" "sem64_mrr mrr" "sem32_mrt mrt"; do
   set -- $pair
   python3 dsm_arbitration/sem_compare.py "$ROOT" "$V/$1" \
-    bem_corefluid_q50.npz "$2" 2000 \
+    bem_corefluid_q50.npz "$2" 2000 18000 \
     || echo U3-COMPARE-FAILED "$1"
 done
 echo "== U3 SEM STAGE DONE $(date +%T) =="
