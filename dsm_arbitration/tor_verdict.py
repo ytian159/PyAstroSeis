@@ -63,10 +63,14 @@ for i, st in enumerate(man["stations"]):
     # SH part: mode-sum, project to t_hat
     sh = bp(sd.spec_to_vel(sum(u_tm[i, c] * t_hat[c] for c in range(3)),
                            syn, nout, s_spec))
-    # PSV part: tipsv T channel (spc ch 2)
+    # PSV part: tipsv T channel (spc ch 2); absent -> SH-pure geometry
     base = os.path.join(ROOT, "dsm", MODEL, "spc", st["name"])
-    _, _, u_psv = sc.read_spc("%s.%s.PSV.spc" % (base, SOURCE))
-    psv = bp(sd.spec_to_vel(u_psv[2] * 1000.0, syn, nout, s_spec))
+    p = "%s.%s.PSV.spc" % (base, SOURCE)
+    if os.path.exists(p):
+        _, _, u_psv = sc.read_spc(p)
+        psv = bp(sd.spec_to_vel(u_psv[2] * 1000.0, syn, nout, s_spec))
+    else:
+        psv = np.zeros_like(sh)
     ref = sh + psv
     b = bp(sd.spec_to_vel(sum(u_bem[i][c] * t_hat[c] for c in range(3)),
                           syn, nout, s_spec))
