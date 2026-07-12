@@ -137,17 +137,39 @@ solution — median rel 4.6%, corr 0.98-1.000, decisive conjugation
 calibration (0.046 vs 1.06/2.18); driver dsm_arbitration/
 run_tormodes.py, comparator tormodes_check.py.
 
-T-CHANNEL QUASI-STATIC FINDING (kills naive 50-km T verdicts): on
-corefluid at 50 km the EXACT SH T-field is flat-in-k across the
-whole ULP band at 20-150 deg (quasi-static dominated; e.g. 8.1e-5 m
-at ST00, matching the flat tipsv PSV-T 1.37e-4 m) — so total-field
-T scoring at generic azimuths compares quasi-static fields for which
-no trustworthy spheroidal complement exists (tipsv near-DC
-pathological, SEM spheroidal broken). PROTOCOL: SH-pure verdicts
-need SOURCE-MERIDIAN stations (spheroidal-T and toroidal-T are in
-azimuthal quadrature for Mrt); dsm_arbitration_u3T = 7 meridian
-faces (off-meridian <= 1.9 deg), BEM re-evaluated there, reference =
-mode-sum alone (tor_verdict.py).
+STATIC COMPLETION (2026-07-12 00:30, REQUIRED): the plain mode sum
+of the quasi-static field is CONDITIONALLY convergent (terms ~
+cos(phase_n)/n over overtones; l-spectrum e-folds at a/(a-r0) ~ 127
+at 50 km) — truncations ring at O(1). Fix implemented and validated:
+closed-form static annulus/ball solution per (l,m) (r^l, r^{-l-1};
+jumps at r0: [W] = M0 D/(mu r0^2), [W'] = +M0 D/(mu r0^3);
+FD-verified to 1e-5 at the 50-km source radius) + mode terms carrying
+only the dynamic correction 1/(w_j^2-w^2) - 1/w_j^2 (converges
+1/w_j^4; lmax_dyn 250, n_keep 8 safe; static l-sum closed-form to
+lmax ~ 800). V-a anchor IMPROVED to median rel 1.27%, corr
+0.999-1.000. Causal Q on the static branch = mu(w) complex factor.
+
+T-CHANNEL GEOMETRY (hard-won, 2026-07-12): for an Mrt source the
+OUT-OF-PLANE (t_hat) toroidal component has its NODE ON THE SOURCE
+MERIDIAN (reflection symmetry through the couple plane) — the
+"SH-pure meridian stations" idea was inverted; the meridian verdicts
+(tor_verdict jsons of 2026-07-11 23:00) compared off-node leakage
+(reference) against solver noise and are VOID in both directions.
+The exact static's t_hat projection at the meridian faces is
+correctly ~0 (leakage ratio 0.000-0.05), confirming the mode-sum
+symmetry. SH maximizes at ~90 deg azimuth from the meridian — but
+spheroidal-T is also large there; a clean SH-only observable needs
+either the composite (mode-sum SH + validated spheroidal-T
+reference) at generic azimuths, or component-level separation.
+RE-OPENED by this work: the tipsv R / PSV-T whole-band flat plateau
+at 50 km looks EXACTLY like a physical quasi-static field (the exact
+SH static is also flat-in-k; magnitudes are physical-static order) —
+the earlier "R plateau = noise" reading is NOT proven for tipsv
+(unlike tish, which fails the incident-bound test); SEM disagrees
+there because its spheroidal is structurally broken, and the BEM
+because of its shallow-source quasi-static deficit. A static-
+completed SPHEROIDAL reference (fluid-core mode sum, the spheroidal
+analogue of this module) would settle R and T at once — next build.
 
 ## Appendix: SPECFEM3D_GLOBE as a ULP reference — protocol findings
 (2026-07-11, uniform3 campaign debugging)
