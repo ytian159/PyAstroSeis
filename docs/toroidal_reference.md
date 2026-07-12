@@ -187,21 +187,33 @@ Q and physical dispersion are wrong in-band.
    the fluid-core spheroidal branch ~5-8% slow at ULP. Suspected
    locus: fluid-solid coupling / outer-core potential formulation in
    the gravity-free ULP regime (deficit grows toward low frequency).
-   VERDICT FOR THE PROTOCOL: SPECFEM is NOT usable as a ULP reference
-   for fluid-core models until this is resolved; it remains fine at
-   normal periods (DFDM-era benchmarks) and its solid-shell
-   (toroidal) health at ULP is still to be pinned (long-record
-   elastic run queued for absolute mode fitting).
-   Also: tish (SH) resonances on the 3-zone model sit 4-7% BELOW the
-   exact annulus toroidal modes (167.85/180.57, 267.03/283.51,
-   362.40/377.29, 446.32/466.55 uHz) - a separate multi-zone tish
-   anomaly (peak positions may be biased by its shallow-source noise
-   floor; unresolved).
+   MODE-LEVEL CONFIRMATION (330-min elastic record, variable-
+   projection fit, start-point independent; sem_mode_fit2.py):
+   SEM spheroidal fundamentals 0S2..0S6 = 100.77/171.44/253.07/
+   337.27/425.61 uHz vs exact 117.08/195.17/283.62/376.63/470.40 =
+   ratios 0.861/0.878/0.892/0.896/0.905 (worse at low l = deeper
+   core penetration); SEM TOROIDAL 0T2..0T5 ratios 1.008/0.996/
+   0.989/0.992 -> the defect is ISOLATED to the fluid core /
+   fluid-solid coupling; SPECFEM's solid-shell physics at ULP is
+   healthy (~1%).
+   tish multi-zone anomaly CONFIRMED operator-level with a DEEP
+   (637 km, converged) elastic source: 0T2..0T5 uniformly -5.1+-0.4%
+   (171.66/267.03/358.58/442.50 vs exact) while single-zone tish is
+   healthy (0.75% mini-tish anchor). Full draft reports:
+   docs/upstream_issues.md.
+   T-CHANNEL PURITY (kills naive T scoring): at these mrt azimuths
+   the t_hat projection is a ~50/50 SH/spheroidal MIX (|tipsv PSV-T|
+   / |tish SH-T| = 0.7-1.06 at every station), so no total-field T
+   comparison is SH-clean; the BEM-vs-SEM T attempt is VOID.
    CAMPAIGN CONSEQUENCES: Z reference at 50 km on corefluid =
    tipsv (absolutely validated). BEM VERDICT (deliverable): BEM Z
    timing/phase correct, amplitude 1.2-1.5x HIGH growing with
    distance = real BEM deficit on the fluid-core model at 50 km.
    R channel: no valid reference (tipsv R = flat-plateau noise; SEM
-   structurally suspect); T channel: still open (tish dead at 50 km,
-   SEM pending toroidal health check) -> annulus reciprocity
-   mini-tish remains the path.
+   spheroidal broken). T channel: SEM toroidal validated (~1%) but
+   inseparable from its broken spheroidal in any projection ->
+   the ANNULUS TOROIDAL MODE-SUM (exact SH synthesis: eigenfrequency
+   catalog from toroidal_det + analytic eigenfunctions + M:eps
+   excitation at r0, causal-Q perturbation for attenuated legs) +
+   validated tipsv PSV-T as the spheroidal complement = the composite
+   T reference; next build.
