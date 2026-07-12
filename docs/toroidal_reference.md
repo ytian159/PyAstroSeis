@@ -113,6 +113,42 @@ accumulated inside the l-recurrence), bessel log-derivative ratios
 writing spectra in the campaign's npz layout for the existing
 synthesize/compare pipeline.
 
+## Mode-sum route — IMPLEMENTED (2026-07-11 night)
+
+pyastroseis/toroidal_modes.py replaces the precision-dead projection
+route at shallow depths by NORMAL-MODE SUMMATION with everything
+analytic: eigenfrequencies from the uniform-layer Bessel-matching
+determinant (ball or annulus-over-fluid), eigenfunctions
+W = A j_l + B y_l with (A,B) from the CMB traction condition,
+N = int rho W^2 r^2 dr, and excitation from the mode strain AT the
+source — for any earth-frame Mr* tensor the source frame (e3 = r)
+keeps M = M0(z h^T + h z^T), so only eps_{r,horiz} contracts:
+
+    E_lm = M0 (W' - W/r)|_{r0} conj(C_lm(pole)) . h ,
+
+with C_lm(pole) evaluated through toroidal_reconstruct itself
+(conventions cancel; only m = +-1 survive; mrr gives E == 0, verified
+1e-20). u(w) = sum_j E_j W_j(a) C_lm / (N_j (w_j^2 - w^2)) at the
+campaign's complex w; catalog truncated at fmax = 10 mHz (in-band
+truncation error < 1%). Attenuation: first-order causal constant-Q
+mode perturbation (1-Hz reference), q_sign = -1 frozen.
+V-a ANCHOR PASSED: ball config at 637 km vs the V2 mini-tish forced
+solution — median rel 4.6%, corr 0.98-1.000, decisive conjugation
+calibration (0.046 vs 1.06/2.18); driver dsm_arbitration/
+run_tormodes.py, comparator tormodes_check.py.
+
+T-CHANNEL QUASI-STATIC FINDING (kills naive 50-km T verdicts): on
+corefluid at 50 km the EXACT SH T-field is flat-in-k across the
+whole ULP band at 20-150 deg (quasi-static dominated; e.g. 8.1e-5 m
+at ST00, matching the flat tipsv PSV-T 1.37e-4 m) — so total-field
+T scoring at generic azimuths compares quasi-static fields for which
+no trustworthy spheroidal complement exists (tipsv near-DC
+pathological, SEM spheroidal broken). PROTOCOL: SH-pure verdicts
+need SOURCE-MERIDIAN stations (spheroidal-T and toroidal-T are in
+azimuthal quadrature for Mrt); dsm_arbitration_u3T = 7 meridian
+faces (off-meridian <= 1.9 deg), BEM re-evaluated there, reference =
+mode-sum alone (tor_verdict.py).
+
 ## Appendix: SPECFEM3D_GLOBE as a ULP reference — protocol findings
 (2026-07-11, uniform3 campaign debugging)
 
