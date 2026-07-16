@@ -161,15 +161,41 @@ symmetry. SH maximizes at ~90 deg azimuth from the meridian — but
 spheroidal-T is also large there; a clean SH-only observable needs
 either the composite (mode-sum SH + validated spheroidal-T
 reference) at generic azimuths, or component-level separation.
-RE-OPENED by this work: the tipsv R / PSV-T whole-band flat plateau
-at 50 km looks EXACTLY like a physical quasi-static field (the exact
-SH static is also flat-in-k; magnitudes are physical-static order) —
-the earlier "R plateau = noise" reading is NOT proven for tipsv
-(unlike tish, which fails the incident-bound test); SEM disagrees
-there because its spheroidal is structurally broken, and the BEM
-because of its shallow-source quasi-static deficit. A static-
-completed SPHEROIDAL reference (fluid-core mode sum, the spheroidal
-analogue of this module) would settle R and T at once — next build.
+SETTLED (2026-07-16, mini-tipsv): pyastroseis/spheroidal_ref.py is a
+DIRECT analytic forced P-SV solve per (l, omega) for the 3-layer
+fluid-core model (12x12 from uniform-layer Bessel solutions; source
+jump 4-vector [y] = F1 + A F0 with A = Y'Y^{-1} built numerically
+from the analytic basis; loads derived from the excitation
+functionals with the 1/L factor on the S-row for the unnormalized-
+gradient basis; scaled-series basis for l >= 20 where the fluid core
+is evanescently decoupled, (b/a)^{2l} < 3e-11, and raw Bessel
+under/overflows; lmax 900 so the shallow-source static l-series,
+which peaks at l ~ 190, sums to convergence). GATES: complex Bessel
+1e-13 vs scipy + Wronskian 1e-14 (Miller normalization robust at
+j0 zeros); solid columns == exact_modes to 9e-15; jumps arbitrated
+against regularized-force shooting (7e-6); resonances == the exact
+eigenfrequency table to 2.5e-4; seam l=19/20 smooth at all k.
+V-ANCHOR vs tipsv (per-k COMPLEX spectra, k=20..138): mrr Z ratios
+0.93-1.02; mrt Z 0.85-1.25, R 0.85-1.24; PSV-T ratios 1.000-1.002
+with median rel 5.6% — ALL tipsv channels validated, including the
+whole-band flat R/T plateaus: THE QUASI-STATIC PLATEAU IS PHYSICAL.
+The 2026-07-11 "tipsv R = noise-like" reading is REFUTED (tish's
+shallow-source noise verdict still stands via the incident-bound
+test). CONSEQUENT VERDICTS at 50 km on corefluid_q50, all against
+validated references (figures wf_R_quasistatic_verdict.png,
+tor_verdict jsons):
+  - BEM Z: timing/phase correct, amp 1.2-1.5x high growing with
+    distance.
+  - BEM R: quasi-static channel MISSING (amp 0.07 near -> ~1 far,
+    ramp pulse absent at all distances shown).
+  - BEM T (composite ref = SH mode-sum + validated tipsv PSV-T,
+    generic azimuths): anti-correlated (median corr -0.55), amp
+    0.5-2.4 — dominated by the same missing quasi-statics.
+  => the scattered-field formulation (rung C) target is now
+  precisely: restore the shallow-source quasi-static channel on all
+  components.
+  - SEM: unusable for Z/R at ULP fluid-core (broken spheroidal
+    modes); toroidal healthy but inseparable in projections.
 
 ## Appendix: SPECFEM3D_GLOBE as a ULP reference — protocol findings
 (2026-07-11, uniform3 campaign debugging)
