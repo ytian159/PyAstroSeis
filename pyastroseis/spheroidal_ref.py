@@ -420,7 +420,9 @@ def forced_surface(l, w, model, r0, jump, l_switch=None):
         shell_only = l >= L_SERIES
     else:
         shell_only = l > l_switch
-    zref = a if (l_switch is None and l >= L_SERIES) else None
+    # scaled-series basis whenever raw Bessel would under/overflow,
+    # regardless of how shell_only was selected
+    zref = a if (shell_only and l >= L_SERIES) else None
 
     Ya = _shell_matrix(l, w, a, rho_s, lam_s, mu_s, zref)
     Y0 = _shell_matrix(l, w, r0, rho_s, lam_s, mu_s, zref)

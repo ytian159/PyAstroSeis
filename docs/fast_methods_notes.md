@@ -264,3 +264,53 @@ Consequences:
   anchor for the rung-C scattered-field prototype, whose priority is
   now driven by the mrr hump / mrt-Z deficit and interior sources,
   NOT by the void quasi-static channel.
+
+## 9. Rung C outcome: scattered-field formulation implemented;
+## the quasi-static deficit is a DYNAMIC-RANGE limitation (2026-07-16)
+
+Implemented (PyAstroSeis multilayer): analytic incident-traction
+kernel source_traction.t0eM (hand term-algebra derivation CROSS-
+VALIDATED against an independent sympy derivation to 1.2e-14 and
+against FD of u0eM to 1.5e-11); scattered-field RHS
+layered.scattered_solid_layer_source (weak -int G t_inc over the
+source region's boundary, node-level t_inc on distance-adaptively
+subdivided panels via mesh.refine_faces; other-region coupling
+corrections via assembled blocks x u_inc; run_bem ARB_SCATTERED=1,
+strict no-op off; receiver add-back u_total = u_sc + u_inc). The
+discrete Somigliana identity A u_inc = u_inc - S_w t_inc holds to
+3e-4 (vs 2.5e-3 term size) — the implementation is correct.
+
+RESULT: the 50-km quasi-static channel is NOT recovered (full
+corefluid rerun, wf_R_rungC_mrt.png) — both formulations converge to
+the same answer. Root cause established by an exact-trace probe
+(homog ball, 50-km mrt, exact solution from mini-tipsv/mode-sum
+machinery evaluated at the face incenters):
+  * cond(A) = 12 at k=20 (no near-null pathology; k <= ~6 is the
+    known rigid-amplified zone);
+  * consistency |A u_ex - u_inc|/|u_inc| = 3.0-3.3% for k >= 20,
+    solve error |x - u_ex|/|u_ex| = 3.4-3.8% GLOBAL;
+  * but max|u_ex| = 0.24 (epicentral cap) vs station-level R
+    ~ 2e-7..4e-6: the ABSOLUTE error floor (median |err| ~ 3e-6)
+    sits exactly at the far-field plateau amplitude -> station R
+    errors 0.9-1.5 (the computed far field is essentially devoid of
+    the plateau);
+  * epicentral-cap refinement hmin 20 -> 10 -> 5 km: NO change;
+  * on-sphere uniform h/2 (n 2151 -> 8604): station errors
+    1.22 -> 1.04 median (order ~0.6, not 2) — h-refinement cannot
+    cross the ~5 orders needed.
+
+CONCLUSION: with P0 collocation panels, the shallow-source far-field
+quasi-static signal (1e-5 of the epicentral trace) is buried under
+the discretization-error floor of the near-field, REGARDLESS of the
+source formulation. Deep sources (637 km) are unaffected (contrast
+~1e2-3). The per-(l,m) spectral structure is what rescues DSM-class
+methods (O(1) dynamic range per harmonic). Viable cures, in order:
+  (A) the spectral SH route (rung A) — solves this by construction;
+  (B) high-order/Nystrom + curved panels (roadmap ladder item 3) —
+      must buy ~5 orders, i.e. spectral-class accuracy;
+  (C) accept and document: BEM ULP shallow-source verdicts are valid
+      for the propagating band only; quasi-static channels need the
+      analytic references (mini-tipsv / toroidal mode-sum, both now
+      in the repo).
+The slow (order ~0.6) convergence of the consistency error is noted
+as an open sub-question (hanging-node pairs / self-term accuracy).
