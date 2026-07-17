@@ -124,3 +124,52 @@ def faces_from_vertices(V, Tri):
     ic = A + dis[:, None] * bivec
 
     return Faces(A=A, B=B, C=C, nvec=vn, ic=ic, area=area, r=r, a=a, b=b, c=c)
+
+
+def refine_faces(faces, levels):
+    """Flat midpoint subdivision of selected panels: levels (N,) int
+    array of per-face subdivision depths (0 = keep). Children lie in
+    the parent plane and inherit its normal (the BEM boundary is the
+    flat-panel surface, so no reprojection). Returns (Faces, parent)
+    with parent (M,) mapping each child to its source face index."""
+    A, B, C = [], [], []
+    parent = []
+
+    def emit(a, b, c, lev, ip):
+        if lev <= 0:
+            A.append(a)
+            B.append(b)
+            C.append(c)
+            parent.append(ip)
+            return
+        ab, bc, ca = (a + b) / 2.0, (b + c) / 2.0, (c + a) / 2.0
+        emit(a, ab, ca, lev - 1, ip)
+        emit(ab, b, bc, lev - 1, ip)
+        emit(ca, bc, c, lev - 1, ip)
+        emit(ab, bc, ca, lev - 1, ip)
+
+    levels = np.asarray(levels, dtype=int)
+    for i in range(faces.n):
+        emit(faces.A[i], faces.B[i], faces.C[i], levels[i], i)
+    A = np.asarray(A)
+    B = np.asarray(B)
+    C = np.asarray(C)
+    parent = np.asarray(parent, dtype=int)
+
+    a = np.linalg.norm(B - C, axis=1)
+    b = np.linalg.norm(C - A, axis=1)
+    c = np.linalg.norm(B - A, axis=1)
+    s = (a + b + c) / 2.0
+    area = np.sqrt(np.maximum(s * (s - a) * (s - b) * (s - c), 0.0))
+    r = area / s
+    vab = (B - A) / np.linalg.norm(B - A, axis=1)[:, None]
+    vac = (C - A) / np.linalg.norm(C - A, axis=1)[:, None]
+    cost = np.einsum("ij,ij->i", vab, vac)
+    sinhalft = np.sqrt((1.0 - cost) / 2.0)
+    dis = r / sinhalft
+    bivec = vab + vac
+    bivec = bivec / np.linalg.norm(bivec, axis=1)[:, None]
+    ic = A + dis[:, None] * bivec
+    nvec = faces.nvec[parent]
+    return Faces(A=A, B=B, C=C, nvec=nvec, ic=ic, area=area, r=r,
+                 a=a, b=b, c=c), parent

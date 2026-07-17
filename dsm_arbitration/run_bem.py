@@ -28,6 +28,7 @@ PKG = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, PKG)
 
 from pyastroseis.domains import Material, nested_shell_model  # noqa: E402
+from pyastroseis.layered import scattered_solid_layer_source  # noqa: E402
 from pyastroseis.elimination import ShellElimination          # noqa: E402
 from pyastroseis.layered import incident_solid_layer_source   # noqa: E402
 from pyastroseis.mesh import Faces                            # noqa: E402
@@ -101,7 +102,15 @@ def _worker(k):
     xs, ys, zs = _W["src_xyz"]
     B = np.empty((model.size, len(_W["mts"])), dtype=complex)
     mfd = None
+    if _W.get("scattered"):
+        # rung C: scattered-field source formulation
+        B[:, :] = scattered_solid_layer_source(
+            model, ifaces, _W["src_layer"], m, w, (xs, ys, zs),
+            _W["mts"], geom_opts=_W.get("geom_opts") or {},
+            refine_spec=_W.get("scat_refine", ((8.0, 2), (30.0, 1))))
     for col, M in enumerate(_W["mts"]):
+        if _W.get("scattered"):
+            break
         def field(faces):
             return u0eM(faces, w, m.rho, m.mu, m.lamda, xs, ys, zs,
                         m.Q, M, qp_fac=m.qp_fac,
@@ -136,6 +145,12 @@ def _worker(k):
     out = np.empty((len(_W["mts"]), len(st), 3), dtype=complex)
     for col in range(len(_W["mts"])):
         us = US[:, col]
+        if _W.get("scattered"):
+            # total = scattered + incident on the source-region side
+            ui = u0eM(surf.faces, w, m.rho, m.mu, m.lamda, xs, ys,
+                      zs, m.Q, _W["mts"][col], qp_fac=m.qp_fac,
+                      disp_ref_hz=m.disp_ref_hz)
+            us = us + ui
         for i, j in enumerate(st):
             out[col, i] = (us[j], us[n1 + j], us[2 * n1 + j])
     return k, out, time.time() - t0, mfd
@@ -172,6 +187,19 @@ def main():
         opts["near_tier"] = (float(edge), (int(deg), int(lev)))
         print("near-singular quadrature tier: dist/h < %s -> "
               "deg %s x 4^%s composite" % (edge, deg, lev))
+    scattered = os.environ.get("ARB_SCATTERED") == "1"
+    scat_refine = ((8.0, 2), (30.0, 1))
+    sr = os.environ.get("ARB_SCAT_REFINE")
+    if sr:
+        scat_refine = tuple(
+            (float(p.split(":")[0]), int(p.split(":")[1]))
+            for p in sr.split(","))
+    if scattered:
+        if os.environ.get("ARB_MFIT_LMAX"):
+            raise ValueError("ARB_SCATTERED and ARB_MFIT_LMAX are "
+                             "mutually exclusive")
+        print("rung C: SCATTERED-FIELD source formulation, refine %s"
+              % (scat_refine,), flush=True)
     model, ifaces = nested_shell_model(faces_list, mats, w0, **opts)
     use_elim = os.environ.get("ARB_ELIM", "auto")
     elim = None
@@ -227,12 +255,16 @@ def main():
                  mfit.gram_cond, time.time() - t0m), flush=True)
 
     st_faces = [st["face"] for st in man["stations"]]
-    _W.update(dict(model=model, ifaces=ifaces, mat_src=mats[src_layer],
+    _W.update(dict(scattered=scattered, scat_refine=scat_refine, geom_opts=opts, model=model, ifaces=ifaces, mat_src=mats[src_layer],
                    src_layer=src_layer, df=df, omegai=omegai, mts=mts,
                    src_xyz=src_xyz, st_faces=st_faces, elim=elim,
                    mfit=mfit))
 
     ks = list(range(1, imax + 1))
+    kset = os.environ.get("ARB_KSET")
+    if kset:
+        ks = [int(x) for x in kset.split(",")]
+        print("ARB_KSET: computing only k in %s" % ks, flush=True)
     u = np.zeros((len(mts), len(st_faces), 3, imax + 1), dtype=complex)
     mf_diag = (np.zeros((len(mts), 3, imax + 1))
                if mfit is not None else None)

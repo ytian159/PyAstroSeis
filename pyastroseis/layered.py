@@ -204,3 +204,131 @@ def build_layered_model(cfg, qp_mode="physical", faces_list=None,
     w0 = 2.0 * np.pi * float(cfg["f0"])
     model, ifaces = nested_shell_model(faces_list, mats, w0, **opts)
     return model, ifaces, faces_list
+
+
+def scattered_solid_layer_source(model, ifaces, layer, mat, w,
+                                 src_xyz, mts, geom_opts=None,
+                                 refine_spec=((8.0, 2), (30.0, 1)),
+                                 chunk=400):
+    """RHS matrix B (model.size, len(mts)) for the SCATTERED-FIELD
+    source formulation (rung C, docs/fast_methods_notes.md section 7).
+
+    Unknowns are reinterpreted as the SCATTERED field within the
+    source region (and on its boundary interfaces) and the total
+    field elsewhere:
+
+      * rows OWNED by the source region (its representation equation
+        collocated on its boundaries):
+            B = - sum_{bnd} int_bnd G(x, y) t_inc,out(y) dS(y)
+        with t_inc the ANALYTIC incident traction (source_traction
+        .t0eM) w.r.t. the region-outward normal, evaluated on
+        distance-adaptively subdivided panels (node-level sampling;
+        centroid sampling recreates the small-|kd| disease),
+      * rows of OTHER regions whose equations couple to a source-
+        region boundary displacement unknown:
+            B -= [assembled block] @ u_inc(interface)
+        (those unknowns are now scattered-field values; the other
+        region needs the total field),
+      * everything else: 0. Receivers must add u_inc back
+        (total = scattered + incident on the source-region side).
+
+    refine_spec: ((dist_over_h, levels), ...) sorted inner-first;
+    panels with |ic - src| < dist_over_h * h get that subdivision.
+    """
+    import numpy as np
+
+    from .assembly import Geometry, cal_G_st
+    from .mesh import Faces, refine_faces
+    from .source import u0eM
+    from .source_traction import t0eM
+
+    geom_opts = dict(geom_opts or {})
+    # the refined integration panels bypass the self-block machinery
+    # (collocation points sit ON parent panels): a near-singular
+    # composite tier is REQUIRED, not optional (rung-4b machinery)
+    geom_opts.setdefault("near_tier", (1.5, (10, 2)))
+    name = "layer%d" % layer
+    region = next(r for r in model.regions if r.name == name)
+    xs, ys, zs = src_xyz
+    src = np.array([xs, ys, zs], dtype=float)
+    ncols = len(mts)
+    B = np.zeros((model.size, ncols), dtype=complex)
+
+    # ---- weak -int G t_inc over the source region's boundary ----
+    for ifc, sc in region.interfaces:
+        if ifc.condition not in ("free", "fluid_solid"):
+            raise NotImplementedError(
+                "scattered source next to %s interface"
+                % ifc.condition)
+        fc0 = ifc.faces
+        dist = np.linalg.norm(fc0.ic - src[None, :], axis=1)
+        h = np.maximum.reduce([fc0.a, fc0.b, fc0.c])
+        lev = np.zeros(fc0.n, dtype=int)
+        for d_over_h, lv in sorted(refine_spec, key=lambda t: t[0]):
+            m = (dist < d_over_h * h) & (lev == 0)
+            lev[m] = lv
+        fref, _ = refine_faces(fc0, lev)
+        # incident traction at sub-panel incenters, region-outward
+        tvec = np.empty((3 * fref.n, ncols), dtype=complex)
+        for col, M in enumerate(mts):
+            t = t0eM(fref.ic, sc * fref.nvec, w, mat.rho, mat.mu,
+                     mat.lamda, xs, ys, zs, mat.Q, M,
+                     qp_fac=mat.qp_fac, disp_ref_hz=mat.disp_ref_hz)
+            tvec[:fref.n, col] = t[:, 0]
+            tvec[fref.n:2 * fref.n, col] = t[:, 1]
+            tvec[2 * fref.n:, col] = t[:, 2]
+        for ifr, sr in region.interfaces:
+            row = ("u", ifr)
+            if row not in model._slices:
+                continue
+            if model._solid_of[ifr][0] is not region:
+                continue
+            fr = model._oriented[(ifr, sr)]
+            acc = np.zeros((3 * fr.n, ncols), dtype=complex)
+            for j0 in range(0, fref.n, chunk):
+                j1 = min(j0 + chunk, fref.n)
+                sub = Faces(A=fref.A[j0:j1], B=fref.B[j0:j1],
+                            C=fref.C[j0:j1], nvec=fref.nvec[j0:j1],
+                            ic=fref.ic[j0:j1], area=fref.area[j0:j1],
+                            r=fref.r[j0:j1], a=fref.a[j0:j1],
+                            b=fref.b[j0:j1], c=fref.c[j0:j1])
+                geo = Geometry(sub, **geom_opts)
+                Gb = cal_G_st(fr, sub, w, mat.lamda, mat.mu, mat.rho,
+                              mat.Q, qp_fac=mat.qp_fac, geom=geo,
+                              disp_ref_hz=mat.disp_ref_hz)
+                idx = np.concatenate([np.arange(j0, j1),
+                                      fref.n + np.arange(j0, j1),
+                                      2 * fref.n + np.arange(j0, j1)])
+                acc += Gb @ tvec[idx, :]
+            B[model._slices[row], :] -= acc
+
+    # ---- corrections: other regions coupling to boundary u ----
+    bnd_u_cols = set()
+    for ifc, sc in region.interfaces:
+        if ("u", ifc) in model._slices:
+            bnd_u_cols.add(("u", ifc))
+
+    def _row_owned_by_source(row):
+        kind, ifr = row
+        if kind == "u" and ifr in model._solid_of:
+            return model._solid_of[ifr][0] is region
+        if kind == "t":
+            return model._solid_b_of[ifr][0] is region
+        return False              # p / un rows are fluid-owned
+
+    def skip(row, col):
+        return not (col in bnd_u_cols
+                    and not _row_owned_by_source(row))
+
+    blocks = model.assemble_blocks(w, skip=skip)
+    u_inc_cache = {}
+    for (row, col), blk in blocks.items():
+        ifc = col[1]
+        if col not in u_inc_cache:
+            u_inc_cache[col] = np.stack([
+                u0eM(ifc.faces, w, mat.rho, mat.mu, mat.lamda,
+                     xs, ys, zs, mat.Q, M, qp_fac=mat.qp_fac,
+                     disp_ref_hz=mat.disp_ref_hz)
+                for M in mts], axis=1)
+        B[model._slices[row], :] -= blk @ u_inc_cache[col]
+    return B
