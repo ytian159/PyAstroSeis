@@ -25,12 +25,13 @@ import synthesize_compare as sc                     # noqa: E402
 
 man = json.load(open(os.path.join(ROOT, "manifest.json")))
 z = np.load(NPZ)
-isrc = [str(s) for s in z["sources"]].index(SOURCE)
+FIELD = os.environ.get("ARB_FIELD", "u")   # e.g. u_psv for the
+isrc = [str(s) for s in z["sources"]].index(SOURCE)  # spectral npz
 ks = np.arange(KLO, KHI + 1)
 
 best = None
 for conj in (False, True):
-    u = np.conj(z["u"][isrc]) if conj else z["u"][isrc]
+    u = np.conj(z[FIELD][isrc]) if conj else z[FIELD][isrc]
     tot = []
     rows = []
     for i, st in enumerate(man["stations"]):

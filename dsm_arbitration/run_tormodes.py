@@ -4,6 +4,7 @@ bem-npz layout. Ball (single-layer models) or annulus (fluid-core
 models; SH lives in the outer solid shell only).
 
 usage: run_tormodes.py <root> <model> [Q or 'el'] [q_sign] [fmax_mHz]
+                       [lmax] [n_keep]
 Writes <root>/tormodes_<model>[_el].npz with u (nsrc, nst, 3, imax+1).
 """
 import json
@@ -27,6 +28,8 @@ QARG = sys.argv[3] if len(sys.argv) > 3 else "50"
 Q = None if QARG == "el" else float(QARG)
 Q_SIGN = float(sys.argv[4]) if len(sys.argv) > 4 else -1.0
 FMAX = (float(sys.argv[5]) if len(sys.argv) > 5 else 10.0) * 1e-3
+LMAX = int(sys.argv[6]) if len(sys.argv) > 6 else None
+N_KEEP = int(sys.argv[7]) if len(sys.argv) > 7 else 8
 
 man = json.load(open(os.path.join(ROOT, "manifest.json")))
 layers = man["models"][MODEL]
@@ -69,7 +72,8 @@ print("tormodes %s: vs %.0f rho %.0f a %.0f b %s, r0 depth %.0f km, "
 u = np.zeros((len(mts), len(st_dirs), 3, imax + 1), dtype=complex)
 for col, M in enumerate(mts):
     spec = toroidal_mode_spectra(model, src_xyz, M, w_arr, st_dirs,
-                                 Q=Q, q_sign=Q_SIGN, fmax=FMAX)
+                                 Q=Q, q_sign=Q_SIGN, fmax=FMAX,
+                                 lmax=LMAX, n_keep=N_KEEP)
     u[col, :, :, 1:] = spec
     print("  %s: max |u| = %.3e m" % (src_names[col],
                                       np.abs(spec).max()), flush=True)

@@ -314,3 +314,10 @@ methods (O(1) dynamic range per harmonic). Viable cures, in order:
       in the repo).
 The slow (order ~0.6) convergence of the consistency error is noted
 as an open sub-question (hanging-node pairs / self-term accuracy).
+
+DECISION (2026-07-16): (C) is ADOPTED as the standing policy — BEM
+ULP shallow-source verdicts are quoted for the propagating band only,
+with the analytic references covering the quasi-static channels — and
+(A) is the build target: see docs/rung_a_spectral.md for the rung-A
+design (N-layer per-(l,m) spectral sweep, both parities, direct
+forced toroidal solve replacing the mode-sum machinery).
