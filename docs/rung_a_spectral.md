@@ -228,3 +228,43 @@ Findings, in discovery order:
    the mrt-R plateau IS physical (now 1.000 +- 0.005 vs tipsv),
    but tipsv mrr-R below k~60 at shallow depth remains unarbitrated
    (needs a third route; SEM fluid-core is broken at ULP).
+   UPDATE (A2 ladder, 2026-07-17): the SAME O(1) low-k mrr-R split
+   reproduces on the ALL-SOLID gprem staircases (rel 1.15 at
+   k=20-59, identical for 3/5/9 layers, deep 1200-km-radius source)
+   and VANISHES on the homogeneous ball with the same source
+   (0.035) — so the mechanism is NOT the fluid core: it is
+   layered-model-specific, m=0-specific (mrt-R is 1-4% there),
+   layer-count-independent. Our l=1 m=0 unit responses show no
+   near-null amplification on layered stacks (same order as homog),
+   so it is a genuine formulation-level split between DSM tipsv and
+   the analytic uniform-layer route on that channel. Third-route
+   arbitration (regularized-force shooting, or exact_modes-class
+   forced construction) remains the settle path.
+
+## 8. A2: N-layer staircase acceptance (2026-07-17) — PASSED
+
+run_spectral.py on the gprem ladder (all-solid graded-PREM
+staircases, source r0 = 1200 km INSIDE the core ball — exercises
+the deep-source split-innermost-layer path; Q = 50 causal 1-Hz;
+the 'c' models, where DSM ran the exact staircase constants; the
+manifest "elastic" label is stale — the .inf zones carry Qmu=50).
+9-layer gprem_s8c run: 86 s wall (32 procs shared).
+
+* gprem_s8c vs DSM tipsv per-k complex, k=20..138:
+  mrt median rel 0.0069 (Z rel 0.001-0.011, ratios 0.990-1.003;
+  R ratios 1.00-1.06) — essentially exact; mrr median rel 0.100
+  (Z rel 0.001-0.057, ratios 0.965-1.028). For context the BEM
+  ladder verdict on this exact leg was 0.593 median (model-class
+  error at the ULP band): the spectral solver removes it entirely.
+* T composite (tipsv PSV-T + tish SH-T): rel 0.11-0.16, ratios
+  1.01-1.15 — sign-consistent with the KNOWN tish multi-zone
+  toroidal bias (peaks 4-7 percent low vs exact modes).
+* Ladder controls: s2c / s4c / s8c band tables are IDENTICAL to a
+  few percent — no per-interface error accumulation in either code.
+* Homog control (same deep source): all channels 0.1-4.8 percent at
+  k <= 99; band-top (k=100-138) degrades to 7-12 percent on homog
+  and 15-23 percent on the staircases (mrr-R ratio 1.10-1.17,
+  mrt-R ratio 1.00 = phase-type), layer-independent — a deep-source
+  band-top disagreement, unarbitrated (corefluid at 50-km depth
+  showed 1-3 percent there; not blocking: the campaign band centre
+  is clean).

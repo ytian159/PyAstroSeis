@@ -324,9 +324,16 @@ def _tor_entries(mats, l, r0, isrc, tol_prune):
     return ents, bottom_r
 
 
-def toroidal_unit(l, w, ents, bottom_r, jumpW):
+def toroidal_unit(l, w, ents, bottom_r, jumpW, bc_rhs=(0.0, 0.0),
+                  full=False):
     """Toroidal forced solve; jump [W] = jumpW, [T] = 0 at the split
-    interface; returns W at the outer surface."""
+    interface; returns W at the outer surface.
+
+    bc_rhs: inhomogeneous values for the (bottom T-row, surface
+    T-row) — used by the first-order TFE relief solves (rung A3);
+    zeros = unchanged behaviour. full=True returns
+    (W_surface, W_bottom) with W_bottom the displacement at the
+    run-bottom radius (None when there is no bottom row)."""
     scaled = l >= L_SERIES
     Yb, Yt, ncol = [], [], []
     for i, e in enumerate(ents):
@@ -344,6 +351,7 @@ def toroidal_unit(l, w, ents, bottom_r, jumpW):
     row = 0
     if bottom_r is not None:
         A[row, 0:ofs[1]] = Yb[0][1]         # T = 0 at the run bottom
+        b[row] = bc_rhs[0]
         row += 1
     for i in range(len(ents) - 1):
         clo = slice(ofs[i], ofs[i + 1])
@@ -355,9 +363,14 @@ def toroidal_unit(l, w, ents, bottom_r, jumpW):
         row += 2
     ctop = slice(ofs[-2], ofs[-1])
     A[row, ctop] = Yt[-1][1]                # surface T = 0
+    b[row] = b[row] + bc_rhs[1]
     assert row + 1 == n, "row/column count mismatch"
     x = _solve_scaled(A, b)
-    return Yt[-1][0] @ x[ofs[-2]:ofs[-1]]
+    Wa = Yt[-1][0] @ x[ofs[-2]:ofs[-1]]
+    if not full:
+        return Wa
+    Wb = (Yb[0][0] @ x[0:ofs[1]]) if bottom_r is not None else None
+    return Wa, Wb
 
 
 # ----------------------------------------------------------------

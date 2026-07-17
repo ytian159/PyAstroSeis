@@ -321,3 +321,45 @@ with the analytic references covering the quasi-static channels — and
 (A) is the build target: see docs/rung_a_spectral.md for the rung-A
 design (N-layer per-(l,m) spectral sweep, both parities, direct
 forced toroidal solve replacing the mode-sum machinery).
+
+## 10. BEM Z-amplitude-excess hunt (2026-07-17): verdict REVISED
+
+Against the validated spectral reference (per-k complex, 50-km
+corefluid, dsm_arbitration_u3), the recorded "BEM Z amp 1.2-1.5x
+high growing with distance" is SUPERSEDED:
+
+* mrr-Z is CORRECT: band medians 0.93-1.03 per station, 3-component
+  vector rms ratio 0.96-1.05 everywhere — no excess.
+* The excess is mrt-ONLY: all-band station medians 1.12-1.44
+  (median ~1.27), FLAT in distance (fit slope 0.006/100 deg; the
+  old "growth" was the two near-nodal endpoint stations where
+  spectral mrt-Z is smallest). It is ADDITIVE, not multiplicative:
+  |ratio| by reference-amplitude quartile = 1.04 on resonance peaks
+  vs 1.35 in the troughs (BEM matches the peaks to ~4 percent), and
+  the cross-station median log-ratio is periodic in k at the
+  fundamental-mode spacing (23.8 bins ~ 9.1e-5 Hz) — contamination
+  organized on the mode comb. Phase stays clean (-0.5..-12 deg).
+* Simultaneously BEM mrt R and T are LOW (R medians 1.03/0.78/0.87
+  per band; T 0.6-0.7): the defect repartitions energy INTO Z and
+  OUT of R/T in the propagating band.
+* Both sources share a small global eigenfrequency offset,
+  -0.6..-1.1 bins (2.5-4 uHz, mesh dispersion): it fully explains
+  the mrr per-k scatter but NOT the mrt median excess.
+* RULED OUT by measurement: mrr->mrt source cross-talk, receiver
+  projection leakage, quasi-static noise floor, convention/df/
+  omegai mismatches, any distance-growing mechanism.
+* Ranked mechanisms: (1) mesh-symmetry-breaking scattering into the
+  weak m=+-1 spheroidal-Z channel (mrt-Z is ~30x weaker than mrr-Z,
+  so facet-scale scattering shows only there; predicts the additive
+  trough-fill on the mode comb and the Z-up/R-T-down repartition);
+  (2) source-cap representation error of the m=+-1 couple at
+  d/h ~ 1 (not separable from (1) with current data). The u3S
+  scattered-formulation mrt leg is broken/unconverged (corr 0.1-0.8
+  vs everything) and cannot discriminate; its mrr leg shows
+  amplitude IS formulation-sensitive at the ~10 percent level (u3S
+  mrr 6-23 percent above u3, same phase).
+* DISCRIMINATORS (queued): healthy scattered-formulation mrt rerun
+  (~1 shared-node-hour, ARB_KSET subset); one h/2 surface-mesh mrt
+  leg (node-hours — needs a cost decision); azimuthal station or
+  rotated-source coverage; time-domain window check (mechanism (1)
+  predicts inter-arrival/coda fill with correct R1 amplitudes).
