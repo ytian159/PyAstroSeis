@@ -169,11 +169,19 @@ def _solve_scaled(A, b):
 # ----------------------------------------------------------------
 # spheroidal forced solve for one (l, w)
 # ----------------------------------------------------------------
-def spheroidal_unit(l, w, ents, jump):
+def spheroidal_unit(l, w, ents, jump, iface_rhs=None, bc_rhs=None,
+                    full=False):
     """Solve the kept stack with source jump 4-vector at the split
     interface; returns (U, V) at the outer surface. Entry 0 always
     uses only its regular (j) columns with no bottom condition
-    (centre ball regularity, or the pruned invisible bottom)."""
+    (centre ball regularity, or the pruned invisible bottom).
+
+    Rung-A3b extensions (no-ops by default): iface_rhs = {i: vec}
+    adds an inhomogeneity to the interface rows between ents[i] and
+    ents[i+1] (welded 4-vector; fluid-adjacent interfaces not yet
+    supported); bc_rhs = (R_val, S_val) inhomogeneous free-surface
+    rows; full=True additionally returns a dict with the two-sided
+    interface y-vectors and the surface y-vector."""
     scaled = l >= L_SERIES
     Yb, Yt, ncol = [], [], []
     for i, e in enumerate(ents):
@@ -200,8 +208,12 @@ def spheroidal_unit(l, w, ents, jump):
             A[row:row + 4, clo] = -Ylo
             if lo["src_top"]:
                 b[row:row + 4] = jump
+            if iface_rhs and i in iface_rhs:
+                b[row:row + 4] = b[row:row + 4] + iface_rhs[i]
             row += 4
         elif ls and not hs:                 # solid below, fluid above
+            assert not (iface_rhs and i in iface_rhs), \
+                "iface_rhs on fluid-adjacent interfaces: A3b stage 3"
             A[row, chi] = Yhi[0]
             A[row, clo] = -Ylo[0]           # u_r
             A[row + 1, chi] = Yhi[1]
@@ -222,10 +234,39 @@ def spheroidal_unit(l, w, ents, jump):
     ctop = slice(ofs[-2], ofs[-1])
     A[row, ctop] = Yt[-1][2]                # surface s_rr = 0
     A[row + 1, ctop] = Yt[-1][3]            # surface s_rt = 0
+    if bc_rhs is not None:
+        b[row] = b[row] + bc_rhs[0]
+        b[row + 1] = b[row + 1] + bc_rhs[1]
     assert row + 2 == n, "row/column count mismatch"
     x = _solve_scaled(A, b)
     cu = x[ofs[-2]:ofs[-1]]
-    return Yt[-1][0] @ cu, Yt[-1][1] @ cu
+    Ua, Va = Yt[-1][0] @ cu, Yt[-1][1] @ cu
+    if not full:
+        return Ua, Va
+
+    def _yv(e, i0, r):
+        kinds = ("j",) if i0 == 0 else ("j", "y")
+        zr = e["r_top"] if scaled else None
+        fn = _Ysolid if e["mat"]["solid"] else _Yfluid
+        return fn(l, w, r, e["mat"], kinds, zr) \
+            @ x[ofs[i0]:ofs[i0 + 1]]
+
+    def _ypv(e, i0, r, h=1.0):
+        return (_yv(e, i0, r + h) - _yv(e, i0, r - h)) / (2.0 * h)
+
+    # radial derivatives via basis FD on the SOLVED coefficients —
+    # no Y'Y^-1 inversion (its conditioning costs ~1e-3 relative on
+    # derivatives at l >= L_SERIES; measured 2026-07-17)
+    info = {"surface": Yt[-1] @ cu,
+            "surface_p": _ypv(ents[-1], len(ents) - 1,
+                              ents[-1]["r_top"])}
+    for i in range(len(ents) - 1):
+        ri = ents[i]["r_top"]
+        info[i] = (Yt[i] @ x[ofs[i]:ofs[i + 1]],
+                   Yb[i + 1] @ x[ofs[i + 1]:ofs[i + 2]],
+                   _ypv(ents[i], i, ri),
+                   _ypv(ents[i + 1], i + 1, ri))
+    return Ua, Va, info
 
 
 # ----------------------------------------------------------------
@@ -325,15 +366,18 @@ def _tor_entries(mats, l, r0, isrc, tol_prune):
 
 
 def toroidal_unit(l, w, ents, bottom_r, jumpW, bc_rhs=(0.0, 0.0),
-                  full=False):
+                  full=False, iface_rhs=None):
     """Toroidal forced solve; jump [W] = jumpW, [T] = 0 at the split
     interface; returns W at the outer surface.
 
     bc_rhs: inhomogeneous values for the (bottom T-row, surface
     T-row) — used by the first-order TFE relief solves (rung A3);
-    zeros = unchanged behaviour. full=True returns
-    (W_surface, W_bottom) with W_bottom the displacement at the
-    run-bottom radius (None when there is no bottom row)."""
+    zeros = unchanged behaviour. iface_rhs = {i: (dW, dT)} adds an
+    inhomogeneity to the welded interface rows between ents[i] and
+    ents[i+1]. full=True returns (W_surface, W_bottom, info) with
+    W_bottom the displacement at the run-bottom radius (None when
+    there is no bottom row) and info the two-sided interface
+    (W, T) vectors plus the surface (W, T)."""
     scaled = l >= L_SERIES
     Yb, Yt, ncol = [], [], []
     for i, e in enumerate(ents):
@@ -360,6 +404,9 @@ def toroidal_unit(l, w, ents, bottom_r, jumpW, bc_rhs=(0.0, 0.0),
         A[row:row + 2, clo] = -Yt[i]
         if ents[i]["src_top"]:
             b[row] = jumpW
+        if iface_rhs and i in iface_rhs:
+            b[row:row + 2] = b[row:row + 2] + np.asarray(
+                iface_rhs[i], dtype=complex)
         row += 2
     ctop = slice(ofs[-2], ofs[-1])
     A[row, ctop] = Yt[-1][1]                # surface T = 0
@@ -370,7 +417,11 @@ def toroidal_unit(l, w, ents, bottom_r, jumpW, bc_rhs=(0.0, 0.0),
     if not full:
         return Wa
     Wb = (Yb[0][0] @ x[0:ofs[1]]) if bottom_r is not None else None
-    return Wa, Wb
+    info = {"surface": Yt[-1] @ x[ofs[-2]:ofs[-1]]}
+    for i in range(len(ents) - 1):
+        info[i] = (Yt[i] @ x[ofs[i]:ofs[i + 1]],
+                   Yb[i + 1] @ x[ofs[i + 1]:ofs[i + 2]])
+    return Wa, Wb, info
 
 
 # ----------------------------------------------------------------

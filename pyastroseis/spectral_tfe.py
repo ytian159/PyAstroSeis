@@ -1,42 +1,38 @@
-"""Rung A3 MVP: first-order boundary relief (TFE class) for the
-TOROIDAL part of the spectral sweep (docs/rung_a3_tfe.md).
+"""Rung A3/A3b: first-order boundary relief (TFE class) for the
+spectral sweep (docs/rung_a3_tfe.md).
 
-Relief r = d + h(theta, phi), h = sum h_LM Y_LM, on the SH-free
-boundaries of the outermost solid run (outer surface r = a and/or
-the run bottom r = b). First-order transferred condition at r = d
-for target (l', m' = m + M):
+A3 MVP (validated 2026-07-17): toroidal [SH->SH] relief on SH-free
+boundaries. A3b (this stage): full welded-interface and free-surface
+relief for BOTH parities including the parity-CONVERSION blocks —
+du^PSV = [PSV->PSV] + [SH->PSV], du^SH = [SH->SH] + [PSV->SH]
+(the transferred data are built from the full unperturbed field, and
+their basis projections mix parities for L >= 1 relief).
 
-    T1_{l'm'}(d) = - sum_l h_LM [ dTdr0_l I1(l',l)
-                                  - (2 mu W0_l / d^2) I2(l',l) ]
+Transfer conditions (docs section 4): at a welded interface r = d
+with relief h = h_LM Y_LM,
+    [u1] = -h [d/dr u0]
+    [t1] = -h [d/dr t0] + (1/d) [sigma0 . grad_1 h]
+(the radial part of the tilt vanishes on welds and free surfaces:
+(sigma.v)_r involves only the CONTINUOUS shear tractions S, T);
+at the free surface the single-sided versions apply, plus the
+receiver-advection term du_obs += h d/dr u0(a).
 
-with (free row: T0 = 0 -> W0' = W0/d)
-    dTdr0_l = W0_l ( mu (L_l - 2)/d^2 - rho w^2 ),
-    I1 = <C_l'm', Y_LM C_lm>          (gradient-Gaunt class),
-    I2 = <C_l'm', e(C_lm) . grad_1 Y_LM>,
-    e(C) = unit-sphere symmetric tangential gradient of C
-    (sigma_tang = 2 mu (W0/d) e(C); toroidal is equivoluminal).
-
-The angular integrals are evaluated NUMERICALLY (Gauss-Legendre in
-cos(theta), exact phi selection m' = m + M) with the SAME normalized
-C_lm conventions as toroidal_ref.toroidal_reconstruct (C orthonormal,
-f = 1/sqrt(l(l+1)), sgn = (-1)^|m| for m < 0), so convention slips
-cancel against the reconstruction (momentfit property). They are
-k-independent and cached per (L, M, m).
-
-PARITY COMPLETENESS: relief couples parities, but the unperturbed
-operator is parity-diagonal, so du^SH at first order is closed under
-the toroidal projection implemented here (the spheroidal projection
-feeds du^PSV only — rung A3b).
-
-Gates: tests/test_spectral_tfe.py (Y00 == exact radius change;
-selection rules; closed-form I1 cross-check) + sympy exact-integral
-cross-validation under the pytorch module env.
+All angular couplings are evaluated numerically on a Gauss-Legendre
+theta grid in the exact code conventions (fully-normalized Ybar,
+V/S on the UNNORMALIZED gradient, W/T on the ORTHONORMAL C =
+rhat x grad1 Y / sqrt(L)), with the exact |l'-l| <= L triangle mask;
+they are k-independent and cached. Cross-validation: closed forms at
+L=0, selection rules, and sympy exact surface integrals
+(validation/tfe_sympy_check.py — dual-derivation house pattern).
 """
 
 import numpy as np
 
-from .spectral import (TOL_PRUNE, _mats_at, _tor_entries, make_stack,
+from .spectral import (TOL_PRUNE, _entries, _icut, _mats_at,
+                       _tor_entries, make_stack, spheroidal_unit,
                        toroidal_unit)
+from .spheroidal_ref import (L_SERIES, source_jumps, spheroidal_pole,
+                             spheroidal_reconstruct, system_matrix)
 from .toroidal_modes import _pole_coupling
 from .toroidal_ref import source_frame, toroidal_reconstruct
 
@@ -83,9 +79,47 @@ def _plm_grid(m, lmax, ct, st):
     return P, dP, d2P
 
 
-class _AngCache:
-    """Cached I1/I2 coupling integrals for one relief harmonic
-    (L, M) and one source order m: I1[lp, l], I2[lp, l]."""
+def _shapes(m, lmax, ct, st):
+    """Angular shape functions per l at the grid, order m: scalar Y;
+    unnormalized-gradient B = grad1 Y; orthonormal toroidal C; and
+    the unit-sphere symmetric tangential strains 2e(B), 2e(C)
+    (components tt, pp, tp). All theta-parts (phi factors handled
+    analytically by m-selection)."""
+    P, dP, d2P = _plm_grid(m, lmax, ct, st)
+    sgn = 1.0 if m >= 0 else (-1.0) ** abs(m)
+    Y = sgn * P
+    dY = sgn * dP
+    d2Y = sgn * d2P
+    ll = np.arange(lmax + 1)
+    f = np.zeros(lmax + 1)
+    f[1:] = 1.0 / np.sqrt(ll[1:] * (ll[1:] + 1.0))
+    Bt, Bp = dY, 1j * m * Y / st
+    Ct = -1j * m * f[:, None] * Y / st
+    Cp = f[:, None] * dY
+    cot = ct / st
+
+    def strain2(vt, vp, dvt, dvp):
+        e_tt = 2.0 * dvt
+        e_pp = 2.0 * (1j * m / st * vp + cot * vt)
+        e_tp = dvp - cot * vp + 1j * m / st * vt
+        return e_tt, e_pp, e_tp
+
+    dBt = d2Y
+    dBp = 1j * m * (dY / st - Y * cot / st)
+    dCt = -1j * m * f[:, None] * (dY / st - Y * cot / st)
+    dCp = f[:, None] * d2Y
+    eB = strain2(Bt, Bp, dBt, dBp)
+    eC = strain2(Ct, Cp, dCt, dCp)
+    return dict(Y=Y, Bt=Bt, Bp=Bp, Ct=Ct, Cp=Cp, eB=eB, eC=eC,
+                L=ll * (ll + 1.0))
+
+
+class ReliefCouplings:
+    """All k-independent angular coupling matrices for one relief
+    harmonic (L, M) and one source order m (target m' = m + M),
+    (lmax+1, lmax+1), exact triangle mask. Naming: G* = value
+    transfer, H* = tilt; suffix _u/_v/_w = target row family
+    (Y' rhat / grad1 Y'/L' / C')."""
 
     def __init__(self, L, M, m, lmax, ngl=None):
         self.L, self.M, self.m, self.lmax = L, M, m, lmax
@@ -94,69 +128,378 @@ class _AngCache:
             ngl = 2 * lmax + 2 * L + 60
         x, wgt = np.polynomial.legendre.leggauss(ngl)
         ct, st = x, np.sqrt(1.0 - x * x)
-        sgn = 1.0 if m >= 0 else (-1.0) ** abs(m)
-        sgp = 1.0 if mp >= 0 else (-1.0) ** abs(mp)
-        sgL = 1.0 if M >= 0 else (-1.0) ** abs(M)
-        P, dP, d2P = _plm_grid(m, lmax, ct, st)
-        Pp, dPp, _ = _plm_grid(mp, lmax, ct, st)
-        PL, dPL, _ = _plm_grid(M, L, ct, st)
-        YL = sgL * PL[L]
-        dYL = sgL * dPL[L]
-        ll = np.arange(lmax + 1)
-        f = np.zeros(lmax + 1)
-        f[1:] = 1.0 / np.sqrt(ll[1:] * (ll[1:] + 1.0))
-        # source C_lm components and tangential strain e(C_lm)
-        Y = sgn * P
-        dY = sgn * dP
-        d2Y = sgn * d2P
-        Ct = -1j * m * f[:, None] * Y / st
-        Cp = f[:, None] * dY
-        dCt = -1j * m * f[:, None] * (dY / st - Y * ct / st ** 2)
-        dCp = f[:, None] * d2Y
-        ett = dCt
-        epp = 1j * m / st * Cp + ct / st * Ct
-        etp = 0.5 * (dCp - ct / st * Cp + 1j * m / st * Ct)
-        # target conj(C_l'm') components
-        Yp = sgp * Pp
-        dYp = sgp * dPp
-        Ctp_c = +1j * mp * f[:, None] * Yp / st      # conj
-        Cpp_c = f[:, None] * dYp
-        # I1[lp, l] = 2 pi int (C'* . C) Y_LM dx
-        I1 = 2.0 * np.pi * (
-            np.einsum('an,bn,n->ab', Ctp_c, Ct, YL * wgt)
-            + np.einsum('an,bn,n->ab', Cpp_c, Cp, YL * wgt))
-        # grad_1 Y_LM components
-        Gt = dYL
-        Gp = 1j * M * YL / st
-        # e(C) . grad1 Y_LM  (theta, phi components)
-        vt = ett * Gt + etp * Gp
-        vp = etp * Gt + epp * Gp
-        I2 = 2.0 * np.pi * (
-            np.einsum('an,bn,n->ab', Ctp_c, vt, wgt)
-            + np.einsum('an,bn,n->ab', Cpp_c, vp, wgt))
+        S = _shapes(m, lmax, ct, st)
+        Tg = _shapes(mp, lmax, ct, st)
+        R = _shapes(M, L, ct, st)
+        YL, GtL, GpL = R["Y"][L], R["Bt"][L], R["Bp"][L]
+        Lp = Tg["L"].copy()
+        Lp[0] = 1.0
+        w2 = 2.0 * np.pi * wgt
+
+        def dotV(at, ap, bt, bp, wf):
+            return (np.einsum('an,bn,n->ab', np.conj(at), bt, wf)
+                    + np.einsum('an,bn,n->ab', np.conj(ap), bp, wf))
+
+        def dotS(a, b, wf):
+            return np.einsum('an,bn,n->ab', np.conj(a), b, wf)
+
+        # value-transfer couplings
+        self.G0 = dotS(Tg["Y"], S["Y"], YL * w2)
+        self.GA_v = dotV(Tg["Bt"], Tg["Bp"], S["Bt"], S["Bp"],
+                         YL * w2) / Lp[:, None]
+        self.GA_w = dotV(Tg["Bt"], Tg["Bp"], S["Ct"], S["Cp"],
+                         YL * w2) / Lp[:, None]
+        self.GC_v = dotV(Tg["Ct"], Tg["Cp"], S["Bt"], S["Bp"],
+                         YL * w2)
+        self.GC_w = dotV(Tg["Ct"], Tg["Cp"], S["Ct"], S["Cp"],
+                         YL * w2)
+        # tilt couplings: v = grad1 Y_L = (GtL, GpL)
+        BdotG = S["Bt"] * GtL + S["Bp"] * GpL     # (l, n)
+        CdotG = S["Ct"] * GtL + S["Cp"] * GpL
+        self.H0_s = dotS(Tg["Y"], BdotG, w2)
+        self.H0_t = dotS(Tg["Y"], CdotG, w2)
+        self.Hiso_v = dotV(Tg["Bt"], Tg["Bp"],
+                           S["Y"] * GtL, S["Y"] * GpL,
+                           w2) / Lp[:, None]
+        self.Hiso_w = dotV(Tg["Ct"], Tg["Cp"],
+                           S["Y"] * GtL, S["Y"] * GpL, w2)
+
+        def tiltvec(e):
+            e_tt, e_pp, e_tp = e
+            return (e_tt * GtL + e_tp * GpL,
+                    e_tp * GtL + e_pp * GpL)
+
+        vBt, vBp = tiltvec(S["eB"])
+        vCt, vCp = tiltvec(S["eC"])
+        self.HV_v = dotV(Tg["Bt"], Tg["Bp"], vBt, vBp,
+                         w2) / Lp[:, None]
+        self.HV_w = dotV(Tg["Ct"], Tg["Cp"], vBt, vBp, w2)
+        self.HW_v = dotV(Tg["Bt"], Tg["Bp"], vCt, vCp,
+                         w2) / Lp[:, None]
+        self.HW_w = dotV(Tg["Ct"], Tg["Cp"], vCt, vCp, w2)
         lp_g, l_g = np.meshgrid(np.arange(lmax + 1),
                                 np.arange(lmax + 1), indexing='ij')
-        tri = np.abs(lp_g - l_g) <= L        # exact selection rule
-        I1[~tri] = 0.0
-        I2[~tri] = 0.0
-        self.I1, self.I2 = I1, I2
+        tri = np.abs(lp_g - l_g) <= L
+        for name in ("G0", "GA_v", "GA_w", "GC_v", "GC_w", "H0_s",
+                     "H0_t", "Hiso_v", "Hiso_w", "HV_v", "HV_w",
+                     "HW_v", "HW_w"):
+            getattr(self, name)[~tri] = 0.0
+        # MVP aliases (toroidal_relief_spectra)
+        self.I1 = self.GC_w
+        self.I2 = 0.5 * self.HW_w
+
+
+_AngCache = ReliefCouplings          # backward-compat alias
 
 
 def _ang_cache(store, L, M, m, lmax):
     key = (L, M, m, lmax)
     if key not in store:
-        store[key] = _AngCache(L, M, m, lmax)
+        store[key] = ReliefCouplings(L, M, m, lmax)
     return store[key]
 
 
 # ----------------------------------------------------------------
-# first-order relief response (SH part)
+# per-side radial coefficient bundles at the relieved radius
+# ----------------------------------------------------------------
+def _side_coeffs(l, w, d, mat, y4, wt2, yp4=None):
+    """Radial coefficient bundle for one SIDE at radius d:
+    y4 = (U, V, R, S) or None; wt2 = (W, T) or None. yp4 = the
+    radial-derivative 4-vector from the solver's basis-FD (preferred
+    — the Y'Y^-1 fallback loses ~1e-3 relative at l >= L_SERIES).
+    Returns dict with U', V', R', S', W', T', ciso, cV, cW (zeros
+    where the parity is absent)."""
+    out = dict(U=0j, V=0j, R=0j, S=0j, W=0j, T=0j, Up=0j, Vp=0j,
+               Rp=0j, Sp=0j, Wp=0j, Tp=0j, ciso=0j, cV=0j, cW=0j)
+    L = l * (l + 1.0)
+    mu, lam = mat["mu"], mat["lam"]
+    if y4 is not None:
+        if yp4 is not None:
+            yp = np.asarray(yp4, dtype=complex)
+        else:
+            A = system_matrix(l, w, d, mat["rho"], lam, mu,
+                              zref_a=(mat["r_top"]
+                                      if l >= L_SERIES else None))
+            yp = A @ np.asarray(y4, dtype=complex)
+        U, V, R, S = y4
+        out.update(U=U, V=V, R=R, S=S, Up=yp[0], Vp=yp[1],
+                   Rp=yp[2], Sp=yp[3])
+        div = yp[0] + 2.0 * U / d - L * V / d
+        out["ciso"] = lam * div + 2.0 * mu * U / d
+        out["cV"] = mu * V / d
+    if wt2 is not None:
+        W, T = wt2
+        out.update(W=W, T=T)
+        out["Wp"] = T / mu + W / d
+        out["Tp"] = (-3.0 * T / d
+                     + (mu * (L - 2.0) / d ** 2
+                        - mat["rho"] * w * w) * W)
+        out["cW"] = mu * W / d
+    return out
+
+
+def _jump_rows(h, d, ang, dc):
+    """First-order transferred data for one relieved location.
+    dc = dict of DELTA coefficients (above - below; single-sided:
+    the side itself), each an (lmax+1,) array over source l.
+    Returns per-target-l' arrays (jU, jV, jR, jS, jW, jT)."""
+    jU = -h * (ang.G0 @ dc["Up"])
+    jV = -h * (ang.GA_v @ dc["Vp"] + ang.GA_w @ dc["Wp"])
+    jW = -h * (ang.GC_v @ dc["Vp"] + ang.GC_w @ dc["Wp"])
+    jR = -h * (ang.G0 @ dc["Rp"]) + (h / d) * (
+        ang.H0_s @ dc["S"] + ang.H0_t @ dc["T"])
+    jS = -h * (ang.GA_v @ dc["Sp"] + ang.GA_w @ dc["Tp"]) \
+        + (h / d) * (ang.Hiso_v @ dc["ciso"]
+                     + ang.HV_v @ dc["cV"] + ang.HW_v @ dc["cW"])
+    jT = -h * (ang.GC_v @ dc["Sp"] + ang.GC_w @ dc["Tp"]) \
+        + (h / d) * (ang.Hiso_w @ dc["ciso"]
+                     + ang.HV_w @ dc["cV"] + ang.HW_w @ dc["cW"])
+    return jU, jV, jR, jS, jW, jT
+
+
+# ----------------------------------------------------------------
+# general first-order relief response (both parities + conversion)
+# ----------------------------------------------------------------
+def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
+                   relief, Q=None, q_sign=-1.0, lmax=250,
+                   tol_prune=TOL_PRUNE):
+    """FULL first-order du spectra dict(psv=..., sh=...) each
+    (nsrc, nst, 3, nw), including parity conversion.
+
+    relief: list of (where, L, M, h_LM); where = 'top' (free
+    surface) or the interface RADIUS in metres of a WELDED
+    solid-solid interface (fluid-adjacent: A3b stage 3).
+    Mr*-type sources (|m| <= 1)."""
+    stack = make_stack(layers)
+    r0 = float(np.linalg.norm(src_xyz))
+    isrc = [i for i, e in enumerate(stack)
+            if e["r_bot"] < r0 < e["r_top"]][0]
+    msrc0 = stack[isrc]
+    Qrot = source_frame(src_xyz)
+    DY, DG = spheroidal_pole(lmax)
+    poleT = _pole_coupling(lmax)
+    srcs, hvecs = [], []
+    for M in M_list:
+        M_sf = Qrot @ np.asarray(M, dtype=float) @ Qrot.T
+        srcs.append((M_sf[2, 2], M_sf[2, 0] + 0j, M_sf[2, 1] + 0j))
+        hvecs.append(M_sf @ np.array([0.0, 0.0, 1.0]))
+    w_arr = np.asarray(w_arr, dtype=complex)
+    nsrc, nst, nw = len(M_list), len(station_dirs), len(w_arr)
+    dirs_sf = station_dirs @ Qrot.T
+    store = {}
+    a_top = stack[-1]["r_top"]
+    Wu1 = np.zeros((nsrc, nw, lmax + 1, 9), dtype=complex)
+    Wv1 = np.zeros_like(Wu1)
+    Wt1 = np.zeros_like(Wu1)
+    for iw, w in enumerate(w_arr):
+        mats = _mats_at(stack, w, Q, q_sign)
+        msrc = mats[isrc]
+        # ---- unperturbed solves per l, both parities, with side
+        # values at every welded interface and the surface
+        sph, tor = {}, {}
+        for l in range(1, lmax + 1):
+            zr = msrc["r_top"] if l >= L_SERIES else None
+            Ll = l * (l + 1.0)
+            ents = _entries(mats, _icut(stack, l, r0, tol_prune),
+                            r0, isrc)
+            F0v = np.array([0, 0, 0, 1.0 / (Ll * r0 ** 2)],
+                           dtype=complex)
+            F1v = np.array([0, 0, -1.0 / r0 ** 3,
+                            3.0 / (Ll * r0 ** 3)], dtype=complex)
+            J_rh = source_jumps(l, w, r0, msrc["rho"], msrc["lam"],
+                                msrc["mu"], F0v, F1v, zref_a=zr)
+            F0y = np.array([0, 0, 1.0 / r0 ** 2, 0], dtype=complex)
+            F1y = np.array([0, 0, 2.0 / r0 ** 3, 0], dtype=complex)
+            J_y = source_jumps(l, w, r0, msrc["rho"], msrc["lam"],
+                               msrc["mu"], F0y, F1y, zref_a=zr)
+            sol = {}
+            for tag, J in (("rh", J_rh), ("y", J_y)):
+                Ua, Va, info = spheroidal_unit(l, w, ents, J,
+                                               full=True)
+                sol[tag] = (Ua, Va, info)
+            ents_t, bot = _tor_entries(mats, l, r0, isrc, tol_prune)
+            wt = None
+            if ents_t is not None:
+                wa, wb, tinfo = toroidal_unit(
+                    l, w, ents_t, bot, 1.0 / (msrc["mu"] * r0 ** 2),
+                    full=True)
+                wt = (wa, wb, tinfo)
+            sph[l] = (ents, sol)
+            tor[l] = (ents_t, bot, wt)
+        # ---- per relief location build coupled first-order solves
+        for where, L, M, hLM in relief:
+            for m_src in (-1, 0, 1):
+                mp = m_src + M
+                if abs(mp) > 4:
+                    continue
+                ang = _ang_cache(store, L, M, m_src, lmax)
+                for js in range(nsrc):
+                    mzz, mzx, mzy = srcs[js]
+                    hv = hvecs[js]
+                    if m_src == 0:
+                        if mzz == 0.0:
+                            continue
+                    # source couplings per l for this (m, source)
+                    cs = np.zeros(lmax + 1, dtype=complex)
+                    ct_ = np.zeros(lmax + 1, dtype=complex)
+                    for l in range(1, lmax + 1):
+                        if m_src == 0:
+                            cs[l] = mzz * DY[l]
+                        else:
+                            cs[l] = (DG[m_src][l][0] * mzx
+                                     + DG[m_src][l][1] * mzy)
+                            ct_[l] = (poleT[m_src][l][0] * hv[0]
+                                      + poleT[m_src][l][1] * hv[1])
+                    tag = "y" if m_src == 0 else "rh"
+                    if not (np.any(cs) or np.any(ct_)):
+                        continue        # source order not excited
+                    # DELTA (or single-side) coefficient arrays
+                    keys = ("Up", "Vp", "Rp", "Sp", "Wp", "Tp",
+                            "S", "T", "ciso", "cV", "cW")
+                    dc = {k: np.zeros(lmax + 1, dtype=complex)
+                          for k in keys}
+                    if where == "top":
+                        d_rel = a_top
+                        adv = {k: np.zeros(lmax + 1, dtype=complex)
+                               for k in ("Up", "Vp", "Wp")}
+                        for l in range(1, lmax + 1):
+                            ents, sol = sph[l]
+                            Ua, Va, info = sol[tag]
+                            y4 = info["surface"] * cs[l]
+                            yp4 = info["surface_p"] * cs[l]
+                            wt2 = None
+                            if tor[l][2] is not None and m_src != 0:
+                                wt2 = (tor[l][2][2]["surface"]
+                                       * ct_[l])
+                            sc_ = _side_coeffs(
+                                l, w, a_top, mats[-1], y4, wt2,
+                                yp4=yp4)
+                            for k in keys:
+                                dc[k][l] = sc_[k]
+                            for k in ("Up", "Vp", "Wp"):
+                                adv[k][l] = sc_[k]
+                    else:
+                        d_rel = float(where)
+                        jstack = [j for j in range(len(stack) - 1)
+                                  if abs(stack[j]["r_top"] - d_rel)
+                                  < 1.0][0]
+                        if not (stack[jstack]["solid"]
+                                and stack[jstack + 1]["solid"]):
+                            raise ValueError(
+                                "fluid-adjacent relief: A3b stage 3")
+                        for l in range(1, lmax + 1):
+                            ents, sol = sph[l]
+                            ii = [i for i in range(len(ents) - 1)
+                                  if abs(ents[i]["r_top"] - d_rel)
+                                  < 1.0]
+                            if not ii:
+                                continue          # pruned away
+                            i_rel = ii[0]
+                            Ua, Va, info = sol[tag]
+                            ylo, yhi, yplo, yphi = info[i_rel]
+                            wtlo = wthi = None
+                            ents_t, bot, wt = tor[l]
+                            if wt is not None and m_src != 0:
+                                jj = [i for i in
+                                      range(len(ents_t) - 1)
+                                      if abs(ents_t[i]["r_top"]
+                                             - d_rel) < 1.0]
+                                if jj:
+                                    wtlo, wthi = wt[2][jj[0]]
+                            lo = _side_coeffs(
+                                l, w, d_rel, ents[i_rel]["mat"],
+                                ylo * cs[l],
+                                None if wtlo is None
+                                else wtlo * ct_[l],
+                                yp4=yplo * cs[l])
+                            hi = _side_coeffs(
+                                l, w, d_rel,
+                                ents[i_rel + 1]["mat"],
+                                yhi * cs[l],
+                                None if wthi is None
+                                else wthi * ct_[l],
+                                yp4=yphi * cs[l])
+                            for k in keys:
+                                dc[k][l] = hi[k] - lo[k]
+                    jU, jV, jR, jS, jW, jT = _jump_rows(
+                        hLM, d_rel, ang, dc)
+                    # ---- first-order solves per target l'
+                    for lp in range(max(1, abs(mp)), lmax + 1):
+                        entsp = _entries(
+                            mats, _icut(stack, lp, r0, tol_prune),
+                            r0, isrc)
+                        if where == "top":
+                            U1, V1 = spheroidal_unit(
+                                lp, w, entsp,
+                                np.zeros(4, dtype=complex),
+                                bc_rhs=(jR[lp], jS[lp]))
+                            # receiver advection
+                            U1 += hLM * (ang.G0 @ adv["Up"])[lp]
+                            V1 += hLM * (ang.GA_v @ adv["Vp"]
+                                         + ang.GA_w @ adv["Wp"])[lp]
+                        else:
+                            ii = [i for i in range(len(entsp) - 1)
+                                  if abs(entsp[i]["r_top"] - d_rel)
+                                  < 1.0]
+                            if not ii:
+                                continue
+                            U1, V1 = spheroidal_unit(
+                                lp, w, entsp,
+                                np.zeros(4, dtype=complex),
+                                iface_rhs={ii[0]: np.array(
+                                    [jU[lp], jV[lp], jR[lp],
+                                     jS[lp]], dtype=complex)})
+                        Wu1[js, iw, lp, mp + 4] += U1
+                        Wv1[js, iw, lp, mp + 4] += V1
+                        entsp_t, botp = _tor_entries(
+                            mats, lp, r0, isrc, tol_prune)
+                        if entsp_t is None:
+                            continue
+                        if where == "top":
+                            W1 = toroidal_unit(
+                                lp, w, entsp_t, botp, 0.0,
+                                bc_rhs=(0.0, jT[lp]))
+                            W1 += hLM * (ang.GC_v @ adv["Vp"]
+                                         + ang.GC_w @ adv["Wp"])[lp]
+                        else:
+                            jj = [i for i in
+                                  range(len(entsp_t) - 1)
+                                  if abs(entsp_t[i]["r_top"]
+                                         - d_rel) < 1.0]
+                            if not jj:
+                                continue
+                            W1 = toroidal_unit(
+                                lp, w, entsp_t, botp, 0.0,
+                                iface_rhs={jj[0]: (jW[lp],
+                                                   jT[lp])})
+                        Wt1[js, iw, lp, mp + 4] += W1
+    out = {}
+    u = np.zeros((nsrc, nst, 3, nw), dtype=complex)
+    for js in range(nsrc):
+        for iw in range(nw):
+            u_sf = spheroidal_reconstruct(Wu1[js, iw], Wv1[js, iw],
+                                          dirs_sf)
+            u[js, :, :, iw] = u_sf @ Qrot
+    out["psv"] = u
+    u = np.zeros((nsrc, nst, 3, nw), dtype=complex)
+    for js in range(nsrc):
+        for iw in range(nw):
+            u_sf = toroidal_reconstruct(Wt1[js, iw], dirs_sf)
+            u[js, :, :, iw] = u_sf @ Qrot
+    out["sh"] = u
+    return out
+
+
+# ----------------------------------------------------------------
+# A3 MVP driver (toroidal-only [SH->SH]; kept, gates depend on it)
 # ----------------------------------------------------------------
 def toroidal_relief_spectra(layers, src_xyz, M_list, w_arr,
                             station_dirs, relief, Q=None,
                             q_sign=-1.0, lmax=250,
                             tol_prune=TOL_PRUNE):
-    """du^SH spectra (nsrc, nst, 3, nw), FIRST ORDER in the relief.
+    """du^SH spectra (nsrc, nst, 3, nw), FIRST ORDER in the relief,
+    [SH->SH] block only (complete for pure-SH unperturbed fields
+    and L=0; see docs section 1 for the corrected parity structure).
 
     relief: list of (where, L, M, h_LM) with where in
     {'top', 'bottom'} (outer surface / bottom of the outermost solid
@@ -182,15 +525,15 @@ def toroidal_relief_spectra(layers, src_xyz, M_list, w_arr,
         msrc = mats[isrc]
         mu = msrc["mu"]
         rho = msrc["rho"]
-        # unperturbed boundary values per source l (unit jump)
         Wa0 = np.zeros(lmax + 1, dtype=complex)
         Wb0 = np.zeros(lmax + 1, dtype=complex)
         entsl, botl = {}, {}
         for l in range(1, lmax + 1):
             ents, bot = _tor_entries(mats, l, r0, isrc, tol_prune)
             entsl[l], botl[l] = ents, bot
-            wa, wb = toroidal_unit(l, w, ents, bot,
-                                   1.0 / (mu * r0 ** 2), full=True)
+            wa, wb, _ = toroidal_unit(l, w, ents, bot,
+                                      1.0 / (mu * r0 ** 2),
+                                      full=True)
             Wa0[l] = wa
             Wb0[l] = 0.0 if wb is None else wb
         a_top = stack[-1]["r_top"]
@@ -206,12 +549,11 @@ def toroidal_relief_spectra(layers, src_xyz, M_list, w_arr,
                     ang = _ang_cache(store, L, M, m, lmax)
                     d = a_top if where == "top" else None
                     if where == "bottom":
-                        ents1, bot1 = entsl[1], botl[1]
-                        if bot1 is None:
+                        if botl[1] is None:
                             raise ValueError(
                                 "bottom relief needs a bottom "
                                 "boundary (annulus run)")
-                        d = bot1
+                        d = botl[1]
                     W0 = (Wa0 if where == "top" else Wb0) * Dm
                     ll = np.arange(lmax + 1)
                     dTdr0 = W0 * (mu * (ll * (ll + 1.0) - 2.0)
@@ -219,9 +561,6 @@ def toroidal_relief_spectra(layers, src_xyz, M_list, w_arr,
                     src_amp = 2.0 * mu * W0 / d ** 2
                     bc_l = -hLM * (ang.I1 @ dTdr0
                                    - ang.I2 @ src_amp)
-                    # receiver advection: stations ride the moved
-                    # free surface, so the top-relief observable is
-                    # u1(a) + h d/dr u0(a) (W0' = W0/a at T = 0)
                     adv = (hLM * (ang.I1 @ (W0 / a_top))
                            if where == "top" else None)
                     for lp in range(max(1, abs(mp)), lmax + 1):

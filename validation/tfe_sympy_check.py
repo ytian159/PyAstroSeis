@@ -93,3 +93,78 @@ print("G-TFE-4b sympy cross-check: worst I1 rel %.2e, I2 rel %.2e"
       % (worst1, worst2))
 assert worst1 < 1e-10 and worst2 < 1e-10
 print("PASS")
+
+# ---------------------------------------------------------------
+# A3b: the NEW coupling matrices (spheroidal + conversion + tilt)
+# vs exact symbolic surface integrals, small (l, l') set.
+# ---------------------------------------------------------------
+from pyastroseis.spectral_tfe import ReliefCouplings   # noqa: E402
+
+ang2 = ReliefCouplings(L, M, m, LMAX)
+
+
+def Bvec(l, mm):
+    y = Y(l, mm)
+    return sp.diff(y, th), sp.diff(y, ph) / sp.sin(th)
+
+
+def surf_strain2(vt, vp):
+    """(2 e_tt, 2 e_pp, 2 e_tp) of tangential (vt, vp) on the unit
+    sphere — same formulas as spectral_tfe._shapes.strain2."""
+    cot = sp.cos(th) / sp.sin(th)
+    e_tt = 2 * sp.diff(vt, th)
+    e_pp = 2 * (sp.diff(vp, ph) / sp.sin(th) + cot * vt)
+    e_tp = sp.diff(vp, th) - cot * vp + sp.diff(vt, ph) / sp.sin(th)
+    return e_tt, e_pp, e_tp
+
+
+def integ(expr):
+    return complex(sp.integrate(sp.integrate(
+        sp.simplify(expr) * sp.sin(th), (ph, 0, 2 * sp.pi)),
+        (th, 0, sp.pi)).evalf())
+
+
+worst = {}
+for lp in range(1, LMAX + 1):
+    Lp = sp.Integer(lp) * (lp + 1)
+    Ytp = Y(lp, m + M)
+    Btp, Bpp = Bvec(lp, m + M)
+    Ctp, Cpp = Cvec(lp, m + M)
+    cBt, cBp = sp.conjugate(Btp), sp.conjugate(Bpp)
+    cCt, cCp = sp.conjugate(Ctp), sp.conjugate(Cpp)
+    cY = sp.conjugate(Ytp)
+    for l in range(1, LMAX + 1):
+        if abs(lp - l) > L:
+            continue
+        y = Y(l, m)
+        Bt, Bp = Bvec(l, m)
+        Ct, Cp = Cvec(l, m)
+        eB = surf_strain2(Bt, Bp)
+        checks = {
+            "G0": (integ(cY * YL * y), ang2.G0[lp, l]),
+            "GA_v": (integ((cBt * Bt + cBp * Bp) * YL) / Lp,
+                     ang2.GA_v[lp, l]),
+            "GA_w": (integ((cBt * Ct + cBp * Cp) * YL) / Lp,
+                     ang2.GA_w[lp, l]),
+            "GC_v": (integ((cCt * Bt + cCp * Bp) * YL),
+                     ang2.GC_v[lp, l]),
+            "Hiso_v": (integ((cBt * GtL + cBp * GpL) * y) / Lp,
+                       ang2.Hiso_v[lp, l]),
+            "Hiso_w": (integ((cCt * GtL + cCp * GpL) * y),
+                       ang2.Hiso_w[lp, l]),
+            "HV_v": (integ(cBt * (eB[0] * GtL + eB[2] * GpL)
+                           + cBp * (eB[2] * GtL + eB[1] * GpL))
+                     / Lp, ang2.HV_v[lp, l]),
+            "HV_w": (integ(cCt * (eB[0] * GtL + eB[2] * GpL)
+                           + cCp * (eB[2] * GtL + eB[1] * GpL)),
+                     ang2.HV_w[lp, l]),
+        }
+        for name, (sym, num) in checks.items():
+            sym = complex(sym)
+            d = abs(sym - num) / max(1e-3, abs(sym))
+            worst[name] = max(worst.get(name, 0.0), d)
+print("A3b sympy cross-check worst rels:")
+for name, dd in sorted(worst.items()):
+    print("  %-7s %.2e" % (name, dd))
+assert all(d < 1e-10 for d in worst.values())
+print("PASS A3b")

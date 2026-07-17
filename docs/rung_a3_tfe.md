@@ -30,13 +30,18 @@ Both are products of known angular functions with h -> in the
 harmonic basis they become coupling sums over (l, m) x (L, M) ->
 (l', m'), with m' = m + M and |l - L| <= l' <= l + L.
 
-PARITY STRUCTURE: relief couples toroidal <-> spheroidal at first
-order, BUT the unperturbed operator is parity-diagonal, so the
-SH part of u1 is sourced ONLY by the toroidal projection of the
-transferred data and the P-SV part ONLY by the spheroidal
-projection. A toroidal-only implementation is therefore COMPLETE
-for du^SH at O(eps); same for spheroidal/du^PSV. (The cross terms
-feed the OTHER parity's du, not each other's.)
+PARITY STRUCTURE (corrected 2026-07-17): the unperturbed operator
+is parity-diagonal, so u1^SH solves toroidal equations with the
+TOROIDAL PROJECTION of the transferred data, and u1^PSV the
+spheroidal projection. But the transferred data are built from the
+FULL unperturbed field u0 = u0^PSV + u0^SH, and the projections mix
+parities: the toroidal projection of transfer(u0^PSV) is nonzero
+for L >= 1 relief (and vice versa). So du^SH = [SH->SH] +
+[PSV->SH] and du^PSV = [PSV->PSV] + [SH->PSV]. The section-2 MVP
+implements only [SH->SH]; it is complete ONLY for pure-SH
+unperturbed fields and for L = 0 relief (no conversion) — the Y00
+gate cannot see the omission. A3b adds the [PSV->PSV] block and
+BOTH conversion blocks.
 
 ## 2. MVP (this rung): toroidal relief on SH-free boundaries
 
@@ -118,14 +123,97 @@ _AngCache k-independent coupling cache; toroidal_unit gained
 bc_rhs/full kwargs, no-op defaults). Cost: one extra toroidal solve
 per (l', m, w) per relief harmonic + cached couplings.
 
-## 4. A3b (next): spheroidal relief + fluid-solid interfaces
+## 4. A3b: spheroidal relief — derivation (2026-07-17)
 
-The spheroidal transfer needs the welded 4-vector jump version of
-section 1 (displacement rows get only term (A) with [d/dr y0] built
-from the two-sided system matrices; traction rows get (A) + tilt
-(B) with the full sigma0 tensor) and the fluid-solid slip
-conditions (continuity of u.n and traction, tangential slip free —
-the tilt rotates which combination is continuous). Ensemble
-economy: cache the per-(l,m) LU factors of the unperturbed systems
-(they are the SAME operators for every member) — member cost =
-RHS assembly + back-substitution only.
+Field objects per (l, m) at radius r (code conventions:
+u = U Y rhat + V grad1 Y + W C, C = rhat x grad1 Y / sqrt(L)
+orthonormal, V on the UNNORMALIZED gradient):
+
+  t = sigma.rhat = R Y rhat + S grad1 Y + T C
+  d/dr u = U' Y rhat + V' grad1 Y + W' C     (rhat, grad1 Y, C are
+  d/dr t = R' Y rhat + S' grad1 Y + T' C      r-independent shapes)
+
+with (U',V',R',S') = A_sph(r) y from spheroidal_ref.system_matrix
+per SIDE, and W' = T/mu + W/r, T' = -3T/r + (mu(L-2)/r^2
+- rho w^2) W.
+
+Full stress pieces entering the tilt sigma0 . grad1 h:
+  (sigma.v)_r = S (grad1 Y . v) + T (C . v)          v tangential
+  (sigma.v)_a = sigma_ab v_b,
+  sigma_ab = lam (div u) delta_ab Y-part + 2 mu e_ab,
+  div u = U' + 2U/r - L V / r,
+  e_ab = (1/2r)(D_a u_b + D_b u_a) + (U Y / r) delta_ab evaluated
+  on the theta-grid from (V, W) x second derivatives of Y (same
+  covariant formulas as section 2, now for BOTH tangential fields
+  u_t = V grad1 Y + W C).
+
+WELDED solid-solid at r = d (zeroth-order continuity of u and t):
+  displacement rows:  [u1] = -h [d/dr u0]           (no tilt term)
+  traction rows:      [t1] = -h [d/dr t0] + (1/d) [sigma0 . grad1 h]
+Each right-hand side is a VECTOR field on the sphere; project onto
+Y' rhat (U/R rows), grad1 Y'/L' (V/S rows), C' (W/T rows —
+the parity-conversion entries). The jump [d/dr y0] is nonzero
+because the material contrast makes A_sph differ across d.
+
+FREE SURFACE (solid top): single-sided traction version
+  t1(a) = -h d/dr t0(a) + (1/a) sigma0 . grad1 h,
+plus the receiver-advection term du_obs += h d/dr u0(a) when
+stations ride the surface (section 3b lesson).
+
+NULL GATE (the strongest welded test, all L): an ARTIFICIAL welded
+interface between IDENTICAL materials with ANY relief must produce
+du == 0 identically — [d/dr y0] = 0 and [sigma0] = 0 across a
+material-free interface, so every transfer term vanishes; any
+nonzero du is implementation error (tests radial factors, tilt
+algebra, and projections together, with no reference needed).
+
+## 4b. A3b stage-1 results (2026-07-17) — welded + free surface
+## PASSED (both parities + conversion blocks)
+
+Implementation: spectral_tfe.relief_spectra (general engine:
+ReliefCouplings catalog G0/GA/GC/H0/Hiso/HV/HW with exact triangle
+masks; _side_coeffs radial bundles; spheroidal_unit/toroidal_unit
+gained iface_rhs/bc_rhs/full — interface side values AND radial
+derivatives by basis-FD on the solved coefficients).
+
+Gates (tests/test_spectral_tfe.py):
+  NULL WELD (identical materials, Y20 AND Y21, mixed mrt+mrr):
+    |du|/|u0| = 3.0e-11 / 2.4e-11 — every transfer term cancels.
+  Y00 weld contrast (real material jump) vs exact interface-move
+    FD: psv 1.5e-07, sh 1.9e-10.
+  Y00 free surface vs exact FD: psv 1.9e-06, sh 2.8e-08
+    (receiver advection for BOTH parities).
+  Conversion parity: same-parity blocks live on even |l'-l|,
+    conversion blocks on odd — wrong-parity entries 1.5e-15.
+  Sympy dual derivation extended to the new angular matrices
+    (G0, GA_v, GA_w, GC_v, Hiso_v/w, HV_v/w).
+
+TWO NUMERICAL FINDINGS worth keeping:
+  (1) Y'Y^-1 (system_matrix) loses ~1e-3 relative on derivatives at
+      l >= L_SERIES in surface-referenced scaled bases, and the
+      error is zref-SENSITIVE. Interface side derivatives now come
+      from basis-FD on the solved coefficients (no inversion), and
+      source_jumps now references its basis AT r0 (locally optimal
+      conditioning; also makes J independent of the outer radius —
+      the zref-sensitivity had made the Y00-top FD reference legs
+      carry spuriously different source jumps, an O(1) artifact on
+      the tiny-but-coupling-amplified l >= 20 harmonics).
+  (2) The l = 0 channel moves with relieved interfaces for Mrr
+      sources (measured 1.6% of du when the reference includes it);
+      l = 0 relief coupling (l=0 <-> l'=L) is an open A3b item —
+      FD gates exclude it via l0=False for now.
+
+Limits of the stage-1 gate set (honest accounting): the NULL gate
+proves DELTA-cancellation and the Y00 gates prove the radial
+chain, but neither quantitatively validates the finite-L TILT
+coefficient assembly (ciso/cV/cW radial factors); the sympy checks
+pin the ANGULAR integrals. The full finite-L quantitative anchor is
+stage 3's BEM rung-3 Y20-CMB ensemble (fluid-solid).
+
+FLUID-SOLID (CMB; slip): conditions on the perturbed surface are
+u.n continuous, sigma.n = -p n (tangential traction zero on the
+solid side, normal traction = fluid -p). The transfer involves the
+tangential SLIP [u0_t] in the tilt of u.n, and the fluid p0, dp0/dr
+in the traction rows — A3b stage 3 (unlocks the BEM rung-3 Y20-CMB
+cross-anchor). Ensemble economy: cache per-(l,m) LU factors of the
+unperturbed systems — member cost = RHS + back-substitution.

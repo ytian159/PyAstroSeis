@@ -401,7 +401,14 @@ def source_jumps(l, w, r0, rho, lam, mu, F0, F1, zref_a=None):
         F0 = (0, 0, qy/r0^2, 0)
         F1 = (0, 0, 2 qy/r0^3, 0)
     """
-    A = system_matrix(l, w, r0, rho, lam, mu, zref_a=zref_a)
+    # Scaled regime: reference the basis at r0 itself — J is basis-
+    # independent in exact arithmetic, and the LOCAL reference
+    # minimizes cond(Y(r0)). With a surface-referenced basis the
+    # Y'Y^-1 construction wobbles ~1e-3 at l >= L_SERIES and, being
+    # zref-sensitive, made J spuriously depend on the outer radius
+    # (caught by the rung-A3b Y00 free-surface FD gate, 2026-07-17).
+    A = system_matrix(l, w, r0, rho, lam, mu,
+                      zref_a=(r0 if zref_a is not None else None))
     return np.asarray(F1, dtype=complex) + A @ np.asarray(F0,
                                                           dtype=complex)
 
