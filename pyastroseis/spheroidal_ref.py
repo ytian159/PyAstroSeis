@@ -36,9 +36,22 @@ as the campaign materials: modulus factors mu(w) = mu0 fac^2 with
 fac = 1 + ln(f)/(pi Q) + i q_sign/(2 Q).
 """
 
+import math
+import os
+
 import numpy as np
 
 from .toroidal_ref import source_frame
+
+# PYASTROSEIS_FL_LARGEX=1 enables the adaptive large-|z| rescue of
+# the scaled-series basis (_fl_scaled): when the small-z series
+# catastrophically cancels (propagating regime |z|^2/2 >> l, reached
+# above ~5 mHz on Earth-size stacks), the SAME scaled functions are
+# evaluated through the stable recurrence basis sph_bessel_jy times
+# the exact column-scale constant in log space. STRICT NO-OP when
+# unset: the series code path is byte-identical, and in the
+# ULP-validated band the trigger never fires anyway.
+FL_LARGEX = os.environ.get("PYASTROSEIS_FL_LARGEX", "") == "1"
 
 
 def spheroidal_reconstruct(Wu, Wv, dirs):
@@ -184,50 +197,133 @@ def _fl(kind, l, z, tab=None):
     return y[l], yp[l]
 
 
-def _series_S(l, z, nmax=80):
+def _series_S(l, z, nmax=80, full=False):
     """S_l(z) = sum_m (-z^2/2)^m / (m! (2l+3)(2l+5)..(2l+2m+1)),
-    the small-z polynomial factor of j_l = z^l/(2l+1)!! S_l."""
+    the small-z polynomial factor of j_l = z^l/(2l+1)!! S_l.
+    full=True additionally returns (max |term|, converged) for the
+    cancellation diagnostic of the large-|z| rescue."""
     z2 = z * z
     term = np.ones_like(z, dtype=complex)
     out = term.copy()
+    mx = np.abs(term)
+    conv = False
     for m in range(1, nmax):
         term = term * (-z2 / 2.0) / (m * (2.0 * l + 2.0 * m + 1.0))
         out = out + term
+        mx = np.maximum(mx, np.abs(term))
         if np.all(np.abs(term) < 1e-18 * np.abs(out)):
+            conv = True
             break
+    if full:
+        return out, mx, conv
     return out
 
 
-def _series_T(l, z, nmax=80):
+def _series_T(l, z, nmax=80, full=False):
     """T_l(z): y_l = -(2l-1)!!/z^{l+1} T_l,
     T_l = sum_m (-z^2/2)^m / (m! (1-2l)(3-2l)..(2m-1-2l))."""
     z2 = z * z
     term = np.ones_like(z, dtype=complex)
     out = term.copy()
+    mx = np.abs(term)
+    conv = False
     for m in range(1, nmax):
         term = term * (-z2 / 2.0) / (m * (2.0 * m - 1.0 - 2.0 * l))
         out = out + term
+        mx = np.maximum(mx, np.abs(term))
         if np.all(np.abs(term) < 1e-18 * np.abs(out)):
+            conv = True
             break
+    if full:
+        return out, mx, conv
     return out
+
+
+def _lndf(n):
+    """ln(n!!) for odd n = 2k+1: (2k+1)! / (2^k k!)."""
+    k = (n - 1) // 2
+    return (math.lgamma(n + 1.0) - k * math.log(2.0)
+            - math.lgamma(k + 1.0))
+
+
+_SERIES_LOSS_MAX = 1.0e8       # rescue when > ~8 digits cancel
+
+
+try:                                    # fast path for the rescue
+    from scipy.special import spherical_jn as _sp_jn
+    from scipy.special import spherical_yn as _sp_yn
+except Exception:                       # pragma: no cover
+    _sp_jn = _sp_yn = None
+
+
+def _fl_scaled_recur(kind, l, z, zref):
+    """The SAME scaled functions as _fl_scaled — j-family
+    (2l+1)!!/zref^l * j_l, y-family -zref^{l+1}/(2l-1)!! * y_l —
+    evaluated through a stable non-series basis with the column
+    scale applied as a log-space constant. scipy's complex
+    spherical Bessel routines when available (C-speed), else the
+    in-house sph_bessel_jy recurrences; the constant is exact, so
+    values agree with the series branch to roundoff in the overlap
+    regime."""
+    if _sp_jn is not None:
+        if kind == "j":
+            c = np.exp(_lndf(2 * l + 1) - l * np.log(zref))
+            return (c * _sp_jn(l, z),
+                    c * _sp_jn(l, z, derivative=True))
+        c = -np.exp((l + 1.0) * np.log(zref) - _lndf(2 * l - 1))
+        return (c * _sp_yn(l, z),
+                c * _sp_yn(l, z, derivative=True))
+    j, y, jp, yp = sph_bessel_jy(l, z)
+    if kind == "j":
+        c = np.exp(_lndf(2 * l + 1) - l * np.log(zref))
+        return c * j[l], c * jp[l]
+    c = -np.exp((l + 1.0) * np.log(zref) - _lndf(2 * l - 1))
+    return c * y[l], c * yp[l]
 
 
 def _fl_scaled(kind, l, z, zref):
     """Column-scaled (f_l, f_l') via the small-z series:
     j-family scaled by (2l+1)!!/zref^l, y-family by zref^{l+1}/
     (-(2l-1)!!). Valid for z^2/2 < ~l (used for l >= ~46 in-band).
-    Ratios (z/zref)^l stay O(1) across the shell."""
+    Ratios (z/zref)^l stay O(1) across the shell.
+
+    With PYASTROSEIS_FL_LARGEX=1 the series' catastrophic
+    cancellation (propagating regime, |z|^2/2 >> l) is detected from
+    the running max |term| and the call is rerouted to
+    _fl_scaled_recur — identical normalization, stable evaluation."""
     z = np.atleast_1d(np.asarray(z, dtype=complex))
     if kind == "j":
+        if FL_LARGEX:
+            S, mxS, cS = _series_S(l, z, full=True)
+            Sm, mxSm, cSm = _series_S(l - 1, z, full=True)
+            bad = ((not cS) or (not cSm)
+                   or np.any(mxS > _SERIES_LOSS_MAX
+                             * np.maximum(np.abs(S), 1e-300))
+                   or np.any(mxSm > _SERIES_LOSS_MAX
+                             * np.maximum(np.abs(Sm), 1e-300)))
+            if bad:
+                return _fl_scaled_recur("j", l, z, zref)
+        else:
+            S = _series_S(l, z)
+            Sm = _series_S(l - 1, z)
         pw = (z / zref) ** l
-        S = _series_S(l, z)
-        Sm = _series_S(l - 1, z)
         f = pw * S
         fp = (2.0 * l + 1.0) / z * pw * Sm - (l + 1.0) / z * pw * S
         return f, fp
+    if FL_LARGEX:
+        T, mxT, cT = _series_T(l, z, full=True)
+        Tm, mxTm, cTm = _series_T(l - 1, z, full=True)
+        bad = ((not cT) or (not cTm)
+               or np.any(mxT > _SERIES_LOSS_MAX
+                         * np.maximum(np.abs(T), 1e-300))
+               or np.any(mxTm > _SERIES_LOSS_MAX
+                         * np.maximum(np.abs(Tm), 1e-300)))
+        if bad:
+            return _fl_scaled_recur("y", l, z, zref)
+    else:
+        T = _series_T(l, z)
+        Tm = _series_T(l - 1, z)
     pw = (zref / z) ** (l + 1)
-    T = _series_T(l, z)
-    Tm = _series_T(l - 1, z)
     f = pw * T
     # yhat_{l-1} = (zref/z)^l * zref/(2l-1) * T_{l-1}
     fm1 = (zref / z) ** l * zref / (2.0 * l - 1.0) * Tm
