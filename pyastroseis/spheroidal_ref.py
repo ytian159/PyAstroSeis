@@ -307,7 +307,15 @@ def _fl_scaled(kind, l, z, zref):
                              * np.maximum(np.abs(S), 1e-300))
                    or np.any(mxSm > _SERIES_LOSS_MAX
                              * np.maximum(np.abs(Sm), 1e-300)))
-            if bad:
+            # rescue only if its scale constant is representable:
+            # deep in the evanescent tail at band-top |z| the
+            # constant overflows (and the raw Bessel underflows)
+            # -> keep the finite cancellation-limited series value;
+            # only reached where the physical contribution and the
+            # source-spectrum weight are both negligible.
+            if bad and abs(_lndf(2 * l + 1)
+                           - l * float(np.real(np.log(zref)))
+                           ) < 600.0:
                 return _fl_scaled_recur("j", l, z, zref)
         else:
             S = _series_S(l, z)
@@ -324,7 +332,9 @@ def _fl_scaled(kind, l, z, zref):
                          * np.maximum(np.abs(T), 1e-300))
                or np.any(mxTm > _SERIES_LOSS_MAX
                          * np.maximum(np.abs(Tm), 1e-300)))
-        if bad:
+        if bad and abs((l + 1.0)
+                       * float(np.real(np.log(zref)))
+                       - _lndf(2 * l - 1)) < 600.0:
             return _fl_scaled_recur("y", l, z, zref)
     else:
         T = _series_T(l, z)
