@@ -241,7 +241,7 @@ Stage-1 regression: null weld 1.3e-11, all FD gates at prior
 levels.  NOTE: Y00 gates reach only the VALUE-TRANSFER terms
 (grad1 Y00 = 0).
 
-## 6. THE L>=1 VALIDATION CRISIS (2026-07-17) — OPEN
+## 6. THE L>=1 VALIDATION CRISIS (2026-07-17) — RESOLVED in 6b
 
 A new EXACT gate was built for the tilt/slip/conversion terms:
 Y10 relief h = delta*cos(theta) on ALL boundaries == rigid
@@ -308,3 +308,64 @@ INTERACTION of jR/jS rows with the advection in the observable
 independently (e.g., Woodhouse 1976 eq. set) looking for a
 spheroidal-only term (the C-projection of any gradient-type
 missing term vanishes — exactly the W-exact/UV-wrong pattern).
+
+## 6b. RESOLUTION (2026-07-18) — ENGINE CORRECT; the "exact"
+## reference was flawed three independent ways
+
+The attack list was executed (items a, b, d; 30+ audit scripts in
+validation/a3b_forensics/resolution/, audit1..audit32 + common.py;
+Codex second opinion thread 019f7415-71e8-7583-b5c9-900901383b4e,
+full concurrence). No missing spheroidal term exists in
+spectral_tfe.py. The translation gate's PSV legs and comparison
+method carried three defects, each invisible at m=0/L=0 and each
+SH-sparing — which is why every constituent verified while the
+gate failed:
+
+(i) DOMINANT, O(1): the reference legs difference metre-scale
+NOISE in the source jump. source_jumps builds J(b) = F1 + A(b) F0
+with A from system_matrix (spheroidal_ref.py:458), a central FD of
+the basis matrix with hard-coded h = 1.0e-3 m, then Y^-1. At
+r ~ 5e6 m this gives eps_mach/(h/r) ~ 1e-6 before conditioning;
+measured |dJ_R/J_R| = 3e-5 for db = 1 mm, flat (decorrelated) from
+1 mm to 10 m, smooth only above ~100 m. The delta = 30 m
+translation legs difference exactly this (du/u ~ 5e-5 => O(1)
+contamination). Proof of completeness: adding the measured
+interior 4-vector jump at r0 as iface_rhs makes engine/FD =
+1.000 angle 0 at EVERY l', U and V (audit2); the jump is
+delta-nonlinear and killed by a 0.5 m jitter of r0 (audit8) —
+noise, not physics. SH is immune because [W] = 1/(mu b^2) is
+analytic in b: the exact SH-pass/PSV-fail signature. The same
+hard-coded h lives in _sph0_jump (spectral.py:318).
+
+(ii) The per-parity comparison (du_psv vs du_sh separately) is
+ill-posed under the station mapping: the parity projector does not
+commute with the mapped-direction pullback (a toroidal vector at
+the mapped direction acquires an O(delta/a) radial component in
+the label frame), producing a false delta-INDEPENDENT deficit
+(U 0.92 / W 0.98). Compare TOTAL fields (or fixed-frame U/V/W
+projections of totals) only.
+
+(iii) l0=False is not translation-consistent for Mrr-class
+sources (the excluded l=0 sheet moves radially in the legs,
+rigidly in the relief problem; (1-cos theta) profile => l'=1
+content ~2% of du). Absent in Mrt gates. Also: pointwise max-norm
+comparisons are lmax-edge dominated — use per-l' coefficients or
+a guard band l' <= lmax - L.
+
+FINAL GATE (audit32): total-field per-l' projections at
+delta = 3000 m (above the noise floor) pass 0.9958–1.0020 at
+every l' = 1..8 in U, V, AND W for the homogeneous ball, a
+welded-contrast interface, and the full 3-layer corefluid with
+relief on CMB, ICB, and top simultaneously.
+
+Remaining work (fix NOT yet applied): analytic Takeuchi–Saito
+A(r) in system_matrix (fallback h ~ 10–100 m with (kh)^2 <= 1e-10
+truncation), same for _sph0_jump; then re-run the delta = 30 m
+gate (should recover) with a delta-sweep/Richardson plateau.
+Codex scope guards: add one L=2 non-rigid single-interface
+quantitative anchor before an unrestricted "all L>=1" claim (the
+rigid gate cannot see L>=2-only or all-boundary-cancelling
+terms); keep Mrr claims scoped until the l=0 <-> l'=L relief
+coupling lands. CONSEQUENCE for the campaign: the BEM rung-3
+Y20-CMB anchor discrepancy is no longer attributable to an engine
+error and needs separate re-examination.

@@ -315,14 +315,19 @@ def test_y00_fluid_split_contrast():
 import pytest
 
 
-@pytest.mark.xfail(strict=True, reason="A3b OPEN (docs section 6):"
-                   " PSV fails the exact translation identity"
-                   " (U/V 0.25..1.09 per lp) while SH passes"
-                   " EXACTLY; every engine constituent is"
-                   " externally verified and an independent"
-                   " collocation solver reproduces the engine to"
-                   " 4-5 digits — unresolved paradox; all L >= 1"
-                   " PSV relief output is unverdicted until fixed")
+@pytest.mark.xfail(strict=True, reason="RESOLVED as a REFERENCE"
+                   " defect, engine correct (docs section 6b,"
+                   " 2026-07-18): the PSV legs difference"
+                   " metre-scale FD noise in source_jumps J(b)"
+                   " (h=1e-3 in system_matrix; SH immune, [W]"
+                   " analytic in b) + per-parity comparison does"
+                   " not commute with the station mapping + l0"
+                   " exclusion is not translation-consistent."
+                   " Total-field gate at delta=3000 m passes"
+                   " 0.996-1.002 every lp in U/V/W (audit32)."
+                   " This delta=30 m per-parity gate stays xfail"
+                   " until the analytic-A(r) jump fix lands and"
+                   " the gate is reworked per section 6b.")
 def test_l1_translation():
     """EXACT finite-L anchor (the Y00 gates cannot see the tilt/
     slip/conversion terms because grad1 Y00 = 0): Y10 relief
