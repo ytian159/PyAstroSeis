@@ -178,10 +178,12 @@ def spheroidal_unit(l, w, ents, jump, iface_rhs=None, bc_rhs=None,
 
     Rung-A3b extensions (no-ops by default): iface_rhs = {i: vec}
     adds an inhomogeneity to the interface rows between ents[i] and
-    ents[i+1] (welded 4-vector; fluid-adjacent interfaces not yet
-    supported); bc_rhs = (R_val, S_val) inhomogeneous free-surface
-    rows; full=True additionally returns a dict with the two-sided
-    interface y-vectors and the surface y-vector."""
+    ents[i+1] — vector length must match the row block: welded 4
+    (U, V, R, S), fluid-adjacent 3 (u_r, s_rr/R, solid-side S),
+    fluid-fluid 2 (u_r, s_rr); bc_rhs = (R_val, S_val)
+    inhomogeneous free-surface rows; full=True additionally returns
+    a dict with the two-sided interface y-vectors and the surface
+    y-vector."""
     scaled = l >= L_SERIES
     Yb, Yt, ncol = [], [], []
     for i, e in enumerate(ents):
@@ -212,13 +214,13 @@ def spheroidal_unit(l, w, ents, jump, iface_rhs=None, bc_rhs=None,
                 b[row:row + 4] = b[row:row + 4] + iface_rhs[i]
             row += 4
         elif ls and not hs:                 # solid below, fluid above
-            assert not (iface_rhs and i in iface_rhs), \
-                "iface_rhs on fluid-adjacent interfaces: A3b stage 3"
             A[row, chi] = Yhi[0]
             A[row, clo] = -Ylo[0]           # u_r
             A[row + 1, chi] = Yhi[1]
             A[row + 1, clo] = -Ylo[2]       # s_rr
             A[row + 2, clo] = Ylo[3]        # solid-side s_rt = 0
+            if iface_rhs and i in iface_rhs:
+                b[row:row + 3] = b[row:row + 3] + iface_rhs[i]
             row += 3
         elif hs:                            # fluid below, solid above
             A[row, chi] = Yhi[0]
@@ -226,10 +228,14 @@ def spheroidal_unit(l, w, ents, jump, iface_rhs=None, bc_rhs=None,
             A[row + 1, chi] = Yhi[2]
             A[row + 1, clo] = -Ylo[1]
             A[row + 2, chi] = Yhi[3]
+            if iface_rhs and i in iface_rhs:
+                b[row:row + 3] = b[row:row + 3] + iface_rhs[i]
             row += 3
         else:                               # fluid-fluid
             A[row:row + 2, chi] = Yhi
             A[row:row + 2, clo] = -Ylo
+            if iface_rhs and i in iface_rhs:
+                b[row:row + 2] = b[row:row + 2] + iface_rhs[i]
             row += 2
     ctop = slice(ofs[-2], ofs[-1])
     A[row, ctop] = Yt[-1][2]                # surface s_rr = 0

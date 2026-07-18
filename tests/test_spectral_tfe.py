@@ -202,6 +202,170 @@ def test_y00_top_full():
         assert err < 5.0e-4
 
 
+def test_y00_cmb_fluid_solid():
+    """A3b stage 3: Y00 relief on the fluid-solid CMB == moving the
+    CMB, vs central FD of exact re-solves (both parities, mixed
+    sources; the SH leg moves the toroidal run bottom). Y00
+    exercises the fluid-side value transfers (Up and
+    Rp = -rho w^2 u_r); the slip/pressure TILT terms need L >= 1
+    (quantitative anchor: BEM rung-3 Y20 ensemble)."""
+    src, Ms, w_arr, dirs, lmax = _mixed_setup()
+    delta = 50.0
+    c00 = delta * np.sqrt(4.0 * np.pi)
+    lp_ = [dict(d) for d in LAYERS]
+    lm_ = [dict(d) for d in LAYERS]
+    lp_[1] = dict(lp_[1], r_top=B + delta)
+    lm_[1] = dict(lm_[1], r_top=B - delta)
+    kw = dict(Q=QSH, q_sign=-1.0, lmax=lmax)
+    up = sp.spectral_spectra(lp_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    um = sp.spectral_spectra(lm_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    du = tfe.relief_spectra(LAYERS, src, Ms, w_arr, dirs,
+                            relief=[(B, 0, 0, c00)], **kw)
+    for part in ("psv", "sh"):
+        du_fd = 0.5 * (up[part] - um[part])
+        err = (np.abs(du[part] - du_fd).max()
+               / max(np.abs(du_fd).max(), 1e-300))
+        print("A3b-3 Y00 CMB %s: TFE vs exact-FD rel %.3e" % (part,
+                                                              err))
+        assert err < 5.0e-4
+
+
+def test_y00_icb_solid_fluid():
+    """Y00 relief on the ICB (solid below / fluid above — the
+    mirrored orientation, incl. the +S_solid(lo) = -jS sign): PSV vs
+    central FD; the mantle SH problem is untouched by construction
+    (du_sh == 0 on BOTH routes, checked exactly)."""
+    src, Ms, w_arr, dirs, lmax = _mixed_setup()
+    delta = 50.0
+    c00 = delta * np.sqrt(4.0 * np.pi)
+    lp_ = [dict(d) for d in LAYERS]
+    lm_ = [dict(d) for d in LAYERS]
+    lp_[0] = dict(lp_[0], r_top=C + delta)
+    lm_[0] = dict(lm_[0], r_top=C - delta)
+    kw = dict(Q=QSH, q_sign=-1.0, lmax=lmax)
+    up = sp.spectral_spectra(lp_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    um = sp.spectral_spectra(lm_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    du = tfe.relief_spectra(LAYERS, src, Ms, w_arr, dirs,
+                            relief=[(C, 0, 0, c00)], **kw)
+    du_fd = 0.5 * (up["psv"] - um["psv"])
+    err = (np.abs(du["psv"] - du_fd).max()
+           / max(np.abs(du_fd).max(), 1e-300))
+    fd_sh = np.abs(0.5 * (up["sh"] - um["sh"])).max()
+    print("A3b-3 Y00 ICB psv: TFE vs exact-FD rel %.3e (FD sh %.1e,"
+          " TFE sh %.1e)" % (err, fd_sh, np.abs(du["sh"]).max()))
+    assert err < 5.0e-4
+    assert fd_sh == 0.0 and np.abs(du["sh"]).max() == 0.0
+
+
+def test_null_fluid_split():
+    """Fluid-fluid analogue of the null weld: ANY relief on a
+    transparent split inside the outer core (IDENTICAL fluid both
+    sides) must give du == 0 — delta cancellation through the fluid
+    bundles including the two-sided potential slip."""
+    src, Ms, w_arr, dirs, lmax = _mixed_setup()
+    split = [dict(r_top=C, **IC), dict(r_top=2350.0e3, **OC),
+             dict(r_top=B, **OC), dict(r_top=A, **SH)]
+    u0 = sp.spectral_spectra(split, src, Ms, w_arr, dirs, Q=QSH,
+                             q_sign=-1.0, lmax=lmax)
+    scale = max(np.abs(u0["psv"]).max(), np.abs(u0["sh"]).max())
+    for (L, M) in ((2, 0), (2, 1)):
+        du = tfe.relief_spectra(split, src, Ms, w_arr, dirs,
+                                relief=[(2350.0e3, L, M, 3000.0)],
+                                Q=QSH, q_sign=-1.0, lmax=lmax)
+        worst = max(np.abs(du["psv"]).max(),
+                    np.abs(du["sh"]).max()) / scale
+        print("A3b-3 null fluid split Y%d%d: |du|/|u0| = %.3e"
+              % (L, M, worst))
+        assert worst < 1.0e-10
+
+
+def test_y00_fluid_split_contrast():
+    """Y00 relief on a REAL fluid-fluid staircase step == moving it
+    (central FD; quantitative check of the 2-row u.n / s_rr fluid
+    block). SH is untouched (run bottom stays at B)."""
+    src, Ms, w_arr, dirs, lmax = _mixed_setup()
+    OCB = dict(rho=10000.0, vp=8200.0)
+    lay = [dict(r_top=C, **IC), dict(r_top=2350.0e3, **OC),
+           dict(r_top=B, **OCB), dict(r_top=A, **SH)]
+    delta = 50.0
+    c00 = delta * np.sqrt(4.0 * np.pi)
+    lp_ = [dict(d) for d in lay]
+    lm_ = [dict(d) for d in lay]
+    lp_[1] = dict(lp_[1], r_top=2350.0e3 + delta)
+    lm_[1] = dict(lm_[1], r_top=2350.0e3 - delta)
+    kw = dict(Q=QSH, q_sign=-1.0, lmax=lmax)
+    up = sp.spectral_spectra(lp_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    um = sp.spectral_spectra(lm_, src, Ms, w_arr, dirs, l0=False,
+                             **kw)
+    du = tfe.relief_spectra(lay, src, Ms, w_arr, dirs,
+                            relief=[(2350.0e3, 0, 0, c00)], **kw)
+    du_fd = 0.5 * (up["psv"] - um["psv"])
+    err = (np.abs(du["psv"] - du_fd).max()
+           / max(np.abs(du_fd).max(), 1e-300))
+    print("A3b-3 Y00 fluid split psv: TFE vs exact-FD rel %.3e"
+          % err)
+    assert err < 5.0e-4
+
+
+import pytest
+
+
+@pytest.mark.xfail(strict=True, reason="A3b OPEN (docs section 6):"
+                   " PSV fails the exact translation identity"
+                   " (U/V 0.25..1.09 per lp) while SH passes"
+                   " EXACTLY; every engine constituent is"
+                   " externally verified and an independent"
+                   " collocation solver reproduces the engine to"
+                   " 4-5 digits — unresolved paradox; all L >= 1"
+                   " PSV relief output is unverdicted until fixed")
+def test_l1_translation():
+    """EXACT finite-L anchor (the Y00 gates cannot see the tilt/
+    slip/conversion terms because grad1 Y00 = 0): Y10 relief
+    h = delta cos(theta) applied to EVERY boundary equals a rigid
+    translation of the earth by delta zhat with the source held
+    fixed — which equals the unperturbed spherical problem with the
+    source at src - delta zhat, observed at the mapped surface
+    directions d' = d + (delta sin(theta)/a) theta_hat (cartesian
+    components are translation-invariant). Central FD in delta.
+    mrt source only: m = +-1 keeps the (absent) l = 0 channel out
+    of both routes. Pins the SIGNS of all L >= 1 couplings.
+    The SH part of this gate PASSES EXACTLY (validating the gate
+    construction end-to-end); the PSV part FAILS — see
+    docs/rung_a3_tfe.md section 6 for the full forensic record."""
+    src, Ms, w_arr, dirs, lmax = _mixed_setup()
+    Ms = [Ms[0]]                              # mrt only
+    delta = 30.0
+    c10 = delta * np.sqrt(4.0 * np.pi / 3.0)  # cos(th) = c*Ybar10
+    kw = dict(Q=QSH, q_sign=-1.0, lmax=lmax)
+    th = np.arctan2(np.hypot(dirs[:, 0], dirs[:, 1]), dirs[:, 2])
+    ph = np.arctan2(dirs[:, 1], dirs[:, 0])
+    that = np.stack([np.cos(th) * np.cos(ph),
+                     np.cos(th) * np.sin(ph), -np.sin(th)], axis=1)
+    zhat = np.array([0.0, 0.0, 1.0])
+    du_fd = {}
+    for s in (+1.0, -1.0):
+        dp = dirs + s * (delta / A) * np.sin(th)[:, None] * that
+        dp /= np.linalg.norm(dp, axis=1)[:, None]
+        u_s = sp.spectral_spectra(LAYERS, src - s * delta * zhat,
+                                  Ms, w_arr, dp, l0=False, **kw)
+        for part in ("psv", "sh"):
+            du_fd[part] = du_fd.get(part, 0.0) + 0.5 * s * u_s[part]
+    du = tfe.relief_spectra(LAYERS, src, Ms, w_arr, dirs,
+                            relief=[(C, 1, 0, c10), (B, 1, 0, c10),
+                                    ("top", 1, 0, c10)], **kw)
+    for part in ("psv", "sh"):
+        err = (np.abs(du[part] - du_fd[part]).max()
+               / max(np.abs(du_fd[part]).max(), 1e-300))
+        print("A3b-3 L=1 translation %s: TFE vs exact-FD rel %.3e"
+              % (part, err))
+        assert err < 5.0e-4
+
+
 def test_conversion_parity():
     """Parity selection of the conversion blocks: same-parity
     couplings (G0, GA_v, GC_w, HV_v) live on EVEN |l'-l| for even L;
@@ -236,3 +400,15 @@ if __name__ == "__main__":
     test_y00_weld_contrast()
     test_y00_top_full()
     print("all rung-A3b spheroidal relief gates passed")
+    test_null_fluid_split()
+    test_y00_cmb_fluid_solid()
+    test_y00_icb_solid_fluid()
+    test_y00_fluid_split_contrast()
+    print("all rung-A3b stage-3 fluid-interface gates passed")
+    try:
+        test_l1_translation()
+        print("UNEXPECTED: L=1 translation gate passed — the A3b"
+              " section-6 paradox may be resolved; remove xfail")
+    except AssertionError:
+        print("L=1 translation gate: KNOWN FAIL (PSV) — A3b open,"
+              " docs section 6")

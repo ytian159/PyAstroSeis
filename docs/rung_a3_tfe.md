@@ -217,3 +217,94 @@ tangential SLIP [u0_t] in the tilt of u.n, and the fluid p0, dp0/dr
 in the traction rows — A3b stage 3 (unlocks the BEM rung-3 Y20-CMB
 cross-anchor). Ensemble economy: cache per-(l,m) LU factors of the
 unperturbed systems — member cost = RHS + back-substitution.
+
+## 5. A3b stage 3: fluid-interface transfer (2026-07-17) —
+## machinery LANDED, Y00-class gates PASSED
+
+Implementation (pyastroseis/spectral.py + spectral_tfe.py):
+iface_rhs now accepted on fluid-adjacent (3-row) and fluid-fluid
+(2-row) blocks; _side_coeffs gained the FLUID bundle (potential-
+slaved slip V = -s_rr/(rho w^2 d), ciso = s_rr, Rp = -rho w^2 u_r
+via basis-FD, Sp = Tp = 0); the u.n row jU carries the slip tilt
+(h/d)(H0_s@[V] + H0_t@[W]) (cancels to solver precision on welds);
+relief_spectra dispatches all four interface types (the
+solid-below/fluid-above S row takes -jS; CMB toroidal relief goes
+through the run-bottom T row incl. the fluid-pressure conversion
+Hiso_w@ciso).
+
+Gates (tests/test_spectral_tfe.py), all PASSED:
+  * null fluid split (transparent OC split, Y20/Y21): 3.1e-14
+  * Y00 CMB (fluid-solid, vs exact-FD): psv 2.2e-07, sh 1.1e-09
+  * Y00 ICB (solid-below/fluid-above): psv 1.7e-08, sh == 0 both
+  * Y00 fluid staircase step: psv 3.3e-08
+Stage-1 regression: null weld 1.3e-11, all FD gates at prior
+levels.  NOTE: Y00 gates reach only the VALUE-TRANSFER terms
+(grad1 Y00 = 0).
+
+## 6. THE L>=1 VALIDATION CRISIS (2026-07-17) — OPEN
+
+A new EXACT gate was built for the tilt/slip/conversion terms:
+Y10 relief h = delta*cos(theta) on ALL boundaries == rigid
+translation of the earth with the source held fixed ==
+(spherical solve at src - delta*zhat, stations mapped to
+d' = d + (delta sin(theta)/a) theta_hat), central FD
+(test_l1_translation, currently EXPECTED-FAIL).
+
+RESULT: SH passes EXACTLY (W coefficients ratio 1.000 at every lp
+tested, both depths 637/3000 km) — which end-to-end validates the
+gate construction itself. PSV FAILS: U/V coefficient ratios
+0.25..1.09 (homog ball, top-only variant; full corefluid variant
+rel 0.84), at ALL frequencies k = 5..130 (NOT a resonance
+artifact) and both source depths (NOT a truncation-tail artifact;
+gate is lmax-stable 14->28 bitwise).
+
+Forensic record (all EXTERNAL checks PASSED, paradox unresolved):
+  1. jump-row values == pointwise-built t1 projections (1.000);
+  2. t1_r AND t1_t pointwise fields == SPATIAL-FD of the full
+     sigma tensor (formula-independent!) to all digits;
+  3. sigma_tt/pp decomposition (ciso/cV) == displacement-FD 1.0000;
+  4. radial bundles == ODE system matrix (1e-6..5e-4, FD-step);
+  5. G0 == closed-form Gaunt (m = 0 and 1, L = 1);
+  6. sympy exact integrals: ALL 13 matrices at L=1 (m=0,1) and the
+     stage-1 set at L=2 pass at <= 1.3e-13;
+  7. grid-projection operator == solver coefficients (1.0000);
+  8. first-order solve: traction self-check machine-exact;
+     split-stack == clean 2x2 solve bitwise;
+  9. advection projections == pointwise truth;
+ 10. an INDEPENDENT finite-h collocation solver (weighted LSQ,
+     l<=30 basis, exact tilted-surface bc) reproduces the ENGINE
+     du to 4-5 DIGITS — and (with the caveat of shared sigma
+     construction, itself verified in 3) disagrees with the
+     translation-FD the same way the engine does.
+
+I.e. two independent numerical solutions of the relieved problem
+agree with each other and disagree with the exact translation
+identity, with every constituent externally verified. One of the
+"exact" statements above must have a loophole not yet found.
+CONSEQUENCE: all L >= 1 PSV relief output (incl. the BEM rung-3
+Y20-CMB anchor comparison) is UNVERDICTED until this is resolved.
+du^SH([SH->SH] + validated-gate content) and all Y00 transfers
+stand.
+
+BEM rung-3 anchor run (rung3_ensemble/tfe_anchor.py, DATA ONLY,
+no verdict): base-field TFE-vs-BEM sanity med rel 0.10-0.35 at
+|ratio| 0.98-1.08 and phase 2.7-10.9 deg (raw==raw convention:
+BOTH npz families are conj-of-DSM — no conj on either side);
+global ||du|| TFE/BEM-lin = 1.0299; per-channel du/u anti-phase
+~150-165 deg at corr 0.43-0.46 (mrr R, mrt T) — consistent with
+the L>=1 PSV engine error; BEM member linearity 2.0014; relief
+normalization pin: CMB vertex peak |Ybar20| = 0.625763 (NOT the
+analytic 0.6308 — mesh-vertex peak-normalization), so
+h20(2500 m) = 3995.1 m of Ybar20.
+
+Next-session attack list: (a) Codex second opinion on the
+derivation + forensic record; (b) hand-audit relief_spectra's
+assembly against the verified pieces one term at a time at
+lmax = 3 (minimal failing config: mrr on-axis, m = 0, Y10 top,
+homog ball); (c) check the one path never isolated — the
+INTERACTION of jR/jS rows with the advection in the observable
+(sign/factor of the advection ADDED vs the bc-generated field);
+(d) re-derive the first-order observable du = u1 + h dr(u0)
+independently (e.g., Woodhouse 1976 eq. set) looking for a
+spheroidal-only term (the C-projection of any gradient-type
+missing term vanishes — exactly the W-exact/UV-wrong pattern).

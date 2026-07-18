@@ -208,10 +208,27 @@ def _side_coeffs(l, w, d, mat, y4, wt2, yp4=None):
     radial-derivative 4-vector from the solver's basis-FD (preferred
     — the Y'Y^-1 fallback loses ~1e-3 relative at l >= L_SERIES).
     Returns dict with U', V', R', S', W', T', ciso, cV, cW (zeros
-    where the parity is absent)."""
+    where the parity is absent).
+
+    FLUID side (mat["solid"] False, A3b stage 3): y4/yp4 are the
+    2-vectors (u_r, s_rr) and their basis-FD radial derivative.
+    The bundle carries the potential-slaved tangential displacement
+    V = phi/d with phi = -s_rr/(rho w^2) (u = grad phi — the SLIP
+    against the solid side enters the tilted u.n condition), the
+    isotropic tangential stress ciso = s_rr (sigma_f = s_rr I), and
+    a purely radial traction derivative (Sp = Tp = 0, Rp = ds_rr/dr
+    = -rho w^2 u_r via the basis-FD)."""
     out = dict(U=0j, V=0j, R=0j, S=0j, W=0j, T=0j, Up=0j, Vp=0j,
                Rp=0j, Sp=0j, Wp=0j, Tp=0j, ciso=0j, cV=0j, cW=0j)
     L = l * (l + 1.0)
+    if not mat["solid"]:
+        assert wt2 is None, "no toroidal field in a fluid"
+        if y4 is not None:
+            ur, srr = y4
+            phi = -srr / (mat["rho"] * w * w)
+            out.update(U=ur, R=srr, V=phi / d, Up=yp4[0], Rp=yp4[1],
+                       Vp=ur / d - phi / d ** 2, ciso=srr)
+        return out
     mu, lam = mat["mu"], mat["lam"]
     if y4 is not None:
         if yp4 is not None:
@@ -242,8 +259,15 @@ def _jump_rows(h, d, ang, dc):
     """First-order transferred data for one relieved location.
     dc = dict of DELTA coefficients (above - below; single-sided:
     the side itself), each an (lmax+1,) array over source l.
-    Returns per-target-l' arrays (jU, jV, jR, jS, jW, jT)."""
-    jU = -h * (ang.G0 @ dc["Up"])
+    Returns per-target-l' arrays (jU, jV, jR, jS, jW, jT).
+
+    jU is the u.n row: at fluid-adjacent interfaces the tangential
+    SLIP [u_t] enters through the tilted normal, (1/d)[u_t.grad1 h]
+    (H0 couplings on dc["V"], dc["W"]); at welded interfaces those
+    deltas cancel to solver precision and jU reduces to the vector
+    displacement transfer."""
+    jU = -h * (ang.G0 @ dc["Up"]) + (h / d) * (
+        ang.H0_s @ dc["V"] + ang.H0_t @ dc["W"])
     jV = -h * (ang.GA_v @ dc["Vp"] + ang.GA_w @ dc["Wp"])
     jW = -h * (ang.GC_v @ dc["Vp"] + ang.GC_w @ dc["Wp"])
     jR = -h * (ang.G0 @ dc["Rp"]) + (h / d) * (
@@ -267,9 +291,11 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
     (nsrc, nst, 3, nw), including parity conversion.
 
     relief: list of (where, L, M, h_LM); where = 'top' (free
-    surface) or the interface RADIUS in metres of a WELDED
-    solid-solid interface (fluid-adjacent: A3b stage 3).
-    Mr*-type sources (|m| <= 1)."""
+    surface) or the interface RADIUS in metres — welded solid-solid,
+    fluid-solid (either orientation: the u.n condition carries the
+    tangential slip in the tilt, the traction rows the fluid
+    pressure ciso = s_rr), or fluid-fluid. Mr*-type sources
+    (|m| <= 1)."""
     stack = make_stack(layers)
     r0 = float(np.linalg.norm(src_xyz))
     isrc = [i for i, e in enumerate(stack)
@@ -355,7 +381,7 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                         continue        # source order not excited
                     # DELTA (or single-side) coefficient arrays
                     keys = ("Up", "Vp", "Rp", "Sp", "Wp", "Tp",
-                            "S", "T", "ciso", "cV", "cW")
+                            "S", "T", "V", "W", "ciso", "cV", "cW")
                     dc = {k: np.zeros(lmax + 1, dtype=complex)
                           for k in keys}
                     if where == "top":
@@ -383,10 +409,8 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                         jstack = [j for j in range(len(stack) - 1)
                                   if abs(stack[j]["r_top"] - d_rel)
                                   < 1.0][0]
-                        if not (stack[jstack]["solid"]
-                                and stack[jstack + 1]["solid"]):
-                            raise ValueError(
-                                "fluid-adjacent relief: A3b stage 3")
+                        sol_lo = stack[jstack]["solid"]
+                        sol_hi = stack[jstack + 1]["solid"]
                         for l in range(1, lmax + 1):
                             ents, sol = sph[l]
                             ii = [i for i in range(len(ents) - 1)
@@ -400,12 +424,21 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                             wtlo = wthi = None
                             ents_t, bot, wt = tor[l]
                             if wt is not None and m_src != 0:
-                                jj = [i for i in
-                                      range(len(ents_t) - 1)
-                                      if abs(ents_t[i]["r_top"]
-                                             - d_rel) < 1.0]
-                                if jj:
-                                    wtlo, wthi = wt[2][jj[0]]
+                                if sol_lo and sol_hi:
+                                    jj = [i for i in
+                                          range(len(ents_t) - 1)
+                                          if abs(ents_t[i]["r_top"]
+                                                 - d_rel) < 1.0]
+                                    if jj:
+                                        wtlo, wthi = wt[2][jj[0]]
+                                elif sol_hi and bot is not None \
+                                        and abs(bot - d_rel) < 1.0 \
+                                        and wt[1] is not None:
+                                    # fluid below: solid-side run
+                                    # bottom, W = Wb, T = 0
+                                    # (enforced bottom condition)
+                                    wthi = np.array([wt[1], 0.0],
+                                                    dtype=complex)
                             lo = _side_coeffs(
                                 l, w, d_rel, ents[i_rel]["mat"],
                                 ylo * cs[l],
@@ -443,12 +476,30 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                                   < 1.0]
                             if not ii:
                                 continue
+                            # row inhomogeneity per interface type
+                            # (delta convention above - below; the
+                            # solid-below/fluid-above S row is
+                            # +S_solid(lo) = -[t1]_B, hence -jS)
+                            if sol_lo and sol_hi:
+                                rhs = np.array(
+                                    [jU[lp], jV[lp], jR[lp],
+                                     jS[lp]], dtype=complex)
+                            elif sol_hi:        # fluid below (CMB)
+                                rhs = np.array(
+                                    [jU[lp], jR[lp], jS[lp]],
+                                    dtype=complex)
+                            elif sol_lo:        # fluid above (ICB)
+                                rhs = np.array(
+                                    [jU[lp], jR[lp], -jS[lp]],
+                                    dtype=complex)
+                            else:               # fluid-fluid
+                                rhs = np.array(
+                                    [jU[lp], jR[lp]],
+                                    dtype=complex)
                             U1, V1 = spheroidal_unit(
                                 lp, w, entsp,
                                 np.zeros(4, dtype=complex),
-                                iface_rhs={ii[0]: np.array(
-                                    [jU[lp], jV[lp], jR[lp],
-                                     jS[lp]], dtype=complex)})
+                                iface_rhs={ii[0]: rhs})
                         Wu1[js, iw, lp, mp + 4] += U1
                         Wv1[js, iw, lp, mp + 4] += V1
                         entsp_t, botp = _tor_entries(
@@ -461,7 +512,7 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                                 bc_rhs=(0.0, jT[lp]))
                             W1 += hLM * (ang.GC_v @ adv["Vp"]
                                          + ang.GC_w @ adv["Wp"])[lp]
-                        else:
+                        elif sol_lo and sol_hi:
                             jj = [i for i in
                                   range(len(entsp_t) - 1)
                                   if abs(entsp_t[i]["r_top"]
@@ -472,6 +523,17 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                                 lp, w, entsp_t, botp, 0.0,
                                 iface_rhs={jj[0]: (jW[lp],
                                                    jT[lp])})
+                        elif sol_hi and botp is not None \
+                                and abs(botp - d_rel) < 1.0:
+                            # fluid-solid run bottom: [t1]_C on the
+                            # solid side (incl. the fluid-pressure
+                            # conversion term through dc["ciso"])
+                            W1 = toroidal_unit(
+                                lp, w, entsp_t, botp, 0.0,
+                                bc_rhs=(jT[lp], 0.0))
+                        else:
+                            continue   # interface below/inside the
+                            # fluid: no SH there
                         Wt1[js, iw, lp, mp + 4] += W1
     out = {}
     u = np.zeros((nsrc, nst, 3, nw), dtype=complex)
