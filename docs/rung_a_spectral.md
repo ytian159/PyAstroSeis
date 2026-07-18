@@ -293,3 +293,29 @@ Regression: G-A1 2.2e-9, G-A2 3.3e-9, G-A6 bitwise — unchanged.
 Open next validation: a DSM tipsv leg with an ocean zone
 (PREM-with-ocean class) through the dsm_arbitration rig for an
 external cross-check of the ocean stencil at ULP.
+
+## 10. PREM-topology run (2026-07-17): prem_s8c + ocean; the
+## rung-2e DSM leg is confirmed non-reference
+
+spectral run on dsm_arbitration_prem prem_s8c (REAL PREM topology:
+solid IC Q50 / fluid OC / 8-shell graded-PREM mantle staircase,
+r0 = 600 km inner-core source, lmax 250): 65 s on 48 shared cores;
+u_sh == 0 bitwise (source below the fluid — correct physics).
+
+* vs the DSM tipsv leg: rel ~1.0, |R|ratio 0.03-0.11 — the SAME
+  signature the BEM ladder showed in the original rung-2e campaign
+  (amp ratio 0.055-0.063, corr ~0, "DSM ARBITRATION FAILED").
+  TWO independent solvers (spectral + BEM) now agree against it:
+  spectral-vs-BEM Z per-k median rel 0.283 with |Z| ratios
+  0.71-1.25 (the BEM ULP fluid-core error class; R channels tiny/
+  decorrelated at rel ~0.8). VERDICT: tipsv with an INNER-CORE
+  source below the fluid outer core is NOT reference class at ULP
+  (the homog_q50 baseline at the same depth was fine at 23%/0.95
+  corr — the breakage needs the fluid above the source). This
+  EXPLAINS the failed rung-2e arbitration. A mantle-source PREM
+  DSM leg is the proper validation (queued).
+* + 3-km PREM ocean (run_spectral_ocean.py, G-A7 machinery):
+  median ocean effect on ocean-top Z = 2.4e-4 rel RMS in this band
+  (T >= ~1900 s) — a clean quantified null, as expected physically.
+* record sections: recsec_prem_s8c.png (spectral | BEM overlay +
+  ocean-effect panel, Z velocity, 1e-4..5.3e-4 Hz).
