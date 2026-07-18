@@ -53,6 +53,12 @@ from .toroidal_ref import source_frame
 # ULP-validated band the trigger never fires anyway.
 FL_LARGEX = os.environ.get("PYASTROSEIS_FL_LARGEX", "") == "1"
 
+# PYASTROSEIS_JUMP_COLNORM=1: per-column normalization inside
+# system_matrix's A = Y'Y^-1 (see its docstring). STRICT NO-OP
+# when unset.
+JUMP_COLNORM = os.environ.get("PYASTROSEIS_JUMP_COLNORM",
+                              "") == "1"
+
 
 def spheroidal_reconstruct(Wu, Wv, dirs):
     """u(x) = sum_lm [Wu_lm Ybar r̂ + Wv_lm grad1(Ybar)] at unit
@@ -474,10 +480,24 @@ def _shell_matrix(l, w, r, rho, lam, mu, zref_a=None):
 def system_matrix(l, w, r0, rho, lam, mu, h=1.0e-3, zref_a=None):
     """4x4 first-order system matrix A(r0) (y' = A y), built
     numerically from the analytic solution matrix: A = Y' Y^{-1}
-    (invariant under the per-column scaling of the basis)."""
+    (invariant under the per-column scaling of the basis).
+
+    With PYASTROSEIS_JUMP_COLNORM=1 both Y' and Y are per-column
+    normalized before the inversion — an EXACT identity (the
+    diagonal cancels in Y' D (Y D)^{-1}) that removes the intrinsic
+    e^{+-|z|} column imbalance of the scaled basis in the
+    PROPAGATING regime z > l (S_l ~ e^-z vs T_l ~ e^+z makes raw
+    cond(Y) ~ e^{2z} ~ 1e40 at hdur80-band frequencies, turning
+    A — and the source jumps built from it — into noise; measured
+    x1e6 jump errors at l=47, k=40 on ak135, 2026-07-18)."""
     Y0 = _shell_matrix(l, w, r0, rho, lam, mu, zref_a)
     Yp = _shell_matrix(l, w, r0 + h, rho, lam, mu, zref_a)
     Ym = _shell_matrix(l, w, r0 - h, rho, lam, mu, zref_a)
+    if JUMP_COLNORM:
+        sc = np.max(np.abs(Y0), axis=0)
+        sc[sc == 0] = 1.0
+        return (((Yp - Ym) / (2.0 * h)) / sc) @ np.linalg.inv(
+            Y0 / sc)
     return ((Yp - Ym) / (2.0 * h)) @ np.linalg.inv(Y0)
 
 

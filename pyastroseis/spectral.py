@@ -37,13 +37,29 @@ no gravity.
 
 import numpy as np
 
+import os
+
 from .toroidal_ref import source_frame, toroidal_reconstruct
 from .toroidal_modes import _pole_coupling
-from .spheroidal_ref import (L_SERIES, _fl, _fl_scaled, q_factor,
-                             solid_cols_c, source_jumps,
+from .spheroidal_ref import (L_SERIES, _fl, _fl_scaled, _lndf,
+                             q_factor, solid_cols_c, source_jumps,
                              spheroidal_pole, spheroidal_reconstruct)
 
 TOL_PRUNE = 1.0e-12
+
+# PYASTROSEIS_JUMP_UNSCALED=1: build the SOURCE JUMPS in the
+# unscaled basis whenever it is float-representable at r0, falling
+# back to the scaled basis only above the overflow ceiling. The
+# scaled-basis A = Y'Y^-1 inside source_jumps is accurate only in
+# the deep-evanescent regime l >> |z| (k=10/lmax-1400 validated);
+# in the propagating/transition band it loses O(1) (measured x1e6
+# jump errors at l=47, k=40 on ak135 — basis-direction cond ~1e8
+# times a deterministic scaled-path defect), which corrupted every
+# moderate-k spectrum of the hdur80 band. The unscaled A is
+# mpmath-verified to 5e-5 there. STRICT NO-OP when unset.
+JUMP_UNSCALED = os.environ.get("PYASTROSEIS_JUMP_UNSCALED",
+                               "") == "1"
+_LN_OVERFLOW = 650.0
 
 
 # ----------------------------------------------------------------
@@ -508,8 +524,15 @@ def spectral_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
             for js, (mzz, _, _) in enumerate(srcs):
                 if mzz != 0.0:
                     Wu[js, iw, 0, 0 + 4] += mzz * DY[0] * U0
+        vp_src = np.sqrt((msrc["lam"] + 2.0 * msrc["mu"])
+                         / msrc["rho"])
+        zp0 = abs(w / vp_src) * r0
         for l in range(1, lmax + 1):
             zr_src = msrc["r_top"] if l >= L_SERIES else None
+            if (JUMP_UNSCALED and zr_src is not None
+                    and _lndf(2 * l + 1) - (l + 1.0)
+                    * np.log(zp0) < _LN_OVERFLOW):
+                zr_src = None
             L = l * (l + 1.0)
             if do_psv:
                 icut = _icut(stack, l, r0, tol_prune)
