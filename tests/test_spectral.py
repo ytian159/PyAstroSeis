@@ -351,4 +351,65 @@ if __name__ == "__main__":
     test_toroidal_vs_mode_sum()
     test_l0_radial()
     test_pruning_insensitivity()
+    test_fluid_top_ocean()
     print("all rung-A gates passed")
+
+
+def test_fluid_top_ocean():
+    """G-A7: fluid OUTERMOST layer (ocean). (a) end-to-end
+    partition invariance on an ocean model (splits the ocean AND
+    the sub-ocean mantle); (b) thin-ocean limit: ocean-top Z
+    converges O(h) to the solid free-surface solution as the ocean
+    thins; (c) the p = 0 surface slaves phi = 0: horizontal PSV
+    displacement at the ocean top vanishes, and SH is exactly zero
+    at ocean-top stations (fluid-capped toroidal run)."""
+    WATER = dict(rho=1000.0, vp=1500.0)
+    r0 = A - 637.0e3
+    src = np.array([0.0, 0.0, r0])
+    Mt = np.zeros((3, 3))
+    Mt[0, 2] = Mt[2, 0] = 1.0e18
+    Mr = np.diag([0.0, 0.0, 1.0e18])
+    th = np.radians([35.0, 90.0, 140.0])
+    dirs = np.stack([np.sin(th), 0.0 * th, np.cos(th)], axis=1)
+    w_arr = np.array([wk(20.0), wk(90.0)])
+    kw = dict(Q=QSH, q_sign=-1.0, lmax=30)
+    # (a) partition invariance, ocean model
+    hoc = 3.0e3
+    lay = [dict(r_top=C, **IC), dict(r_top=B, **OC),
+           dict(r_top=A - hoc, **SH), dict(r_top=A, **WATER)]
+    split = [dict(r_top=C, **IC), dict(r_top=B, **OC),
+             dict(r_top=5000.0e3, **SH), dict(r_top=A - hoc, **SH),
+             dict(r_top=A - 0.5 * hoc, **WATER),
+             dict(r_top=A, **WATER)]
+    u0 = sp.spectral_spectra(lay, src, [Mt, Mr], w_arr, dirs, **kw)
+    u1 = sp.spectral_spectra(split, src, [Mt, Mr], w_arr, dirs,
+                             **kw)
+    part = (np.abs(u1["psv"] - u0["psv"]).max()
+            / np.abs(u0["psv"]).max())
+    print("G-A7a ocean partition invariance: %.3e" % part)
+    assert part < 1.0e-8
+    # (c) surface physics
+    ur = np.einsum('sc,ascw->asw', dirs, u0["psv"])
+    uh = u0["psv"] - np.einsum('asw,sc->ascw', ur, dirs)
+    print("G-A7c |u_h|/|u_r| at ocean top: %.1e ; |u_sh| max: %.1e"
+          % (np.abs(uh).max() / np.abs(ur).max(),
+             np.abs(u0["sh"]).max()))
+    assert np.abs(uh).max() < 1.0e-8 * np.abs(ur).max()
+    assert np.abs(u0["sh"]).max() == 0.0
+    # (b) thin-ocean limit on the homogeneous ball (both sources:
+    # exercises the l = 0 fluid-top path too)
+    sol = sp.spectral_spectra([dict(r_top=A, **SH)], src,
+                              [Mt, Mr], w_arr, dirs, **kw)
+    zs = np.einsum('sc,ascw->asw', dirs, sol["psv"])
+    errs = []
+    for h in (50.0, 5.0):
+        oc = sp.spectral_spectra(
+            [dict(r_top=A - h, **SH), dict(r_top=A, **WATER)],
+            src, [Mt, Mr], w_arr, dirs, **kw)
+        zo = np.einsum('sc,ascw->asw', dirs, oc["psv"])
+        errs.append(np.abs(zo - zs).max() / np.abs(zs).max())
+    print("G-A7b thin-ocean limit: Z err %.3e (h=50 m) -> %.3e "
+          "(h=5 m), ratio %.1f" % (errs[0], errs[1],
+                                   errs[0] / errs[1]))
+    assert errs[1] < 2.0e-4
+    assert 4.0 < errs[0] / errs[1] < 25.0

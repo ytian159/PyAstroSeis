@@ -297,6 +297,9 @@ def relief_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
     pressure ciso = s_rr), or fluid-fluid. Mr*-type sources
     (|m| <= 1)."""
     stack = make_stack(layers)
+    if not stack[-1]["solid"]:
+        raise ValueError("relief on fluid-top (ocean) models is "
+                         "not supported")
     r0 = float(np.linalg.norm(src_xyz))
     isrc = [i for i, e in enumerate(stack)
             if e["r_bot"] < r0 < e["r_top"]][0]

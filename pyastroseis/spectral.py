@@ -64,8 +64,11 @@ def make_stack(layers):
             raise ValueError("layer radii must increase")
         st.append(e)
         r_bot = e["r_top"]
-    if not st[-1]["solid"]:
-        raise ValueError("MVP requires a solid outermost layer")
+    # fluid outermost (ocean) is supported: free surface p = 0
+    # (single row); NOTE the no-gravity potential formulation then
+    # has ZERO tangential displacement at the ocean surface (p = 0
+    # everywhere on it -> grad1 phi = 0), and SH is confined below
+    # the ocean (zero at surface stations).
     return st
 
 
@@ -238,15 +241,31 @@ def spheroidal_unit(l, w, ents, jump, iface_rhs=None, bc_rhs=None,
                 b[row:row + 2] = b[row:row + 2] + iface_rhs[i]
             row += 2
     ctop = slice(ofs[-2], ofs[-1])
-    A[row, ctop] = Yt[-1][2]                # surface s_rr = 0
-    A[row + 1, ctop] = Yt[-1][3]            # surface s_rt = 0
-    if bc_rhs is not None:
-        b[row] = b[row] + bc_rhs[0]
-        b[row + 1] = b[row + 1] + bc_rhs[1]
-    assert row + 2 == n, "row/column count mismatch"
+    if ents[-1]["mat"]["solid"]:
+        A[row, ctop] = Yt[-1][2]            # surface s_rr = 0
+        A[row + 1, ctop] = Yt[-1][3]        # surface s_rt = 0
+        if bc_rhs is not None:
+            b[row] = b[row] + bc_rhs[0]
+            b[row + 1] = b[row + 1] + bc_rhs[1]
+        row += 2
+    else:                                   # fluid top: p = 0 only
+        A[row, ctop] = Yt[-1][1]
+        if bc_rhs is not None:
+            b[row] = b[row] + bc_rhs[0]
+        row += 1
+    assert row == n, "row/column count mismatch"
     x = _solve_scaled(A, b)
     cu = x[ofs[-2]:ofs[-1]]
-    Ua, Va = Yt[-1][0] @ cu, Yt[-1][1] @ cu
+    if ents[-1]["mat"]["solid"]:
+        Ua, Va = Yt[-1][0] @ cu, Yt[-1][1] @ cu
+    else:
+        # fluid surface: U = u_r; V = phi/a is slaved to the
+        # potential, phi = -s_rr/(rho w^2) == 0 on the p = 0
+        # surface (kept as the formula so inhomogeneous bc_rhs
+        # solves stay consistent)
+        Ua = Yt[-1][0] @ cu
+        Va = -(Yt[-1][1] @ cu) / (ents[-1]["mat"]["rho"] * w * w
+                                  * ents[-1]["r_top"])
     if not full:
         return Ua, Va
 
@@ -350,11 +369,13 @@ def _tor_entries(mats, l, r0, isrc, tol_prune):
     """Entries within the outermost solid run (SH does not enter
     fluid). Returns (ents, bottom_r) with bottom_r the radius for the
     T=0 bottom condition (None: regular centre or pruned bottom), or
-    (None, None) if the source is not in the run."""
+    (None, None) if the source is not in the run OR the run is
+    capped by fluid above (ocean models): SH then never reaches the
+    surface stations (u_SH == 0 at a fluid top)."""
     jrun = len(mats) - 1
     while jrun > 0 and mats[jrun - 1]["solid"]:
         jrun -= 1
-    if isrc < jrun:
+    if isrc < jrun or not mats[-1]["solid"]:
         return None, None
     icut = jrun
     for i in range(jrun + 1, len(mats)):

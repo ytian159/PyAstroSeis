@@ -268,3 +268,28 @@ manifest "elastic" label is stale — the .inf zones carry Qmu=50).
   band-top disagreement, unarbitrated (corefluid at 50-km depth
   showed 1-3 percent there; not blocking: the campaign band centre
   is clean).
+
+## 9. Fluid outermost layer (ocean) — SUPPORTED (2026-07-17)
+
+The MVP "solid outermost" restriction is removed. Fluid top:
+free surface p = 0 (single row); the no-gravity potential
+formulation slaves phi = 0 on that surface, so the ocean-top
+observable is Z-only (horizontal PSV == 0 at machine precision,
+by physics not construction) and SH is confined below the ocean
+(exactly zero at ocean-top stations; _tor_entries returns None
+for fluid-capped runs). l = 0 path generic (fluid rows reuse the
+(u_r, s_rr) 2-vector). Relief (spectral_tfe) explicitly rejects
+fluid-top models.
+
+Gates G-A7 (test_fluid_top_ocean), all PASSED:
+  (a) ocean-model partition invariance 1.2e-12 (end-to-end,
+      mrt+mrr, splits ocean + sub-ocean mantle);
+  (b) thin-ocean limit: ocean-top Z -> solid free-surface Z,
+      O(h) exact (err 2.5e-4 at h=50 m -> 2.5e-5 at h=5 m,
+      ratio 10.0);
+  (c) |u_h|/|u_r| at ocean top 3.6e-16; u_sh == 0 bitwise.
+Regression: G-A1 2.2e-9, G-A2 3.3e-9, G-A6 bitwise — unchanged.
+
+Open next validation: a DSM tipsv leg with an ocean zone
+(PREM-with-ocean class) through the dsm_arbitration rig for an
+external cross-check of the ocean stencil at ULP.
