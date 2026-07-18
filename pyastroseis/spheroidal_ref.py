@@ -254,6 +254,13 @@ def _lndf(n):
 
 _SERIES_LOSS_MAX = 1.0e8       # rescue when > ~8 digits cancel
 
+# Set True whenever _fl_scaled lands in the overflow-guard branch
+# (series dead AND rescue constant unrepresentable). Callers that
+# sum over l (spectral_spectra) reset it per l and ZERO that l's
+# contribution — the kept series value is finite but can be 1e18x
+# garbage, while the true contribution there is negligible.
+FL_GUARD_HIT = False
+
 
 try:                                    # fast path for the rescue
     from scipy.special import spherical_jn as _sp_jn
@@ -297,6 +304,7 @@ def _fl_scaled(kind, l, z, zref):
     cancellation (propagating regime, |z|^2/2 >> l) is detected from
     the running max |term| and the call is rerouted to
     _fl_scaled_recur — identical normalization, stable evaluation."""
+    global FL_GUARD_HIT
     z = np.atleast_1d(np.asarray(z, dtype=complex))
     if kind == "j":
         if FL_LARGEX:
@@ -313,10 +321,12 @@ def _fl_scaled(kind, l, z, zref):
             # -> keep the finite cancellation-limited series value;
             # only reached where the physical contribution and the
             # source-spectrum weight are both negligible.
-            if bad and abs(_lndf(2 * l + 1)
-                           - l * float(np.real(np.log(zref)))
-                           ) < 600.0:
-                return _fl_scaled_recur("j", l, z, zref)
+            if bad:
+                if abs(_lndf(2 * l + 1)
+                       - l * float(np.real(np.log(zref)))
+                       ) < 600.0:
+                    return _fl_scaled_recur("j", l, z, zref)
+                FL_GUARD_HIT = True
         else:
             S = _series_S(l, z)
             Sm = _series_S(l - 1, z)
@@ -332,10 +342,11 @@ def _fl_scaled(kind, l, z, zref):
                          * np.maximum(np.abs(T), 1e-300))
                or np.any(mxTm > _SERIES_LOSS_MAX
                          * np.maximum(np.abs(Tm), 1e-300)))
-        if bad and abs((l + 1.0)
-                       * float(np.real(np.log(zref)))
-                       - _lndf(2 * l - 1)) < 600.0:
-            return _fl_scaled_recur("y", l, z, zref)
+        if bad:
+            if abs((l + 1.0) * float(np.real(np.log(zref)))
+                   - _lndf(2 * l - 1)) < 600.0:
+                return _fl_scaled_recur("y", l, z, zref)
+            FL_GUARD_HIT = True
     else:
         T = _series_T(l, z)
         Tm = _series_T(l - 1, z)

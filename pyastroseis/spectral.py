@@ -39,6 +39,7 @@ import numpy as np
 
 import os
 
+from . import spheroidal_ref as _base
 from .toroidal_ref import source_frame, toroidal_reconstruct
 from .toroidal_modes import _pole_coupling
 from .spheroidal_ref import (L_SERIES, _fl, _fl_scaled, _lndf,
@@ -528,6 +529,7 @@ def spectral_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                          / msrc["rho"])
         zp0 = abs(w / vp_src) * r0
         for l in range(1, lmax + 1):
+            _base.FL_GUARD_HIT = False
             zr_src = msrc["r_top"] if l >= L_SERIES else None
             if (JUMP_UNSCALED and zr_src is not None
                     and _lndf(2 * l + 1) - (l + 1.0)
@@ -563,6 +565,11 @@ def spectral_spectra(layers, src_xyz, M_list, w_arr, station_dirs,
                     Wt_unit = toroidal_unit(
                         l, w, ents_t, bot_r,
                         1.0 / (msrc["mu"] * r0 ** 2))
+            if _base.FL_GUARD_HIT:
+                # overflow-guard regime hit by some basis call:
+                # values poisoned, true contribution negligible —
+                # drop this l entirely for this w
+                continue
             for js, (mzz, mzx, mzy) in enumerate(srcs):
                 if do_psv and mzz != 0.0:
                     qy = mzz * DY[l]
